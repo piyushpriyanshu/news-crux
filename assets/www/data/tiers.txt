@@ -1,0 +1,133 @@
+### Subject totals (UPSC CSE)
+
+| Subject | Qs | Subject | Qs |
+|---|---|---|---|
+| Miscellaneous | 591 | Physical Geography | 134 |
+| Science & Technology | 540 | Medieval History | 109 |
+| Economy | 418 | Art & Culture | 101 |
+| Polity | 396 | Ancient History | 90 |
+| Indian Geography | 326 | World Geography | 90 |
+| Modern History | 313 | International Relations | 89 |
+| Environment | 292 | |
+
+### Top themes per subject (UPSC CSE) — with counts and year spans
+
+**Ancient History (90)**
+1. `history-of-mauryan-age` — 16 (1997–2006)
+2. `art-literature-and-culture-during-ancient-times` — 12 (1995–2006)
+3. `history-of-the-gupta-period` — 5 (1995–2000)
+4. `harshavardhan-the-southern-dynasties` — 5 (1997–2006)
+5. `history-of-the-vedic-period` — 4 (1995–2004)
+6. `ashoka` — 3 (2016–2020)
+7. `harappan-civilization-indus-valley` — 2 (2001–2002); `harappan-religion` — 2 (2011–2013)
+8. `ancient-terminology` — 2 (2016)
+
+**Medieval History (109)**
+1. `mughal-period` — 22 (1996–2021)
+2. `delhi-sultanate` — 16 (1997–2021)
+3. `bhakti-and-sufi-movement` — 11 (1996–2013); plus `bhakti-sufi` 2, `bhakti-saints` 2 (2014–2019)
+4. `vijayanagara-empire` — 5 (1998–2006); `regional-kingdoms` — 5 (1999–2004)
+5. `medieval-terminology` — 5 (2013–2020)
+
+**Modern History (313)**
+1. `indian-national-movement-iii` — 52 (1996–2010)
+2. `indian-national-movement-ii` — 27 (1996–2010)
+3. `associations-journals-books-and-plays` — 20 (1996–2008)
+4. `indian-national-movement-i` — 17 (1998–2010)
+5. `prominent-personalities-in-modern-history` — 16 (1996–2008)
+6. `british-expansion-in-india` — 12 (1999–2010)
+7. `governor-generals-viceroys` — 11 (1996–2010)
+8. `administrative-changes-after-1857` — 9 (2000–2009); `admin-reforms-1857` — 7 (2011–2021)
+9. `gandhi-phases` — 7 (2011–2020)
+
+**Art & Culture (101)**
+1. `literature` — 10 (1996–2003)
+2. `buddhism` — 10 (2012–2020); `buddhism-and-jainism` — 9 (1996–2009)
+3. `temple-architecture` — 6 (2012–2022)
+4. `culture-pairs` — 4 (2012–2022)
+5. `classical-dances` — 3 (2012–2014); `philosophy-schools` — 3 (2013–2014); `ajanta` — 3 (2014–2016)
+
+**Polity (396)**
+1. `parliament` — 30 (1997–2022)
+2. `fundamental-rights` — 18 (1996–2020)
+3. `higher-judiciary-sc-and-hc` — 15 (1996–2008)
+4. `local-government-panchayats-and-municipalities` — 11 (1996–2009)
+5. `constitutional-amendment` — 10 (2000–2019)
+6. `constitutional-bodies` — 9 (2000–2023)
+7. `prime-minister` — 8 (1996–2019)
+8. `schedules` — 7 (1998–2008)
+
+**Economy (418)**
+1. `industry` — 27 (1996–2012)
+2. `important-concepts-in-economy` — 27 (1996–2013)
+3. `external-sector-of-india` — 17 (1996–2010)
+4. `agriculture` — 16 (1996–2015)
+5. `planning-in-india-and-economic-reforms` — 14 (1996–2010)
+6. `public-finance` — 12 (1997–2015); `inflation` — 12 (2000–2021)
+7. `human-development-and-sustainable-development` — 12 (1996–2005)
+8. `security-market-in-india` — 11 (2000–2010); `taxation` — 10 (1996–2018)
+
+**Physical Geography (134)**
+1. `climatology` — 29 (1996–2010)
+2. `solar-system-and-evolution-of-earth` — 14 (1996–2010)
+3. `oceanography` — 8 (1997–2020); `geomorphology` — 8 (2001–2013)
+4. `winds` — 5 (2013–2021); `biomes` — 4 (2012–2015); `ocean-currents` — 3 (2012–2024)
+
+**Indian Geography (326)**
+1. `human-and-economic-geography` — 59 (1996–2022)
+2. `location-map-based-indian-geography` — 62 (1996–2008) [coarse bucket in A-book; includes map work]
+3. `agriculture` — 13 (1996–2010)
+4. `physiography` — 6 (2011–2022); `major-crops` — 5 (2012–2020); `states` — 5 (2013–2022)
+5. `natural-vegetation` — 4 (2014–2015)
+
+**World Geography (90)**
+1. `location-map-based-world-geography` — 63 (1996–2010) [map-based country/location questions dominate]
+2. `world-map` — 5 (2013–2019); `map-work-world` — 2 (2013–2019)
+3. `places-in-news` / `places-was-in-news` — 2 (2018); `west-asia` — 1 (2019)
+
+**Environment (292)**
+1. `protected-areas` — 22 (2010–2021)
+2. `species` — 14 (2012–2021)
+3. `climate-change` — 13 (2008–2022)
+4. `agriculture-environment` — 7 (2011–2021)
+5. `air-pollution` — 6 (2013–2022); `sustainable-agriculture` — 6 (2014–2024)
+6. `biodiversity` — 5 (2003–2021); `food-chain` — 5 (2012–2021); `water-pollution` — 4 (2011–2019)
+
+**Science & Technology (540)**
+1. `biology` — 147 (1996–2010); `everyday-biology` — 7 (2012–2022); `basic-science` — 18 (2011–2022)
+2. `physics` — 76 (1996–2009)
+3. `chemistry` — 67 (1996–2010)
+4. `biotechnology` — 17 (1996–2021)
+5. `space-and-space-technology` — 11 (2002–2010)
+6. `defence-technology` — 7 (2007–2014)
+7. `information-and-communication-technology` — 6 (1999–2010); `communication-technology` — 6 (2011–2020)
+
+**International Relations (89)**
+1. `international-relations` (general) — 12 (2011–2022)
+2. `united-nations` — 8 (2016–2022)
+3. `world-bank` — 3 (2015–2019); `g20` — 3 (2020–2023); `brics` — 2 (2015–2025); `who` — 2 (2016–2022)
+4. `treaties` — 2 (2011–2018); `rare-earths` — 2 (2012–2021)
+
+**Miscellaneous (591)** — dominated by the 1995–2010 book's GK buckets:
+1. `general-awareness-india` — 140 (1996–2009)
+2. `contemporary-events-india` — 112 (1996–2010)
+3. `general-awareness-world` — 108 (1996–2010)
+4. `contemporary-events-world` — 101 (1996–2010)
+5. `sports-and-games` — 39 (1996–2009)
+(post-2010: `niti-aayog`, `digilocker`, `aadhaar`, `mgnrega`, `budget-2011-12` — 1–2 each)
+
+### Digest-tier implications (UPSC CSE canonical)
+- **HIGH (asked 15+ times):** Parliament; fundamental rights; national movement (all three phases);
+  Mughal period; Delhi Sultanate; climatology; protected areas; biology/physics/chemistry basics;
+  human & economic geography; map-based India/world locations; industry; economic concepts;
+  external sector; public finance; inflation.
+- **MED (5–14):** Governor-generals/viceroys; associations–journals–books; British expansion;
+  post-1857 admin changes; Gandhi phases; judiciary; panchayati raj; constitutional amendments/bodies;
+  agriculture; planning & reforms; taxation; securities market; oceanography; geomorphology;
+  physiography; major crops; species; climate change; air/water pollution; sustainable agriculture;
+  biotech; space; defence tech; ICT; Buddhism/Jainism; temple architecture; UN; places in news.
+- **LOW (1–4):** Schedules; ancient terminology; Harappan religion; Ajanta; classical dances;
+  philosophy schools; biomes; ocean currents; rare-earths; treaties; G20/BRICS/WHO as standalone.
+- **Structural note:** pre-2011 books overweight static GK buckets (140+112+108+101 in Miscellaneous);
+  post-2011 papers shift to Environment, S&T applications and IR institutions. Weight recent-year
+  theme vocabulary (2013+) over the 1990s coarse buckets when they conflict.

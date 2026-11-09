@@ -1,0 +1,5 @@
+build/
+*.p12
+*.jks
+*.keystore
+jc.sh

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>News Crux</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app">
+  <header class="top" id="top">
+    <div class="brand">
+      <img class="logo" src="icon.png" alt="">
+      <div>
+        <div class="wm">News <em>Crux</em></div>
+        <div class="sub" id="subline">Current affairs for UPSC Prelims</div>
+      </div>
+    </div>
+    <button class="iconbtn" id="btnSync" aria-label="Sync now"></button>
+    <button class="iconbtn" id="btnSettings" aria-label="Settings"></button>
+    <div class="progress" id="prog"><i></i></div>
+  </header>
+  <main id="main"><div class="ptr" id="ptr"></div><div id="view" class="view"></div></main>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+<div class="page" id="page"></div>
+<div class="toast" id="toast"></div>
+<script src="data/kb.js"></script>
+<script src="data/sources.js"></script>
+
+<script src="app.js"></script>
+</body>
+</html>

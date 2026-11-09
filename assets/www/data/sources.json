@@ -1,0 +1,370 @@
+[
+ {
+  "code": "PIB",
+  "name": "Press Information Bureau",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "PIB Delhi (English releases)",
+    "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3"
+   },
+   {
+    "label": "PIB HQ (English releases)",
+    "url": "https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1"
+   },
+   {
+    "label": "Google News \u00b7 pib.gov.in",
+    "url": "https://news.google.com/rss/search?q=site:pib.gov.in+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "PMI",
+  "name": "PM India",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "pmindia.gov.in feed",
+    "url": "https://www.pmindia.gov.in/en/feed/"
+   },
+   {
+    "label": "Google News \u00b7 pmindia.gov.in",
+    "url": "https://news.google.com/rss/search?q=site:pmindia.gov.in+when:3d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "TH",
+  "name": "The Hindu",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "National",
+    "url": "https://www.thehindu.com/news/national/feeder/default.rss"
+   },
+   {
+    "label": "International",
+    "url": "https://www.thehindu.com/news/international/feeder/default.rss"
+   },
+   {
+    "label": "Economy",
+    "url": "https://www.thehindu.com/business/Economy/feeder/default.rss"
+   },
+   {
+    "label": "Science",
+    "url": "https://www.thehindu.com/sci-tech/science/feeder/default.rss"
+   },
+   {
+    "label": "Energy & Environment",
+    "url": "https://www.thehindu.com/sci-tech/energy-and-environment/feeder/default.rss"
+   },
+   {
+    "label": "Editorial",
+    "url": "https://www.thehindu.com/opinion/editorial/feeder/default.rss"
+   },
+   {
+    "label": "Google News \u00b7 thehindu.com",
+    "url": "https://news.google.com/rss/search?q=site:thehindu.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "IE",
+  "name": "Indian Express",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "India",
+    "url": "https://indianexpress.com/section/india/feed/"
+   },
+   {
+    "label": "Explained",
+    "url": "https://indianexpress.com/section/explained/feed/"
+   },
+   {
+    "label": "Economy",
+    "url": "https://indianexpress.com/section/business/economy/feed/"
+   },
+   {
+    "label": "World",
+    "url": "https://indianexpress.com/section/world/feed/"
+   },
+   {
+    "label": "Google News \u00b7 indianexpress.com",
+    "url": "https://news.google.com/rss/search?q=site:indianexpress.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "HT",
+  "name": "Hindustan Times",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "India",
+    "url": "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml"
+   },
+   {
+    "label": "World",
+    "url": "https://www.hindustantimes.com/feeds/rss/world-news/rssfeed.xml"
+   },
+   {
+    "label": "Google News \u00b7 hindustantimes.com",
+    "url": "https://news.google.com/rss/search?q=site:hindustantimes.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "TOI",
+  "name": "Times of India",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "India",
+    "url": "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms"
+   },
+   {
+    "label": "World",
+    "url": "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms"
+   },
+   {
+    "label": "Environment",
+    "url": "https://timesofindia.indiatimes.com/rssfeeds/2647163.cms"
+   },
+   {
+    "label": "Science",
+    "url": "https://timesofindia.indiatimes.com/rssfeeds/-2128672765.cms"
+   },
+   {
+    "label": "Google News \u00b7 timesofindia",
+    "url": "https://news.google.com/rss/search?q=site:timesofindia.indiatimes.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "ET",
+  "name": "Economic Times",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Economy",
+    "url": "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms"
+   },
+   {
+    "label": "Top stories",
+    "url": "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
+   },
+   {
+    "label": "Google News \u00b7 economictimes",
+    "url": "https://news.google.com/rss/search?q=site:economictimes.indiatimes.com+economy+OR+policy+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "BS",
+  "name": "Business Standard",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Economy",
+    "url": "https://www.business-standard.com/rss/economy-102.rss"
+   },
+   {
+    "label": "Top stories",
+    "url": "https://www.business-standard.com/rss/home_page_top_stories.rss"
+   },
+   {
+    "label": "Google News \u00b7 business-standard.com",
+    "url": "https://news.google.com/rss/search?q=site:business-standard.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "MC",
+  "name": "Moneycontrol",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Economy",
+    "url": "https://www.moneycontrol.com/rss/economy.xml"
+   },
+   {
+    "label": "Google News \u00b7 moneycontrol.com",
+    "url": "https://news.google.com/rss/search?q=site:moneycontrol.com+economy+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "Reuters",
+  "name": "Reuters",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 reuters.com (India)",
+    "url": "https://news.google.com/rss/search?q=site:reuters.com+India+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "ANI",
+  "name": "ANI",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 aninews.in",
+    "url": "https://news.google.com/rss/search?q=site:aninews.in+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "PTI",
+  "name": "PTI",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 ptinews.com",
+    "url": "https://news.google.com/rss/search?q=site:ptinews.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "AIR",
+  "name": "All India Radio News",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 newsonair.gov.in",
+    "url": "https://news.google.com/rss/search?q=site:newsonair.gov.in+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "RBI",
+  "name": "Reserve Bank of India",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "RBI press releases",
+    "url": "https://www.rbi.org.in/pressreleases_rss.xml"
+   },
+   {
+    "label": "Google News \u00b7 rbi.org.in",
+    "url": "https://news.google.com/rss/search?q=site:rbi.org.in+when:3d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "MEA",
+  "name": "Ministry of External Affairs",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 mea.gov.in",
+    "url": "https://news.google.com/rss/search?q=site:mea.gov.in+when:3d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "PRS",
+  "name": "PRS Legislative Research",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 prsindia.org",
+    "url": "https://news.google.com/rss/search?q=site:prsindia.org+when:7d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "DTE",
+  "name": "Down To Earth",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 downtoearth.org.in",
+    "url": "https://news.google.com/rss/search?q=site:downtoearth.org.in+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "ISRO",
+  "name": "ISRO",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 isro.gov.in",
+    "url": "https://news.google.com/rss/search?q=site:isro.gov.in+when:7d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "Insights",
+  "name": "Insights IAS",
+  "tier": "coaching",
+  "feeds": [
+   {
+    "label": "insightsonindia.com feed",
+    "url": "https://www.insightsonindia.com/feed/"
+   },
+   {
+    "label": "Google News \u00b7 insightsonindia.com",
+    "url": "https://news.google.com/rss/search?q=site:insightsonindia.com+when:4d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "Drishti",
+  "name": "Drishti IAS",
+  "tier": "coaching",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 drishtiias.com",
+    "url": "https://news.google.com/rss/search?q=site:drishtiias.com+when:4d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "Vision",
+  "name": "Vision IAS",
+  "tier": "coaching",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 visionias.in",
+    "url": "https://news.google.com/rss/search?q=site:visionias.in+when:4d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ },
+ {
+  "code": "Vajiram",
+  "name": "Vajiram & Ravi",
+  "tier": "coaching",
+  "feeds": [
+   {
+    "label": "Google News \u00b7 vajiramandravi.com",
+    "url": "https://news.google.com/rss/search?q=site:vajiramandravi.com+when:4d&hl=en-IN&gl=IN&ceid=IN:en",
+    "gn": true
+   }
+  ]
+ }
+]
