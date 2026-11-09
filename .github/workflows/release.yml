@@ -50,7 +50,8 @@ jobs:
             # and sometimes the labels around them ("Name: …", "Value: …"): keep only the key and the password
             B64=$(printf '%s' "$KEYSTORE_B64" | grep -oE '[A-Za-z0-9+/]{200,}={0,2}' | awk '{ if (length($0) > length(b)) b = $0 } END { print b }')
             [ -n "$B64" ] || B64=$(printf '%s' "$KEYSTORE_B64" | tr -d ' \t\r\n')
-            PASS=$(printf '%s' "$KEYSTORE_PASS" | tr '\r' '\n' | sed 's/.*Value:[[:space:]]*//' | grep -v -i '^[[:space:]]*\(secret\|name:\)' | tr -d ' \t\n')
+            PASS=$(printf '%s\n' "$KEYSTORE_PASS" | tr '\r' '\n' | grep -m1 'Value:' | sed 's/.*Value:[[:space:]]*//' | tr -d ' \t')
+            [ -n "$PASS" ] || PASS=$(printf '%s\n' "$KEYSTORE_PASS" | tr '\r' '\n' | grep -v -i '^[[:space:]]*\(secret\|name:\|key alias\)' | grep -m1 '[^[:space:]]' | tr -d ' \t')
             echo "::add-mask::$PASS"
             if ! printf '%s' "$B64" | base64 -d > "$RUNNER_TEMP/newscrux.p12" 2>/dev/null; then
               echo "::error::NC_KEYSTORE_B64 is not valid base64 (length ${#B64}; expected 3516). Paste the whole Secret 1 line again."; exit 1
