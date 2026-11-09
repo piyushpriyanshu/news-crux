@@ -3,7 +3,7 @@
 Daily current affairs for UPSC CSE Prelims, on Android. It works fully offline-first; AI is optional.
 
 ## Releases
-Push a tag like `v1.6.1`. GitHub Actions builds, signs and publishes the APK as a release.
+Bump `android:versionName` in `AndroidManifest.xml` (and add `release-notes/vX.Y.Z.md`), then push to `main`. GitHub Actions builds, signs and publishes the APK as release `vX.Y.Z` (a pushed tag `vX.Y.Z` works too).
 The app checks the latest release when it opens and every 6 hours, then offers to install it.
 
 Signing needs two repository secrets: `NC_KEYSTORE_B64` (the keystore, base64) and `NC_KEYSTORE_PASS`.

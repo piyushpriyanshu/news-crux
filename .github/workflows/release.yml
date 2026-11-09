@@ -1,6 +1,7 @@
 name: Build and release
 
-# Push a tag like v1.6.1 to build, sign and publish the APK as a GitHub Release.
+# Bump android:versionName in AndroidManifest.xml and push to main (or push a tag like v1.6.1):
+# the APK is built, signed and published as a GitHub Release.
 # The app checks the latest release on open and every 6 hours.
 on:
   push:
@@ -70,10 +71,13 @@ jobs:
           path: build/NewsCrux-*.apk
 
       - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/v') && env.SIGNED == '1'
+        # A tag push, or a push to main whose versionName has no release yet, publishes that version.
+        if: env.SIGNED == '1' && (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          NOTES="release-notes/$GITHUB_REF_NAME.md"
+          TAG="v$VERSION"
+          if gh release view "$TAG" > /dev/null 2>&1; then echo "Release $TAG already exists; nothing to publish."; exit 0; fi
+          NOTES="release-notes/$TAG.md"
           if [ -f "$NOTES" ]; then ARGS=(--notes-file "$NOTES"); else ARGS=(--generate-notes); fi
-          gh release create "$GITHUB_REF_NAME" "build/NewsCrux-$VERSION.apk" --title "News Crux $VERSION" "${ARGS[@]}"
+          gh release create "$TAG" "build/NewsCrux-$VERSION.apk" --target "$GITHUB_SHA" --title "News Crux $VERSION" "${ARGS[@]}"
