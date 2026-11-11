@@ -11,7 +11,8 @@ import org.json.JSONObject;
 public final class GNews {
     private static final Pattern SG = Pattern.compile("data-n-a-sg=\"([^\"]+)\"");
     private static final Pattern TS = Pattern.compile("data-n-a-ts=\"([^\"]+)\"");
-    private static final Pattern RES = Pattern.compile("garturlres\\\\\",\\s*\\\\\"(https?:[^\\\\\"]+)");
+    /** The real address inside Google's reply. It is escaped twice ("=" arrives as \\u003d), so read up to the closing escaped quote, not the first backslash. */
+    static final Pattern RES = Pattern.compile("garturlres\\\\+\",\\s*\\\\+\"(https?:.*?)\\\\+\"");
 
     private GNews() {
     }
@@ -118,12 +119,12 @@ public final class GNews {
     }
 
     static String unescape(String str) {
-        Matcher matcher = Pattern.compile("\\\\u([0-9a-fA-F]{4})").matcher(str);
+        Matcher matcher = Pattern.compile("\\\\+u([0-9a-fA-F]{4})").matcher(str);
         StringBuffer stringBuffer = new StringBuffer();
         while (matcher.find()) {
             matcher.appendReplacement(stringBuffer, Matcher.quoteReplacement(String.valueOf((char) Integer.parseInt(matcher.group(1), 16))));
         }
         matcher.appendTail(stringBuffer);
-        return stringBuffer.toString().replace("\\/", "/");
+        return stringBuffer.toString().replaceAll("\\\\+/", "/").replaceAll("\\\\+$", "");
     }
 }

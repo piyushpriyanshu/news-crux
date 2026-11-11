@@ -52,6 +52,7 @@ public final class Reader {
             + "share this|comments? \\(|you may also like|recommended for you|trending now|watch:|listen to this|for more news|catch the latest)");
 
     public static Result read(String html, String url, Fetcher f) {
+        if (html == null || html.startsWith("%PDF") || html.indexOf('<') < 0) { Result r = new Result(); r.method = "not-html"; return r; } // a PDF or plain file, not a page
         Html.Doc doc = Html.parse(html);
         List<Result> rs = new ArrayList<Result>();
         rs.add(fromText(doc.ldBody, "ld"));
@@ -64,7 +65,7 @@ public final class Reader {
             Matcher am = AMP.matcher(html);
             if (am.find()) {
                 String au = Html.attr(am.group(), "href");
-                if (au != null && au.length() > 8) {
+                if (au != null && au.length() > 1) {
                     try { au = new java.net.URL(new java.net.URL(url), au).toString(); } catch (Exception e) {}
                     String ab = f.get(au);
                     if (ab != null && ab.length() > 500) {

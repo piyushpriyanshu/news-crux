@@ -126,9 +126,34 @@ public class Probe {
             while (m.find() && cls.size() < 12) { String c = m.group(3).trim(); if (c.length() < 60) cls.put(c, cls.containsKey(c) ? cls.get(c) + 1 : 1); }
             sig.put("classes", new JSONObject(cls));
             o.put("sig", sig);
+            if (!o.has("new") || o.getJSONObject("new").optInt("chars") < 600) o.put("outline", outline(b));
         } catch (Throwable e) {
             try { o.put("error", String.valueOf(e)); } catch (Exception ignored) {}
         }
+        return o;
+    }
+
+    /** Where the text sits on a page we could not read: tag.class of elements with the most direct text (lengths only). */
+    static JSONArray outline(String html) {
+        List<String[]> rows = new ArrayList<String[]>();
+        Matcher m = Pattern.compile("<(div|section|article|td|span|main|font|p)\\b([^>]*)>", Pattern.CASE_INSENSITIVE).matcher(html);
+        while (m.find() && rows.size() < 4000) {
+            String attrs = m.group(2);
+            Matcher c = Pattern.compile("(class|id)=[\"']([^\"']{1,60})").matcher(attrs);
+            String name = m.group(1).toLowerCase() + (c.find() ? "." + c.group(2).trim().replace(' ', '.') : "");
+            int end = html.indexOf('<', m.end());
+            String txt = end > m.end() ? html.substring(m.end(), end).replaceAll("&nbsp;|\\s+", " ").trim() : "";
+            int next = m.end(); int tot = 0; int k = 0;
+            // text up to 30 tags further: a rough measure of the prose inside
+            Matcher t = Pattern.compile(">([^<]{20,})<").matcher(html);
+            t.region(m.end() - 1, Math.min(html.length(), m.end() + 6000));
+            while (t.find() && k++ < 30) tot += t.group(1).trim().length();
+            if (tot > 300) rows.add(new String[]{name, String.valueOf(tot), String.valueOf(txt.length())});
+        }
+        Collections.sort(rows, new Comparator<String[]>() { public int compare(String[] x, String[] y) { return Integer.parseInt(y[1]) - Integer.parseInt(x[1]); } });
+        JSONArray o = new JSONArray();
+        Set<String> seen = new HashSet<String>();
+        for (String[] r : rows) { if (seen.add(r[0]) && o.length() < 12) o.put(r[0] + " " + r[1] + "/" + r[2]); }
         return o;
     }
 
