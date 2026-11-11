@@ -208,6 +208,18 @@ public final class Bridge {
         return "started";
     }
 
+    /** The full PYQ for "year|q" from the app's own data (no file loading in the page). */
+    @JavascriptInterface
+    public String pyqQuestion(String key) {
+        try {
+            app.newsbreak.core.Pyq p = Engine.pyq(this.c);
+            org.json.JSONArray q = p == null ? null : p.question(key);
+            return q == null ? "" : q.toString();
+        } catch (Throwable t) {
+            return "";
+        }
+    }
+
     static volatile org.json.JSONObject pwCache;
 
     /** Your private explanation for a PYQ ("year|q"), imported with Restore; "" when not imported. */

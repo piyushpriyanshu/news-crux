@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="10701"
-    android:versionName="1.7.1"
+    android:versionCode="10702"
+    android:versionName="1.7.2"
     android:compileSdkVersion="34"
     android:compileSdkVersionCodename="14"
     package="app.newscrux"

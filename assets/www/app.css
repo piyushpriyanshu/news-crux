@@ -464,7 +464,9 @@ nav.tabs button.on{color:var(--sel-ink)}
 .pqy{flex:none;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--saffron);background:var(--saffron-soft);padding:1px 6px;border-radius:6px;white-space:nowrap}
 .pqa{color:var(--text);font-weight:500}
 .pqys{flex:none;display:inline-flex;gap:4px;flex-wrap:wrap}
-button.pqo{border:0;font:inherit;font-family:var(--mono);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.pqr.tap{cursor:pointer}
+.pqr.tap .pqa{text-decoration:underline;text-decoration-color:var(--peach-line);text-underline-offset:3px}
+button.pqo{min-height:24px;border:0;font:inherit;font-family:var(--mono);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 button.pqo:focus-visible{outline:2px solid var(--saffron);outline-offset:1px}
 .pqq{font-size:14.5px;line-height:1.55;color:var(--text);margin:0 0 12px}
 .pqopts{display:flex;flex-direction:column;gap:6px}

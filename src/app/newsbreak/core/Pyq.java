@@ -131,6 +131,11 @@ public final class Pyq {
         return right;
     }
 
+    /** Full question for "year|q": [stem, [a, b, c, d], answer index], or null. */
+    public JSONArray question(String key) {
+        return text == null || key == null ? null : text.optJSONArray(key);
+    }
+
     /** "year|q" key of a CSE question with full text, or null. */
     public String key(Row row) {
         String k = row.year + "|" + row.qno;

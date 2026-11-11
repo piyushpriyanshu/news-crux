@@ -8,7 +8,7 @@
     checklog: () => '[]', asset: () => '', bookmarks: () => '[]', saveBookmarks() {}, saveFactbank() {}, sync: () => 'busy', generateAi: () => 'busy',
     setString() {}, setBool() {}, setInt() {}, setLong() {}, openUrl(u) { window.open(u, '_blank'); }, share() {}, copy() {}, setBars() {},
     testNotification() {}, requestNotifPermission() {}, openBatterySettings() {}, openNotifSettings() {}, resetData() {},
-    reported: () => '[]', saveReported() {}, backup() {}, restore() {}, printHtml() {}, openAppSettings() {}, updateInfo: () => '{}', checkUpdate() {}, installUpdate() {}, pwExplain: () => '',
+    reported: () => '[]', saveReported() {}, backup() {}, restore() {}, printHtml() {}, openAppSettings() {}, updateInfo: () => '{}', checkUpdate() {}, installUpdate() {}, pwExplain: () => '', pyqQuestion: () => '',
     shareImage(d) { const w = window.open(); if (w) w.document.write('<img src="' + d + '">'); }, saveImage(d, n) { const a = document.createElement('a'); a.href = d; a.download = n + '.png'; a.click(); return 'ok'; }
   };
   const $ = (s, r) => (r || document).querySelector(s);
@@ -113,7 +113,7 @@
       ev.forEach(e => { const k = String(e[1]).toLowerCase(); if (idx[k] == null) { idx[k] = rows.length; rows.push({ a: e[1], y: [e[0]], q: [e[2] || ''] }); } else if (rows[idx[k]].y.indexOf(e[0]) < 0) { rows[idx[k]].y.push(e[0]); rows[idx[k]].q.push(e[2] || ''); } });
       // a year with the full question saved opens it (question, options, correct answer)
       const yr = (r, j) => r.q[j] ? `<button class="pqy pqo" data-pyq="${esc(r.q[j])}" aria-label="Open the ${r.y[j]} question">’${pad(r.y[j] % 100)}</button>` : `<span class="pqy">’${pad(r.y[j] % 100)}</span>`;
-      const list = rows.map(r => `<div class="pqr"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
+      const list = rows.map(r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}"${r.q.some(Boolean) ? ` data-pyq="${esc(r.q.find(Boolean))}" role="button"` : ''}><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
       return `<div class="pyq"><div class="lab">${ic('target', 'xs')}<span>Asked in Prelims${who ? `: <b>${esc(who)}</b>` : ''}</span></div>${list}</div>`;
     }
     const th = THEME[t.theme];
@@ -842,9 +842,16 @@
     document.head.appendChild(sc);
   }
   function openPyq(key) {
+    const fromApp = N.pyqQuestion ? J(N.pyqQuestion(key), null) : null; // the app hands it over directly
+    if (fromApp) return showPyq(key, fromApp);
     loadPyqText(() => {
       const q = (window.PYQ_TEXT || {})[key];
       if (!q) { toast('Question text not available'); return; }
+      showPyq(key, q);
+    });
+  }
+  function showPyq(key, q) {
+    try {
       const yr = key.split('|')[0];
       const stem = esc(q[0]).replace(/\s((?:\d|I{1,3}|IV|V)\.)\s/g, '<br>$1 ');
       const opts = (q[1] || []).map((o, i) => `<div class="pqopt${i === q[2] ? ' ok' : ''}"><span class="pql">${'abcd'[i]}</span><span>${esc(o)}</span>${i === q[2] ? `<span class="pqk">${ic('check', 'xs')}Answer</span>` : ''}</div>`).join('');
@@ -853,7 +860,7 @@
       const paras = t => esc(t).split(/\n+/).filter(Boolean).map(x => `<p>${x}</p>`).join('');
       const exHtml = ex && ex.e ? `<div class="pqx"><div class="pqxh">Explanation</div>${paras(ex.e)}</div>${ex.h ? `<details class="pqxd"><summary>Super hint</summary>${paras(ex.h)}</details>` : ''}${ex.x ? `<details class="pqxd"><summary>Extra edge</summary>${paras(ex.x)}</details>` : ''}` : '';
       openSheet(`<h3>UPSC Prelims ${esc(yr)}</h3><div class="pqq">${stem}</div><div class="pqopts">${opts}</div>${exHtml}<div class="note">Answer as per the UPSC key.</div>`);
-    });
+    } catch (err) { console.log('pyq open failed: ' + err); toast('Could not open the question'); }
   }
   function openSheet(html) { $('#sheet').innerHTML = '<div class="grab"></div>' + html; $('#sheet').classList.add('on'); $('#scrim').classList.add('on'); S.sheetOpen = true; }
   function closeSheet() { $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.sheetOpen = false; }
