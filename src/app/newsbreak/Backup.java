@@ -126,8 +126,8 @@ public final class Backup {
         }
         SyncJobService.schedule(c, true);
         DeliverReceiver.arm(c);
-        if (pwN > 0 && prefsN == 0 && filesN == 0 && edN == 0) return "PYQ explanations added for " + pwN + " questions";
-        return "Restored " + prefsN + " settings, " + filesN + " lists and " + edN + " editions" + (pwN > 0 ? "; explanations for " + pwN + " questions" : "");
+        if (pwN > 0 && prefsN == 0 && filesN == 0 && edN == 0) return "Explanations added for " + pwN + " PYQs";
+        return "Restored " + edN + " editions" + (pwN > 0 ? " and " + pwN + " explanations" : ", " + filesN + " lists and settings");
     }
 
     static JSONArray mergeBy(JSONArray jSONArray, JSONArray jSONArray2, String str) throws Exception {

@@ -94,7 +94,12 @@
     return Math.floor(s / 86400) + 'd ago';
   }
   function keyParts(k) { const [y, m, d] = k.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d)); return { d, mon: MON[m - 1], wd: WD[dt.getUTCDay()], y }; }
-  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2600); }
+  function short(msg) { // a pop-up is two short lines at most: drop the technical tail of long messages
+    let m = String(msg == null ? '' : msg).trim();
+    if (m.length > 64) { const k = m.search(/(: |; | — | \()/); if (k >= 12) m = m.slice(0, k); }
+    return m.length > 80 ? m.slice(0, 78).replace(/\s+\S*$/, '') + '…' : m;
+  }
+  function toast(msg) { const t = $('#toast'); t.textContent = short(msg); t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2600); }
   const FIG = /(₹\s?[\d][\d,.]*(?:\s?(?:lakh crore|crore|lakh|bn|mn|tn|k))?|\$\s?[\d][\d,.]*(?:\s?(?:bn|mn|tn|billion|million|trillion))?|\b\d[\d,.]*\s?(?:%|crore|lakh|bn|mn|tn|km|sq km|MW|GW|GWh|ha|tonnes?|MT|years?|yrs|days?|months?|members|countries|states|seats|judges)(?![a-z])|\b(?:1[89]|20)\d\d(?:[-–]\d{2,4})?\b|\b\d+[-–]\d+\b|\bArts?\s?\d+[A-Z]?(?:\(\d+\))?|\b\d+(?:st|nd|rd|th)\b|\b\d[\d,.]*\b)/g;
   const figs = s => esc(s).replace(FIG, '<span class="fig">$1</span>');
   function gsClass(gs) { gs = gs || ''; if (gs.startsWith('GS-I/')) return 'gs1'; if (gs.startsWith('GS-II/')) return 'gs2'; if (gs.startsWith('GS-III/')) return 'gs3'; if (gs.startsWith('GS-IV')) return 'gs4'; return 'gsm'; }
@@ -948,7 +953,7 @@
       else { el.dataset.armed = '1'; el.style.color = 'var(--red)'; toast('Tap ✕ again to delete'); setTimeout(() => { delete el.dataset.armed; el.style.color = ''; }, 2500); }
       return;
     }
-    if (d.pyq) { if (d.pyq === '-') toast('Full question not saved for this one (CDS/CAPF or not in the paper set)'); else { const art = el.closest('article.card'); openPyq(d.pyq, art ? art.dataset.id : null); } return; }
+    if (d.pyq) { if (d.pyq === '-') toast('No full question saved for this one'); else { const art = el.closest('article.card'); openPyq(d.pyq, art ? art.dataset.id : null); } return; }
     if (d.pqa !== undefined) { pqAnswer(Number(d.pqa)); return; }
     if (d.pqs !== undefined) { const p = S.pq; if (p && p.pick == null) { p.out[d.pqs] = !p.out[d.pqs]; showPyq(true); } return; }
     if (d.pqn) { const p = S.pq; if (p) { p.i = Math.max(0, Math.min(p.set.length - 1, p.i + Number(d.pqn))); loadPq(); } return; }
@@ -1003,7 +1008,7 @@
         const v = ($('#setupkey').value || '').replace(/\s+/g, '');
         if (v.length < 16) { toast('That key looks too short'); break; }
         const det = N.detectProvider ? N.detectProvider(v) : '';
-        if (!det) { toast('Could not recognise this key — pick its provider in Settings'); S.setupOpen = false; openPage(settingsPage()); break; }
+        if (!det) { toast('Unknown key. Pick its provider in Settings'); S.setupOpen = false; openPage(settingsPage()); break; }
         N.setString('aiProvider', det); N.setString('key_' + det, v);
         const ord = (S.boot.settings.order || []).filter(p => p !== det); ord.push(det); N.setString('aiOrder', ord.join(','));
         S.aitest = '<div class="tl">Testing ' + esc(((S.boot.settings.providers || {})[det] || { name: det }).name) + ' key…</div>';
@@ -1128,7 +1133,7 @@
           S.updBusy = false;
           if (ev.result === 'perm') toast('Allow installs from News Crux, then tap Install again');
           else if (ev.result === 'none') toast('You already have the latest version');
-          else if (ev.result !== 'ok') toast(ev.result || 'Update failed');
+          else if (ev.result !== 'ok') toast(String(ev.result || '').indexOf('Update failed') === 0 ? 'Update failed. Try again in Settings' : (ev.result || 'Update failed'));
         } else if (ev.newer && S.updToast !== ev.latest) { S.updToast = ev.latest; toast('News Crux ' + ev.latest + ' is out. Install it in Settings'); }
         else if (!ev.newer && S.pageOpen && !S.subPage) toast(ev.error ? 'Could not check for updates' : 'You have the latest version');
         if (S.pageOpen && !S.subPage && !S.setupOpen) openPage(settingsPage());
@@ -1137,7 +1142,7 @@
         const box = $('#aitest'); if (box) box.innerHTML = S.aitest;
         toast(ev.ok ? 'Key works' : 'Key test failed — see details');
       } else if (ev.type === 'aicard') {
-        if (ev.state === 'done') { delete S.cuBusy[ev.id]; delete S.cuErr[ev.id]; toast(ev.chk === 'web' ? 'Card written and fact-checked on the web' : 'Card written and checked against the sources'); }
+        if (ev.state === 'done') { delete S.cuBusy[ev.id]; delete S.cuErr[ev.id]; toast(ev.chk === 'web' ? 'Card written and checked on the web' : 'Card written and checked'); }
         else if (ev.state === 'error') { delete S.cuBusy[ev.id]; S.cuErr[ev.id] = ev.error || 'The card could not be written.'; }
         else if (ev.state === 'busy') { delete S.cuBusy[ev.id]; toast('Another card is being written; try again in a moment'); }
         if (ev.state !== 'start' && S.tab === 'edition' && S.date === ev.date && !S.pageOpen) { S.ed = null; render({ keepScroll: true }); }
@@ -1146,7 +1151,7 @@
         else if (ev.state === 'stage') { S.aiStage = ev.stage; const box = $('#checked'); if (box && S.tab === 'edition' && S.date === ev.date && !S.pageOpen) render({ keepScroll: true }); }
         else {
           S.aiBusy = null; S.sheetCache = null; loadBoot();
-          if (ev.state === 'done') { if (ev.cards) toast(ev.verified ? 'Cards rewritten and fact-checked on the web' : ev.crossChecked ? 'Cards rewritten and checked against the sources' : 'Cards rewritten'); }
+          if (ev.state === 'done') { if (ev.cards) toast(ev.verified ? 'Cards rewritten and checked on the web' : ev.crossChecked ? 'Cards rewritten and checked' : 'Cards rewritten'); }
           else toast('AI pass failed. Details are under Checked.');
           S.ed = null; if (S.tab === 'edition' && S.date === ev.date) render({ keepScroll: true });
         }
