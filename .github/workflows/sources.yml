@@ -41,3 +41,18 @@ jobs:
           git -c user.name=news-crux-check -c user.email=check@users.noreply.github.com add . 
           git -c user.name=news-crux-check -c user.email=check@users.noreply.github.com commit -qm "Source check $(date -u +%F' '%H:%M)"
           git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" probe-report
+      - name: Tell me if something broke
+        if: always() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [ -f probe/report.json ] || { echo "No report"; exit 0; }
+          if python3 tools/probe/alert.py; then BAD=0; else BAD=1; fi
+          N=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "Source check in:title" --json number --jq '.[0].number // empty')
+          if [ "$BAD" = 1 ]; then
+            if [ -n "$N" ]; then gh issue comment "$N" --repo "$GITHUB_REPOSITORY" --body-file probe/problems.md
+            else gh issue create --repo "$GITHUB_REPOSITORY" --title "Source check: problems found" --body-file probe/problems.md; fi
+          elif [ -n "$N" ]; then
+            gh issue close "$N" --repo "$GITHUB_REPOSITORY" --comment "All sources answered again on $(date -u +%F)."
+          fi
+

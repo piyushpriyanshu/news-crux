@@ -80,6 +80,7 @@ public class Probe {
             List<RssParser.Raw> raws = RssParser.parse(r.body, new RssParser.ParserFactory() {
                 public org.xmlpull.v1.XmlPullParser create() { return new org.kxml2.io.KXmlParser(); }
             });
+            o.put("raw", raws.size());
             List<JSONObject> items = RssParser.normalise(raws, code, "probe", gn, System.currentTimeMillis());
             if (spec.has("keep") || spec.has("max")) { o.put("beforeFilter", items.size()); items = keepOnly(items, spec, System.currentTimeMillis()); }
             o.put("items", items.size());

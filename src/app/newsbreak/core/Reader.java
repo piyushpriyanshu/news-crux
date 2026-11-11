@@ -42,7 +42,7 @@ public final class Reader {
             + "articlebodycontent|article-body|articlebody|article_body|article__body|article-content|article__content|articlecontent|story-body|storybody|story_body|"
             + "story-details|storydetails|storyDetails|story-content|story_content|full-details|fullstory|artText|art_text|entry-content|post-content|post_content|"
             + "td-post-content|content-body|detail-body|detail_body|news-detail|newsdetail|article-text|main-content|innner-page-main-about-us-content-right-part|"
-            + "ReleaseText|releaseText|pressrelease|press-release|_s30J|clearfix\\s+article|tablebg|tablecontent\\d?|news-bg|news-description|left-content|pageContent|body_content)\\b[^\"']*[\"'])[^>]*>", Pattern.CASE_INSENSITIVE);
+            + "ReleaseText|releaseText|pressrelease|press-release|_s30J|clearfix\\s+article|tablebg|tablecontent\\d?|news-bg|news-description|left-content|pageContent|contentdiv|body_content)\\b[^\"']*[\"'])[^>]*>", Pattern.CASE_INSENSITIVE);
     static final Pattern AMP = Pattern.compile("<link[^>]+rel=[\"']amphtml[\"'][^>]*>", Pattern.CASE_INSENSITIVE);
     static final Pattern WPJSON = Pattern.compile("<link[^>]+type=[\"']application/json[\"'][^>]*href=[\"']([^\"']+/wp-json/wp/v2/(?:posts|pages)/\\d+)[\"']|<link[^>]+href=[\"']([^\"']+/wp-json/wp/v2/(?:posts|pages)/\\d+)[\"'][^>]*type=[\"']application/json[\"']", Pattern.CASE_INSENSITIVE);
     static final Pattern NEXT = Pattern.compile("<script[^>]+id=[\"']__NEXT_DATA__[\"'][^>]*>(.*?)</script>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);

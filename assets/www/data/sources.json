@@ -219,6 +219,12 @@
    {
     "label": "Mint economy",
     "url": "https://www.livemint.com/rss/economy"
+   },
+   {
+    "label": "Mint news sitemap",
+    "url": "https://www.livemint.com/sitemap/today.xml",
+    "keep": "livemint\\.com/(economy|news/india|politics|news/world|industry)/",
+    "max": 60
    }
   ]
  },

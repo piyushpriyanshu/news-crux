@@ -41,6 +41,22 @@ public class ReaderTest {
         String reply = ")]}'\n\n[[\"wrb.fr\",\"Fbv4je\",\"[\\\"garturlres\\\",\\\"https://www.pib.gov.in/PressReleaseDetail.aspx?PRID\\\\u003d2335185\\\\u0026reg\\\\u003d3\\\",1]\",null,null,null,\"generic\"]]";
         java.util.regex.Matcher m = GNewsAccess.res().matcher(reply);
         ok(m.find() && GNewsAccess.unescape(m.group(1)).equals("https://www.pib.gov.in/PressReleaseDetail.aspx?PRID=2335185&reg=3"), "Google News address intact: " + (m.find(0) ? GNewsAccess.unescape(m.group(1)) : "no match"));
+        // 8. figures: two outlets or an official source
+        java.util.List<org.json.JSONObject> its = new java.util.ArrayList<org.json.JSONObject>();
+        its.add(new org.json.JSONObject().put("s", "TH").put("t", "Cabinet clears mineral mission").put("d", "Outlay of Rs 16,300 crore over seven years; 1,200 blocks").put("xb", "PSUs to add 5.5 per cent output."));
+        its.add(new org.json.JSONObject().put("s", "PIB").put("t", "Cabinet approves National Critical Mineral Mission").put("d", "with an outlay of ₹16,300 crore").put("xb", "Target: 30 GW by 2030."));
+        its.add(new org.json.JSONObject().put("s", "HT").put("t", "Mission approved").put("d", "5.5% higher output expected, 1,200 blocks"));
+        its.add(new org.json.JSONObject().put("s", "Insights").put("t", "Mineral mission").put("d", "Rs 99 crore for training"));
+        org.json.JSONObject fx = GNewsAccess.figureSources(its);
+        ok(fx.optString("₹16300crore").contains("TH") && fx.optString("₹16300crore").contains("PIB"), "₹16,300 crore = Rs 16,300 crore across TH and PIB: " + fx);
+        ok(fx.has("5.5%"), "5.5 per cent = 5.5% (TH, HT)");
+        ok(fx.has("30gw"), "official-only figure kept (PIB)");
+        ok(!fx.has("₹99crore"), "coaching alone does not confirm");
+        // 9. news sitemap entries
+        String sm = "<urlset xmlns:news='x'><url><loc>https://www.thehindu.com/news/national/a.ece</loc><news:news><news:publication_date>2026-11-11T10:00:00+05:30</news:publication_date><news:title><![CDATA[Cabinet clears mission]]></news:title></news:news></url></urlset>";
+        java.util.List<RssParser.Raw> raws = GNewsAccess.sitemap(sm);
+        ok(raws.size() == 1 && raws.get(0).title.equals("Cabinet clears mission") && raws.get(0).link.endsWith("a.ece") && raws.get(0).date.startsWith("2026-11-11"), "sitemap entry read");
+        ok(GNewsAccess.devanagari("सशक्त और अधिक समृद्ध भारत") && !GNewsAccess.devanagari("Cabinet approves PM-KUSUM (कुसुम) extension"), "Hindi-only headline detected, mixed English kept");
         System.out.println("ReaderTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);
     }

@@ -100,10 +100,10 @@
     return m.length > 80 ? m.slice(0, 78).replace(/\s+\S*$/, '') + '…' : m;
   }
   function toast(msg) { const t = $('#toast'); t.textContent = short(msg); t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2600); }
-  const FIG = /(₹\s?[\d][\d,.]*(?:\s?(?:lakh crore|crore|lakh|bn|mn|tn|k))?|\$\s?[\d][\d,.]*(?:\s?(?:bn|mn|tn|billion|million|trillion))?|\b\d[\d,.]*\s?(?:%|crore|lakh|bn|mn|tn|km|sq km|MW|GW|GWh|ha|tonnes?|MT|years?|yrs|days?|months?|members|countries|states|seats|judges)(?![a-z])|\b(?:1[89]|20)\d\d(?:[-–]\d{2,4})?\b|\b\d+[-–]\d+\b|\bArts?\s?\d+[A-Z]?(?:\(\d+\))?|\b\d+(?:st|nd|rd|th)\b|\b\d[\d,.]*\b)/g;
+  const FIG = /(₹\s?[\d][\d,.]*(?:\s?(?:lakh crore|crore|lakh|bn|mn|tn|k))?|\$\s?[\d][\d,.]*(?:\s?(?:bn|mn|tn|billion|million|trillion))?|\b\d[\d,.]*\s?(?:%|per ?cent|crore|lakh|bn|mn|tn|km|sq km|MW|GW|GWh|ha|tonnes?|MT|years?|yrs|days?|months?|members|countries|states|seats|judges)(?![a-z])|\b(?:1[89]|20)\d\d(?:[-–]\d{2,4})?\b|\b\d+[-–]\d+\b|\bArts?\s?\d+[A-Z]?(?:\(\d+\))?|\b\d+(?:st|nd|rd|th)\b|\b\d[\d,.]*\b)/g;
   // a figure two outlets (or an official release) agree on gets a small tick; fx = {figure key: "TH,PIB"} from the app
   const figKey = f => String(f).toLowerCase().replace(/rs\.?\s?/g, '₹').replace(/per ?cent/g, '%').replace(/billion/g, 'bn').replace(/million/g, 'mn').replace(/trillion/g, 'tn').replace(/hectares?/g, 'ha').replace(/tonnes/g, 'tonne').replace(/[\s,]/g, '').replace(/\.$/, '');
-  const figs = (s, fx) => esc(s).replace(FIG, (m, g) => { const by = fx && fx[figKey(m)]; return by ? `<span class="fig fok">${g}<span class="fv" aria-label="checked in ${esc(by.replace(/,/g, ', '))}">✓</span></span>` : `<span class="fig">${g}</span>`; });
+  const figs = (s, fx) => esc(s).replace(FIG, (m, g) => { const k = figKey(m), by = fx && (fx[k] || fx['₹' + k] || fx[k.replace(/^[₹$]/, '')]); return by ? `<span class="fig fok">${g}<span class="fv" aria-label="checked in ${esc(by.replace(/,/g, ', '))}">✓</span></span>` : `<span class="fig">${g}</span>`; });
   function gsClass(gs) { gs = gs || ''; if (gs.startsWith('GS-I/')) return 'gs1'; if (gs.startsWith('GS-II/')) return 'gs2'; if (gs.startsWith('GS-III/')) return 'gs3'; if (gs.startsWith('GS-IV')) return 'gs4'; return 'gsm'; }
   function gsPaper(gs) { const m = /^GS-(I{1,3}|IV)\//.exec(gs || ''); return m ? 'GS-' + m[1] : 'Misc'; }
 
