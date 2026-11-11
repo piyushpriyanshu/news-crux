@@ -25,12 +25,18 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Read every source
-        run: mkdir -p probe && ./tools/probe/run.sh > probe/stdout.txt 2>&1 || (cat probe/stdout.txt; exit 1)
+        run: |
+          mkdir -p probe
+          if ! ./tools/probe/run.sh > probe/stdout.txt 2>&1; then
+            tail -c 3000 probe/stdout.txt | grep -v '^\s*$' | tail -15 | while IFS= read -r l; do echo "::error::$l"; done
+            exit 1
+          fi
       - name: Save the report
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p out && cp probe/report.json probe/report.md out/
+          mkdir -p out && cp probe/report.* probe/stdout.txt out/ 2>/dev/null || true
           cd out && git init -q && git checkout -q -b probe-report
           git -c user.name=news-crux-check -c user.email=check@users.noreply.github.com add . 
           git -c user.name=news-crux-check -c user.email=check@users.noreply.github.com commit -qm "Source check $(date -u +%F' '%H:%M)"
