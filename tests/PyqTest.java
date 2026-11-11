@@ -66,6 +66,21 @@ public class PyqTest {
             ok(got == rows.size(), "every year opens its own question (" + got + "/" + rows.size() + "): " + head);
             ok(!p.addKeys(t, kb), "second run adds nothing");
         }
+        // CDS / CAPF: full questions with exam and paper (since 1.9.1)
+        p.addMore(r("pyq_more.js"));
+        String mt = r("pyq_more_text.js");
+        p.addMoreText(mt);
+        JSONObject more = new JSONObject(mt.substring(mt.indexOf('{'), mt.lastIndexOf('}') + 1));
+        boolean mshape = more.length() > 1500;
+        for (Iterator<String> it = more.keys(); it.hasNext(); ) {
+            String k = it.next(); JSONArray q = more.getJSONArray(k);
+            if (!k.matches("20\\d\\d\\|(CDS(I|II)?|CAPF)-\\d+-\\d+") || q.getJSONArray(1).length() != 4 || q.getInt(2) < 0 || q.getInt(2) > 3 || !q.getString(4).matches("(CDS( \\((I|II)\\))?|CAPF) 20\\d\\d")) { mshape = false; System.out.println("  bad CDS/CAPF entry " + k); break; }
+        }
+        ok(mshape, "CDS/CAPF questions: " + more.length() + ", each with 4 options, answer and exam label");
+        List<Pyq.Row> vk = p.matchTopic("Vikramkhol Cave rock shelter in Odisha", "prehistoric rock art", "GS-I/History", new LinkedHashSet<String>(), 4);
+        boolean cds = false;
+        for (Pyq.Row x : vk) if (x.exam != null && p.key(x) != null && p.question(p.key(x)).length() == 5) cds = true;
+        ok(cds, "a CDS question opens in full: " + Pyq.compact(vk, null));
         System.out.println("PASS " + pass + "  FAIL " + fail);
         if (fail > 0) System.exit(1);
     }

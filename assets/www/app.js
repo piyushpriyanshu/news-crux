@@ -789,7 +789,7 @@
         <div class="set" data-act="rules"><div class="t"><b>Your master prompt</b><small>The locked format and rules every edition follows.</small></div>${ic('chev', 'sm')}</div>
         <div class="set" data-act="checklog"><div class="t"><b>Pre-send check log</b><small>Rule trips by date (pattern flagged after 3 in a row).</small></div>${ic('chev', 'sm')}</div>
       </div>
-      <div class="foot">News Crux ${esc(S.boot.version || '')} · ${PYQ.length.toLocaleString("en-IN")} CSE (1995–2026) + 1,668 CDS/CAPF PYQs · ${KB.entities.length} verified profiles · ${(window.SOURCES || []).length} sources</div>
+      <div class="foot">News Crux ${esc(S.boot.version || '')} · 3,726 CSE (1995–2026) + 1,740 CDS/CAPF PYQs (1,612 with full questions) · ${KB.entities.length} verified profiles · ${(window.SOURCES || []).length} sources</div>
     </div>`;
   }
   function updRow() {
@@ -901,7 +901,7 @@
         const res = p.pick === -1 ? `<div class="pqres">Answer: (${'abcd'[ans]})</div>` : p.pick === ans ? `<div class="pqres ok">Correct.</div>` : `<div class="pqres bad">Not this one. The answer is (${'abcd'[ans]}).</div>`;
         const ex = J(N.pwExplain ? N.pwExplain(key) : '', null); // your own explanation file (imported with Restore), if any
         const paras = x => esc(x).split(/\n+/).filter(Boolean).map(y => `<p>${y}</p>`).join('');
-        const exHtml = ex && ex.e ? `<div class="pqx"><div class="pqxh">Explanation</div>${paras(ex.e)}</div>${ex.h ? `<details class="pqxd"><summary>Super hint</summary>${paras(ex.h)}</details>` : ''}${ex.x ? `<details class="pqxd"><summary>Extra edge</summary>${paras(ex.x)}</details>` : ''}` : '<div class="note">Answer as per the UPSC key.</div>';
+        const exHtml = ex && ex.e ? `<div class="pqx"><div class="pqxh">Explanation</div>${paras(ex.e)}</div>${ex.h ? `<details class="pqxd"><summary>Super hint</summary>${paras(ex.h)}</details>` : ''}${ex.x ? `<details class="pqxd"><summary>Extra edge</summary>${paras(ex.x)}</details>` : ''}` : `<div class="note">${q[4] ? 'Answer as given in the PW solutions, not yet checked against the UPSC answer key.' : 'Answer as per the UPSC key.'}</div>`;
         after = res + exHtml;
       } else {
         after = `<div class="pqhelp"><span>Tap an option to answer. Use ${ic('x', 'xs')} to rule one out first.</span><button class="btn ghost sm" data-pqa="-1">Show answer</button></div>`;
@@ -914,7 +914,8 @@
       const lastHtml = last && !done ? `<div class="pqlast">Last try: ${last[0] ? 'right' : 'missed'}, ${esc(ago(last[1]))}</div>` : '';
       const st = keepScroll ? $('#sheet').scrollTop : 0;
       const lost = q[3] === 1 ? '<div class="pqlost">Part of this question (its list or table) did not come through from the source paper. You can still try it, or tap Show answer.</div>' : '';
-      openSheet(`<h3>UPSC Prelims ${esc(yr)}, question ${esc(qn)}</h3>${ctx.length ? `<div class="pqc">${ctx.join('<br>')}</div>` : ''}${lastHtml}<div class="pqq">${stem}</div>${lost}<div class="pqopts">${opts}</div>${after}${nav}`);
+      const title = q[4] ? `UPSC ${esc(q[4])}` : `UPSC Prelims ${esc(yr)}, question ${esc(qn)}`; // CDS / CAPF carry their exam and paper
+      openSheet(`<h3>${title}</h3>${ctx.length ? `<div class="pqc">${ctx.join('<br>')}</div>` : ''}${lastHtml}<div class="pqq">${stem}</div>${lost}<div class="pqopts">${opts}</div>${after}${nav}`);
       $('#sheet').scrollTop = st;
       if (done) { const r = $('#sheet .pqres'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
     } catch (err) { console.log('pyq open failed: ' + err); toast('Could not open the question'); }

@@ -6,7 +6,7 @@ python3 - <<'PY'
 import json
 for f in ("assets/www/data/kb.json", "assets/www/data/sources.json"):
     json.load(open(f, encoding="utf-8"))
-for f, var in (("assets/www/data/kb.js", "window.KB="), ("assets/www/data/pyq.js", "window.PYQ="), ("assets/www/data/pyq_more.js", "window.PYQ_MORE="), ("assets/www/data/pyq_text.js", "window.PYQ_TEXT=")):
+for f, var in (("assets/www/data/kb.js", "window.KB="), ("assets/www/data/pyq.js", "window.PYQ="), ("assets/www/data/pyq_more.js", "window.PYQ_MORE="), ("assets/www/data/pyq_text.js", "window.PYQ_TEXT="), ("assets/www/data/pyq_more_text.js", "window.PYQ_MORE_TEXT=")):
     s = open(f, encoding="utf-8").read().strip()
     assert s.startswith(var), f
     json.loads(s[len(var):].rstrip(";"))

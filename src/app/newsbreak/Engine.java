@@ -119,6 +119,7 @@ public final class Engine {
                 try {
                     Pyq p = new Pyq(Store.asset(context, "www/data/pyq.js"), Store.asset(context, "www/data/pyq_text.js"), kb(context));
                     try { p.addMore(Store.asset(context, "www/data/pyq_more.js")); } catch (Throwable t) {} // CDS / CAPF: optional
+                    try { p.addMoreText(Store.asset(context, "www/data/pyq_more_text.js")); } catch (Throwable t) {} // their full questions
                     pyq = p;
                 } catch (Throwable th) {
                     pyqFailed = true;

@@ -140,7 +140,12 @@ public final class Pyq {
         JSONArray ev = t == null ? null : t.optJSONArray("pyqEv");
         if (ev == null || text == null) return false;
         boolean missing = false;
-        for (int i = 0; i < ev.length(); i++) { JSONArray e = ev.optJSONArray(i); if (e != null && e.length() < 3) missing = true; }
+        for (int i = 0; i < ev.length(); i++) {
+            JSONArray e = ev.optJSONArray(i);
+            if (e == null) continue;
+            if (e.length() == 3 && e.optString(2).isEmpty() && e.optString(1).matches(".*\\((CDS|CAPF)\\)$")) e.remove(2); // CDS / CAPF questions now have full text: look again
+            if (e.length() < 3) missing = true;
+        }
         if (!missing) return false;
         Set<String> ids = new LinkedHashSet<String>();
         String[][] kinds = {{"ents", "e:"}, {"maps", "m:"}};
@@ -151,6 +156,10 @@ public final class Pyq {
         for (int i = 0; bl != null && i < bl.length(); i++) b.append(bl.optString(i)).append(' ');
         List<Row> cand = new ArrayList<Row>(matchTopic(this.rows, this.df, Foreign.mask(t.optString("head")), Foreign.mask(b.toString()), t.optString("gs"), ids, 12));
         for (Row r : this.rows) for (String id : ids) if (r.ids.contains(id) && !cand.contains(r)) { cand.add(r); break; }
+        if (!this.rows2.isEmpty()) {
+            cand.addAll(matchTopic(this.rows2, this.df2, Foreign.mask(t.optString("head")), Foreign.mask(b.toString()), t.optString("gs"), ids, 12));
+            for (Row r : this.rows2) for (String id : ids) if (r.ids.contains(id) && !cand.contains(r)) { cand.add(r); break; }
+        }
         boolean added = false;
         Set<String> used = new HashSet<String>();
         for (int i = 0; i < ev.length(); i++) {
@@ -160,7 +169,7 @@ public final class Pyq {
             String asp = e.optString(1);
             Row hit = null;
             for (Row r : cand) {
-                if (r.year != year || r.exam != null || used.contains(r.year + "|" + r.qno)) continue;
+                if (r.year != year || used.contains(r.year + "|" + r.qno)) continue;
                 String a = aspect(r);
                 if (a.equalsIgnoreCase(asp) || sameAs(a, asp) || "asked".equals(asp)) { hit = r; break; }
             }
@@ -181,10 +190,21 @@ public final class Pyq {
     /** "year|q" key of a CSE question with full text, or null. */
     public String key(Row row) {
         String k = row.year + "|" + row.qno;
-        return row.exam == null && text != null && text.has(k) ? k : null;
+        return text != null && text.has(k) ? k : null; // CSE and, since 1.9.1, CDS / CAPF
     }
 
     /** Adds CDS / CAPF rows ([year, q, subject, topic, theme, stem, exam]). */
+    /** Full CDS / CAPF questions: "year|exam-id" → [stem, options, answer, flag, "CDS (II) 2023"]. Same map as the CSE text. */
+    public void addMoreText(String js) throws Exception {
+        String t = js.trim();
+        int a = t.indexOf('{'), b = t.lastIndexOf('}');
+        if (a < 0 || b <= a) return;
+        JSONObject m = new JSONObject(t.substring(a, b + 1));
+        if (this.text == null) this.text = new JSONObject();
+        java.util.Iterator<String> it = m.keys();
+        while (it.hasNext()) { String k = it.next(); if (!this.text.has(k)) this.text.put(k, m.get(k)); }
+    }
+
     public void addMore(String str) throws Exception {
         load(str, this.rows2, this.df2, "?");
     }
