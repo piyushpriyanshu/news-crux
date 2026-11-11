@@ -1,26 +1,69 @@
 {
   "feeds": [
-    {"code": "MEA", "url": "https://www.mea.gov.in/rss/press-releases.xml"},
-    {"code": "MEA", "url": "https://www.mea.gov.in/press-releases.htm?51/Press_Releases"},
-    {"code": "PRS", "url": "https://prsindia.org/rss.xml"},
-    {"code": "PRS", "url": "https://prsindia.org/billtrack/rss"},
-    {"code": "DTE", "url": "https://www.downtoearth.org.in/rss/latest-news"},
-    {"code": "DTE", "url": "https://www.downtoearth.org.in/feed"},
-    {"code": "AIR", "url": "https://www.newsonair.gov.in/feed/"},
-    {"code": "AIR", "url": "https://newsonair.gov.in/rss/national-news.xml"},
-    {"code": "ISRO", "url": "https://www.isro.gov.in/rss.xml"},
-    {"code": "Vision", "url": "https://visionias.in/current-affairs/news-today/feed"},
-    {"code": "Drishti", "url": "https://www.drishtiias.com/feed"},
-    {"code": "Vajiram", "url": "https://vajiramandravi.com/current-affairs/feed/"},
-    {"code": "IE", "url": "https://indianexpress.com/section/upsc-current-affairs/feed/"},
-    {"code": "TH", "url": "https://www.thehindu.com/sci-tech/agriculture/feeder/default.rss"},
-    {"code": "HT", "url": "https://www.hindustantimes.com/feeds/rss/environment/rssfeed.xml"},
-    {"code": "Mint", "url": "https://www.livemint.com/rss/economy"},
-    {"code": "DD", "url": "https://ddnews.gov.in/en/feed/"},
-    {"code": "Sansad", "url": "https://sansad.in/rss/ls/bulletins"},
-    {"code": "PIB", "url": "https://www.pib.gov.in/RssMain.aspx?ModId=8&Lang=1&Regid=3"}
+    {
+      "code": "DTE",
+      "url": "https://www.downtoearth.org.in/rss/latest-news"
+    },
+    {
+      "code": "DTE",
+      "url": "https://www.downtoearth.org.in/feed"
+    },
+    {
+      "code": "Vajiram",
+      "url": "https://vajiramandravi.com/current-affairs/feed/"
+    },
+    {
+      "code": "TH",
+      "url": "https://www.thehindu.com/sci-tech/agriculture/feeder/default.rss"
+    },
+    {
+      "code": "HT",
+      "url": "https://www.hindustantimes.com/feeds/rss/environment/rssfeed.xml"
+    },
+    {
+      "code": "Mint",
+      "url": "https://www.livemint.com/rss/economy"
+    },
+    {
+      "code": "PIB",
+      "url": "https://www.pib.gov.in/RssMain.aspx?ModId=8&Lang=1&Regid=3"
+    },
+    {
+      "code": "PIB",
+      "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=2&Regid=3"
+    },
+    {
+      "code": "PIB",
+      "url": "https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3&reg=3&lang=1"
+    },
+    {
+      "code": "PIB",
+      "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1"
+    },
+    {
+      "code": "Mint",
+      "url": "https://www.livemint.com/sitemap/today.xml",
+      "max": 60
+    }
   ],
-  "robots": ["www.thehindu.com", "indianexpress.com", "www.hindustantimes.com", "timesofindia.indiatimes.com", "economictimes.indiatimes.com",
-    "www.business-standard.com", "www.moneycontrol.com", "www.downtoearth.org.in", "www.newsonair.gov.in", "www.pib.gov.in",
-    "www.insightsonindia.com", "www.drishtiias.com", "visionias.in", "vajiramandravi.com", "www.mea.gov.in", "prsindia.org", "www.isro.gov.in", "www.livemint.com"]
+  "robots": [
+    "www.thehindu.com",
+    "indianexpress.com",
+    "www.hindustantimes.com",
+    "timesofindia.indiatimes.com",
+    "economictimes.indiatimes.com",
+    "www.business-standard.com",
+    "www.moneycontrol.com",
+    "www.downtoearth.org.in",
+    "www.newsonair.gov.in",
+    "www.pib.gov.in",
+    "www.insightsonindia.com",
+    "www.drishtiias.com",
+    "visionias.in",
+    "vajiramandravi.com",
+    "www.mea.gov.in",
+    "prsindia.org",
+    "www.isro.gov.in",
+    "www.livemint.com"
+  ]
 }

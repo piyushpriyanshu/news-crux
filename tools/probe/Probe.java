@@ -87,6 +87,8 @@ public class Probe {
             for (JSONObject it : items) { newest = Math.max(newest, it.optLong("p")); desc += it.optString("d").length(); }
             o.put("newestHours", newest == 0 ? -1 : Math.round((System.currentTimeMillis() - newest) / 360000.0) / 10.0);
             o.put("avgDesc", items.isEmpty() ? 0 : desc / items.size());
+            int hindi = 0; for (JSONObject it : items) if (it.optString("t").matches(".*[\\u0900-\\u097F]{4,}.*")) hindi++;
+            o.put("hindiTitles", hindi);
             JSONArray arts = new JSONArray();
             for (int i = 0; i < items.size() && arts.length() < samples; i++) arts.put(article(items.get(i).optString("u"), items.get(i).optString("t")));
             o.put("articles", arts);

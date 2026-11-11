@@ -211,6 +211,14 @@ public final class RssParser {
         return arrayList;
     }
 
+    /** A headline mostly in Devanagari (Hindi). */
+    static boolean devanagari(String t) {
+        if (t == null) return false;
+        int d = 0, l = 0;
+        for (int i = 0; i < t.length(); i++) { char c = t.charAt(i); if (c >= '\u0900' && c <= '\u097F') d++; else if (Character.isLetter(c)) l++; }
+        return d > 0 && d >= l;
+    }
+
     public static long urlDate(String str) {
         if (str == null) {
             return 0L;
@@ -234,6 +242,7 @@ public final class RssParser {
     public static List<JSONObject> normalise(List<Raw> raws, String code, String label, boolean gn, long now) throws Exception {
         List<JSONObject> out = new ArrayList<JSONObject>();
         for (Raw r : raws) {
+            if (devanagari(r.title)) continue; // PIB's "English" feed also carries Hindi releases: the English one comes separately
             String pub = Text.clean(r.publisher);
             String t = Text.cleanTitle(r.title, pub);
             if (t.length() < 12) continue;
