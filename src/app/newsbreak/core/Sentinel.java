@@ -273,10 +273,73 @@ public final class Sentinel {
         } catch (Exception e) { return false; }
     }
 
+    static JSONArray keepLines(JSONArray a) {
+        if (a == null) return null;
+        JSONArray o = new JSONArray();
+        for (int i = 0; i < a.length(); i++) { String s = a.optString(i); if (!ExamMeta.line(s)) o.put(a.opt(i)); }
+        return o;
+    }
+
+    /**
+     * Removes exam news, roundup posts and practice/quiz items (see {@link ExamMeta}) from a card list: whole cards,
+     * "also" lines and single bullets. Safe to run any number of times.
+     * @return true if anything changed.
+     */
+    public static boolean dropMeta(JSONObject ed) {
+        if (ed == null) return false;
+        boolean ch = false;
+        try {
+            for (String key : new String[]{"topics", "catchup"}) {
+                JSONArray a = ed.optJSONArray(key);
+                if (a == null) continue;
+                JSONArray kept = new JSONArray();
+                for (int i = 0; i < a.length(); i++) {
+                    JSONObject t = a.optJSONObject(i);
+                    if (t == null) continue;
+                    if (ExamMeta.title(t.optString("head"))) { ch = true; continue; }
+                    String h = ExamMeta.head(t.optString("head"));
+                    if (h != null && !h.equals(t.optString("head"))) { t.put("head", h); ch = true; }
+                    JSONArray b = t.optJSONArray("bullets");
+                    if (b != null) { JSONArray nb = keepLines(b); if (nb.length() != b.length()) { t.put("bullets", nb); ch = true; } }
+                    JSONObject ai = t.optJSONObject("ai");
+                    JSONArray ab = ai == null ? null : ai.optJSONArray("b");
+                    if (ab != null) { JSONArray nb = keepLines(ab); if (nb.length() != ab.length()) { ai.put("b", nb); ch = true; } }
+                    JSONArray hs = t.optJSONArray("heads");
+                    if (hs != null) {
+                        JSONArray nh = new JSONArray();
+                        for (int k = 0; k < hs.length(); k++) if (!ExamMeta.title(hs.optString(k))) nh.put(hs.optString(k));
+                        if (nh.length() != hs.length()) { t.put("heads", nh); ch = true; }
+                    }
+                    JSONArray al = t.optJSONArray("also");
+                    if (al != null) {
+                        JSONArray na = new JSONArray();
+                        for (int k = 0; k < al.length(); k++) {
+                            JSONObject x = al.optJSONObject(k);
+                            if (x == null || ExamMeta.title(x.optString("head"))) { ch = true; continue; }
+                            String xh = ExamMeta.head(x.optString("head"));
+                            if (xh != null && !xh.equals(x.optString("head"))) { x.put("head", xh); ch = true; }
+                            JSONArray xb = x.optJSONArray("bullets");
+                            if (xb != null) { JSONArray nb = keepLines(xb); if (nb.length() != xb.length()) { x.put("bullets", nb); ch = true; } }
+                            na.put(x);
+                        }
+                        if (na.length() != al.length()) { if (na.length() == 0) t.remove("also"); else t.put("also", na); }
+                    }
+                    // nothing of the story left (every line was a roundup or a link list)
+                    boolean hadText = (b != null && b.length() > 0) || (ab != null && ab.length() > 0);
+                    JSONArray b2 = t.optJSONArray("bullets"), ab2 = ai == null ? null : ai.optJSONArray("b");
+                    if (hadText && (b2 == null || b2.length() == 0) && (ab2 == null || ab2.length() == 0) && t.optJSONArray("also") == null) { ch = true; continue; }
+                    kept.put(t);
+                }
+                if (kept.length() != a.length()) ed.put(key, kept);
+            }
+        } catch (Exception e) {}
+        return ch;
+    }
+
     /** Runs the sentinel over every card of an edition (main cards and catch-up). */
     public static boolean cleanEdition(JSONObject ed, Kb kb) {
         if (ed == null || kb == null) return false;
-        boolean ch = false;
+        boolean ch = dropMeta(ed);
         for (String key : new String[]{"topics", "catchup"}) {
             JSONArray a = ed.optJSONArray(key);
             for (int i = 0; a != null && i < a.length(); i++) if (clean(a.optJSONObject(i), kb)) ch = true;

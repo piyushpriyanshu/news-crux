@@ -113,7 +113,7 @@
       ev.forEach(e => { const k = String(e[1]).toLowerCase(); if (idx[k] == null) { idx[k] = rows.length; rows.push({ a: e[1], y: [e[0]], q: [e[2] || ''] }); } else if (rows[idx[k]].y.indexOf(e[0]) < 0) { rows[idx[k]].y.push(e[0]); rows[idx[k]].q.push(e[2] || ''); } });
       // a year with the full question saved opens it (question, options, correct answer)
       const yr = (r, j) => r.q[j] ? `<button class="pqy pqo" data-pyq="${esc(r.q[j])}" aria-label="Open the ${r.y[j]} question">’${pad(r.y[j] % 100)}</button>` : `<span class="pqy">’${pad(r.y[j] % 100)}</span>`;
-      const list = rows.map(r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}"${r.q.some(Boolean) ? ` data-pyq="${esc(r.q.find(Boolean))}" role="button"` : ''}><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
+      const list = rows.map(r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}" data-pyq="${r.q.some(Boolean) ? esc(r.q.find(Boolean)) : '-'}" role="button"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
       return `<div class="pyq"><div class="lab">${ic('target', 'xs')}<span>Asked in Prelims${who ? `: <b>${esc(who)}</b>` : ''}</span></div>${list}</div>`;
     }
     const th = THEME[t.theme];
@@ -893,7 +893,7 @@
       else { el.dataset.armed = '1'; el.style.color = 'var(--red)'; toast('Tap ✕ again to delete'); setTimeout(() => { delete el.dataset.armed; el.style.color = ''; }, 2500); }
       return;
     }
-    if (d.pyq) { openPyq(d.pyq); return; }
+    if (d.pyq) { if (d.pyq === '-') toast('Full question not saved for this one (CDS/CAPF or not in the paper set)'); else openPyq(d.pyq); return; }
     if (d.up) { const ord = (S.boot.settings.order || []).slice(); const i = ord.indexOf(d.up); if (i > 0) { ord.splice(i, 1); ord.splice(i - 1, 0, d.up); } N.setString('aiOrder', ord.join(',')); S.boot.settings.order = ord; openPage(settingsPage()); toast((S.boot.settings.providers[ord[0]] || {}).name + ' is now primary'); return; }
     if (d.prov) { N.setString('aiProvider', d.prov); S.aitest = ''; openPage(settingsPage()); return; }
     if (d.int) { N.setInt('intervalHours', Number(d.int)); S.boot.settings.intervalHours = Number(d.int); openPage(settingsPage()); toast('Sync every ' + d.int + 'h'); return; }

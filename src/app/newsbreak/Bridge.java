@@ -112,16 +112,32 @@ public final class Bridge {
         if (edition == null) {
             return "null";
         }
+        String raw = edition.toString();
+        String ck = str + ":" + raw.length() + ":" + raw.hashCode();
+        synchronized (edCache) { String hit = edCache.get(ck); if (hit != null) return hit; }
         try {
             Sentinel.cleanEdition(edition, Engine.kb(this.c));
         } catch (Throwable th) {
         }
-        return edition.toString();
+        Engine.addPyqKeys(this.c, edition);
+        String out = edition.toString();
+        synchronized (edCache) { if (edCache.size() > 6) edCache.clear(); edCache.put(ck, out); }
+        return out;
     }
+
+    /** Cleaned editions by date + saved content: reopening a day doesn't redo the checks. */
+    static final java.util.Map<String, String> edCache = new java.util.HashMap<String, String>();
 
     @JavascriptInterface
     public String live() {
-        return Engine.live(this.c);
+        String s = Engine.live(this.c);
+        try {
+            JSONObject o = new JSONObject(s);
+            boolean ch = Sentinel.dropMeta(o);
+            if (Engine.addPyqKeys(this.c, o) || ch) return o.toString();
+        } catch (Throwable ignored) {
+        }
+        return s;
     }
 
     @JavascriptInterface

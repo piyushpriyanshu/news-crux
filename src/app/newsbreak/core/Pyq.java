@@ -131,6 +131,48 @@ public final class Pyq {
         return right;
     }
 
+    /**
+     * Cards saved before full questions existed carry [year, aspect] without the question key.
+     * Finds the question again (same year and same "what was asked" line) so the year opens it.
+     * @return true if any key was added.
+     */
+    public boolean addKeys(JSONObject t, Kb kb) {
+        JSONArray ev = t == null ? null : t.optJSONArray("pyqEv");
+        if (ev == null || text == null) return false;
+        boolean missing = false;
+        for (int i = 0; i < ev.length(); i++) { JSONArray e = ev.optJSONArray(i); if (e != null && e.length() < 3) missing = true; }
+        if (!missing) return false;
+        Set<String> ids = new LinkedHashSet<String>();
+        String[][] kinds = {{"ents", "e:"}, {"maps", "m:"}};
+        for (String[] k : kinds) { JSONArray a = t.optJSONArray(k[0]); for (int i = 0; a != null && i < a.length(); i++) ids.add(k[1] + a.optString(i)); }
+        if (t.optString("pyqId").length() > 0) ids.add(t.optString("pyqId"));
+        StringBuilder b = new StringBuilder();
+        JSONArray bl = t.optJSONArray("bullets");
+        for (int i = 0; bl != null && i < bl.length(); i++) b.append(bl.optString(i)).append(' ');
+        List<Row> cand = new ArrayList<Row>(matchTopic(this.rows, this.df, Foreign.mask(t.optString("head")), Foreign.mask(b.toString()), t.optString("gs"), ids, 12));
+        for (Row r : this.rows) for (String id : ids) if (r.ids.contains(id) && !cand.contains(r)) { cand.add(r); break; }
+        boolean added = false;
+        Set<String> used = new HashSet<String>();
+        for (int i = 0; i < ev.length(); i++) {
+            JSONArray e = ev.optJSONArray(i);
+            if (e == null || e.length() >= 3) continue;
+            int year = e.optInt(0);
+            String asp = e.optString(1);
+            Row hit = null;
+            for (Row r : cand) {
+                if (r.year != year || r.exam != null || used.contains(r.year + "|" + r.qno)) continue;
+                String a = aspect(r);
+                if (a.equalsIgnoreCase(asp) || sameAs(a, asp) || "asked".equals(asp)) { hit = r; break; }
+            }
+            try {
+                if (hit != null && key(hit) != null) { e.put(key(hit)); used.add(key(hit)); }
+                else e.put(""); // no full text (CDS/CAPF row or not found): the year shows, the tap explains
+                added = true;
+            } catch (Exception ignored) {}
+        }
+        return added;
+    }
+
     /** Full question for "year|q": [stem, [a, b, c, d], answer index], or null. */
     public JSONArray question(String key) {
         return text == null || key == null ? null : text.optJSONArray(key);

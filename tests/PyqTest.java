@@ -49,6 +49,23 @@ public class PyqTest {
         String[][] miss = {{"Article 6 of the Constitution: migrants from Pakistan", "c:c_carbonmkt"}, {"Results declared at 10 am IST", "c:c_ist"},
                 {"Bihar cooperative bank chairman arrested", "c:c_parlcomm"}, {"PM POSHAN outlay raised to ₹12,467 crore", "c:c_msme"}};
         for (String[] h : miss) ok(!kb.cardsIn(h[0]).contains(h[1]), "no " + h[1] + " in: " + h[0]);
+        // cards saved before 1.7.0 have [year, aspect] only: the year must still open the question
+        for (String head : new String[]{"Election Commission revises electoral rolls in Bihar", "Vice-President election: candidate files nomination", "Ramsar Convention adds two Indian wetlands"}) {
+            Set<String> ids = new LinkedHashSet<String>(kb.idsIn(head));
+            List<Pyq.Row> rows = p.matchTopic(head, "", "GS-II/Polity", ids, 8);
+            JSONObject t = new JSONObject().put("head", head).put("gs", "GS-II/Polity");
+            JSONArray ents = new JSONArray(), maps = new JSONArray(), ev = new JSONArray();
+            for (String id : ids) { if (id.startsWith("e:")) ents.put(id.substring(2)); if (id.startsWith("m:")) maps.put(id.substring(2)); }
+            t.put("ents", ents).put("maps", maps);
+            List<String> want = new ArrayList<String>();
+            for (Pyq.Row x : rows) { ev.put(new JSONArray().put(x.year).put(Pyq.aspect(x))); want.add(p.key(x)); }
+            t.put("pyqEv", ev);
+            ok(rows.isEmpty() || p.addKeys(t, kb), "keys added: " + head);
+            int got = 0;
+            for (int i = 0; i < ev.length(); i++) if (ev.getJSONArray(i).length() == 3 && want.contains(ev.getJSONArray(i).getString(2))) got++;
+            ok(got == rows.size(), "every year opens its own question (" + got + "/" + rows.size() + "): " + head);
+            ok(!p.addKeys(t, kb), "second run adds nothing");
+        }
         System.out.println("PASS " + pass + "  FAIL " + fail);
         if (fail > 0) System.exit(1);
     }

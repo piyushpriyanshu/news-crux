@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Xml;
 import app.newsbreak.core.Ai;
 import app.newsbreak.core.EditionBuilder;
+import app.newsbreak.core.ExamMeta;
 import app.newsbreak.core.Harvest;
 import app.newsbreak.core.Ist;
 import app.newsbreak.core.Kb;
@@ -75,6 +76,22 @@ public final class Engine {
             kb2 = kb;
         }
         return kb2;
+    }
+
+    /** Gives older cards the links to their full PYQs (see Pyq.addKeys). */
+    static boolean addPyqKeys(Context c, JSONObject ed) {
+        boolean any = false;
+        try {
+            Pyq p = pyq(c);
+            Kb k = kb(c);
+            if (p == null || ed == null) return false;
+            for (String key : new String[]{"topics", "catchup"}) {
+                JSONArray a = ed.optJSONArray(key);
+                for (int i = 0; a != null && i < a.length(); i++) if (p.addKeys(a.optJSONObject(i), k)) any = true;
+            }
+        } catch (Throwable ignored) {
+        }
+        return any;
     }
 
     static synchronized Pyq pyq(Context context) {
@@ -284,6 +301,9 @@ public final class Engine {
         for (int i = 0; i < readArr.length(); i++) {
             JSONObject optJSONObject = readArr.optJSONObject(i);
             if (optJSONObject != null) {
+                if (!optJSONObject.has("noise") && ExamMeta.title(optJSONObject.optString("t"))) { // stored before the exam-news filter
+                    try { optJSONObject.put("noise", new JSONArray().put("exam")).put("sc", Math.min(optJSONObject.optDouble("sc", 0), 0)); } catch (Exception ignored) {}
+                }
                 arrayList.add(optJSONObject);
             }
         }

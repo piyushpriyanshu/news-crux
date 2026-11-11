@@ -104,6 +104,7 @@ public final class EditionBuilder {
     }
 
     public static boolean promo(String str) {
+        if (ExamMeta.title(str)) return true;
         String lowerCase = str.toLowerCase();
         for (String str2 : PROMO) {
             if (lowerCase.contains(str2)) {
@@ -617,7 +618,7 @@ public final class EditionBuilder {
                 return true;
             }
         }
-        if (NOISE.matcher(str.trim()).find()) return true;
+        if (NOISE.matcher(str.trim()).find() || ExamMeta.line(str)) return true;
         String t = str.trim().replaceAll("[\\s.…]+$", "");
         if (t.contains(" ? ") || t.matches("(?i).*\\b(of|at|to|the|a|an|is|are|was|were|by|in|on|for|with|from|and|or|as)$")) return true; // a cut-off question stem
         return str.endsWith("?") || str.length() < 30;

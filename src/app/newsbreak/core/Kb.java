@@ -294,6 +294,7 @@ public final class Kb {
         if (si >= 0 && second >= 2) it.put("th2", themes.get(si).getString("id")); else it.remove("th2");
         it.put("ents", ea);
         it.put("maps", ma);
+        if (ExamMeta.title(title)) { noise.put("exam"); it.put("sc", Math.min(it.optDouble("sc", 0), 0)); } // exam news, roundups, quizzes: not current affairs
         if (noise.length() > 0) it.put("noise", noise); else it.remove("noise");
         if (foreign) it.put("fx", true); else it.remove("fx");
         // concept cards named by the story itself (no effect on the score)
