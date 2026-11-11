@@ -1,323 +1,310 @@
 {
 "pyqFix": {
 "asp": {
-"2012|153|cag": "CAG reports: PAC scrutiny, use by probe agencies; no judicial/exchequer power",
-"2001|295|constitutional-bodies": "CAG: no control over public money receipt/issue",
-"2017|155|election-commission-of-india": "ECI size (3 not 5), schedule-setting, party split/merger disputes",
-"2011|152|finance-commission": "FC's role: none of FDI/PSU/transparency",
-"2000|297|constitutional-bodies": "FC primary function: Centre-State revenue distribution",
-"2022|150|attorney-general": "AG: Parliament participation (not SG); no resignation with govt",
-"2013|154|attorney-general-of-india": "AG in Lok Sabha: speak, committees, no vote",
-"2000|296|constitutional-bodies": "AG: appointment, SC-judge qualification, not MP, removal",
-"2019|214|impeachment": "SC judge removal: Judges (Inquiry) Act, Speaker's discretion, special majority",
-"2014|122|supreme-court": "SC original jurisdiction: Centre–State disputes",
-"2014|124|supreme-court": "Parliament increases SC judges' number",
-"2012|123|supreme-court": "SC autonomy: CJI consultation, salaries charged on CFI",
-"2006|223|higher-judiciary-sc-and-hc": "HC for each State vs common HC (Art 214/231)",
-"2002|230|higher-judiciary-sc-and-hc": "HC judges' salaries: State Consolidated Fund",
-"1996|235|higher-judiciary-sc-and-hc": "HC CJ admin acts: writ review by HC judges",
-"2025|83|councils": "ISC (Art 263) vs NSC, Zonal Councils: constitutional?",
-"2024|1|delimitation-commissions": "number of Delimitation Commissions (four)",
-"2012|89|delimitation": "Delimitation orders: not court-challengeable, not modifiable by legislature",
-"2024|24|st-recognition": "ST notification by President, not Governor; state-specific",
-"2020|158|parliamentary-sessions": "President summons Parliament anywhere; no fixed sessions/min. sittings",
-"2018|65|state-emergency-presidents-rule": "Art 356: State legislature powers go to Parliament",
-"2018|78|election-of-president": "Presidential election: MLA vs MP vote value",
-"2008|136|vice-president": "past VPs: Hidayatullah, S.D. Sharma",
-"2004|137|vice-president": "VP removal resolution: Rajya Sabha only",
-"2024|43|speaker": "Speaker removal: preside/speak/vote rights",
-"2004|299|general-awareness-india": "Past LS Speakers (K.V.K. Sundaram never)",
-"2018|110|money-bill": "Money Bill scope: Consolidated not Contingency Fund",
-"2015|100|annual-financial-statement-money-bill": "Rajya Sabha: Money Bill, Demands for Grants, AFS discussion",
-"2013|95|parliament": "Money Bill: RS only recommends; LS may reject",
-"2015|12|articles-schedules": "5th & 6th Schedules: protect ST interests",
-"2022|9|scheduled-areas": "Fifth Schedule effect: bars tribal land transfer",
-"2009|269|local-government-panchayats-and-municipalities": "Panchayat re-election within 6 months of dissolution",
-"1998|277|local-government-panchayats-and-municipalities": "PRI first introduced: Rajasthan (Nagaur 1959)",
-"2020|19|basic-structure-of-indian-constitution": "Basic structure, judicial review not in text",
-"2020|20|fundamental-rights": "Basic structure & judicial review not expressly in Constitution",
-"2025|58|lokpal": "Lokpal: overseas staff, chair eligibility, age, PM",
-"2004|228|higher-judiciary-sc-and-hc": "NHRC Chairperson eligibility (retired CJI)",
-"1999|352|miscellaneous": "NHRC: chair, SHRCs, recommendatory powers, woman member",
-"2018|116|environmental-laws": "NGT vs CPCB: statutory basis & functions",
-"2012|96|and-policies": "NGT Act basis: Art 21 healthy environment",
-"2025|34|brsr": "BRSR mandate",
-"2024|89|foreign-banks": "foreign bank WOS: min capital, board nationality",
-"2022|146|rbi": "regulatory remit",
-"2021|149|rbi": "RBI Governor appointment; Centre's directions under RBI Act",
-"2018|333|fssai": "FSS Act replaced PFA Act 1954; FSSAI not under DGHS",
-"2015|176|niti-aayog": "NITI Aayog replaced Planning Commission",
-"2016|67|space-mission": "Mangalyaan: MOM, 1st-attempt success, not 2nd",
-"2008|128|space-and-space-technology": "Cryogenic engine test-stand: Mahendragiri",
-"2018|161|situation-assessment-survey-of-agricultural-households": "farm households survey",
-"2022|20|united-nations": "UNCLOS: 12 nm territorial sea, innocent passage, 200 nm EEZ",
-"2022|23|united-nations": "UNGA observer status (states, IGOs, missions)",
-"2022|24|united-nations": "UN Credentials Committee: set up by UNGA, role",
-"2021|98|united-nations": "UNCDF (statement-I/II question)",
-"2009|8|general-awareness-world": "UNSC non-permanent members: 2-year term",
-"2017|48|wto": "WTO TFA: India ratification, Bali 2013, entry into force",
-"2016|123|wto": "WTO AoA subsidy boxes (amber/blue/green)",
-"2001|322|general-awareness-india": "WTO's earlier name: GATT",
-"1998|109|general-awareness-world": "economist linked to WTO draft (Bhagwati)",
-"2016|128|imf": "SDR basket: Renminbi added",
-"2011|137|imf": "IMF lends only to member countries",
-"2019|102|world-bank": "Ease of Doing Business sub-indices",
-"2022|47|air-quality": "WHO AQG PM2.5 limits; ozone & PM10 effects",
-"2009|360|contemporary-events-india": "World Heritage: Kalka-Shimla Railway (2008)",
-"2025|12|cop28": "COP28 Climate & Health Declaration: India didn't sign",
-"2016|107|summits-and-conventions": "Paris Agreement: 2/1.5°C goal, entry, $100bn",
-"2010|117|climate-change": "UNFCCC opened for signature at Rio 1992 (UNCED)",
-"2018|42|conventions": "ILO Conventions 138 & 182: child labour",
-"2017|165|climate-change": "GIAHS goal: safeguard traditional farm systems & landscapes",
-"2016|130|environmental-organisations": "GIAHS goal: safeguard traditional farm systems",
-"2025|41|nato": "NATO members: Bulgaria, Croatia, Sweden, N. Macedonia",
-"2023|63|g20": "G20 origin (FMs & CB Governors forum); India's DPI priority",
-"2020|33|g20": "G20 member countries (identify group)",
-"2009|10|general-awareness-world": "Original G-7 members (Russia not)",
-"2025|57|brics": "16th Summit Kazan; Indonesia joins; theme",
-"2018|40|asean": "ASEAN FTA partners (Aus, China, India, Japan)",
-"2006|60|general-awareness-world": "ASEAN members (Bangladesh not)",
-"2005|63|general-awareness-world": "ASEAN members (China not a member)",
-"1996|112|general-awareness-world": "trading blocs",
-"2025|52|bimstec": "BIMSTEC: members, Bangkok Decl., founders, sector lead",
-"2015|70|international-relations": "IORA: est. 1997, not maritime-security only",
-"2010|6|general-awareness-world": "European Commission vs European Council: roles & composition",
-"2007|136|contemporary-events-world": "new members",
-"1999|98|general-awareness-world": "EU: ex-European Community, SEA & Maastricht, citizenship, Switzerland not member",
-"2022|25|aiib": "India's membership: AIIB, MTCR, SCO",
-"2019|255|stock-market": "AIIB: membership, largest shareholder, non-Asian members",
-"2016|261|ndb": "NDB: set up by BRICS (not APEC), Shanghai HQ",
-"2016|57|united-nations": "ISA launched at COP21; not all UN members",
-"2019|37|wef": "Global Competitiveness Report: by WEF",
-"2009|29|general-awareness-world": "WEF founder: Klaus Schwab",
-"2003|174|contemporary-events-world": "UNDP HDI ranking of South Asian countries",
-"1998|345|human-development-and-sustainable-development": "Human Poverty Index",
-"2019|172|wetlands": "Ramsar obligations; Wetlands Rules 2010",
-"2010|192|protected-areas": "Ramsar sites: ecosystem approach + wise (sustainable) use",
-"2023|24|iucn": "ISSG / invasive species database: IUCN",
-"2015|72|apec": "India's membership: APEC & ASEAN no, EAS yes",
-"2016|58|international-relations": "GCC members (Iran not)",
-"2018|45|treaties": "NSG membership: tech access, not automatic NPT",
-"2016|59|who": "OPCW: not EU body; monitoring & assistance",
-"2015|77|government-policies": "PMJDY aim: financial inclusion",
-"2016|326|human-development": "MUDRA aim: small entrepreneurs into formal finance",
-"2022|147|abdm": "ABDM: voluntary adoption, nationwide portability",
-"2013|72|geography-of-protected-areas": "National parks – rivers pairs (Corbett: Ramganga, not Ganga)",
-"2012|188|tiger-reserves": "Which are Tiger Reserves (Bhitarkanika not)",
-"2018|146|protected-areas": "Pakhui (Pakke) WLS: Arunachal Pradesh",
-"2014|345|states": "Dampa TR–Mizoram (pairs: Gumti, Saramati)",
-"2020|150|protected-areas": "Desert NP: two districts, human habitation, GIB habitat",
-"2010|2|protected-areas": "Desert National Park",
-"2019|209|rhino-conservation": "Asiatic lion endemic to India only",
-"2012|232|protected-areas": "Species native to India: cheetah extinct; snow leopard native",
-"2019|211|dolphin-conservation": "Irrawaddy dolphin: Chilika, not Chambal",
-"2015|169|marine-species": "Dugong: herbivorous, range in India, WPA Schedule I",
-"2009|413|biology": "Dugong: animal class",
-"2017|174|species": "Gharial habitat: Chambal River",
-"2013|222|turtle-conservation": "Threatened status: Gharial, leatherback, swamp deer",
-"2013|223|protected-areas": "species native to India (pygmy hog yes)",
-"2013|165|species": "lion-tailed macaque: native states (Western Ghats)",
-"2021|203|protected-areas": "Animals that roll up: pangolin, hedgehog",
-"2012|227|protected-areas": "Vulture decline: veterinary drug (diclofenac)",
-"2024|29|red-sea": "Red Sea: low rainfall, no river inflow",
-"2019|116|world-map": "sea–bordering country pairs (Caspian–Kazakhstan)",
-"2016|105|himalayan-drainage-systembrahmaputra": "Brahmaputra tributaries: Dibang, Kameng, Lohit",
-"2014|96|brahmaputra-and-its-tributary": "Rivers through Arunachal: Lohit, Subansiri (not Barak)",
-"2011|64|himalayan-river-systemdrainage": "Brahmaputra U-turn: syntaxial bend",
-"2019|423|map-work-world": "glacier–river pairs (Bandarpunch–Yamuna, Siachen–Nubra)",
-"2003|294|indian-geography": "Peninsular rivers ranked by length",
-"2024|59|waterfalls": "waterfall–region–river rows (Dhuandhar–Malwa–Narmada)",
-"2013|71|west-flowing-peninsular-rivers": "Narmada west flow: rift valley",
-"2020|86|major-places-and-riversmap-based": "Cauvery basin PAs: Nagarhole, Sathyamangalam, Wayanad",
-"2019|335|famous-places": "Place–river pairs: Trichy on Cauvery",
-"2021|223|eastern-ghats": "Rivers rising in Eastern Ghats (Subarnarekha: Chhotanagpur)",
-"2023|42|lakes-rivers": "River-lake links: Jhelum-Wular, Kolleru, Kanwar",
-"2014|155|wetlands": "Harike confluence",
-"2013|348|lakes": "Nokrek–Garo Hills; Loktak not Barail",
-"2017|108|indian-ocean-region": "Great Nicobar closest to Sumatra",
-"2018|227|barren-island": "Barren Island: active volcano, location, eruptions",
-"2022|220|reservoirs": "reservoir-State pairs",
-"2005|280|indian-geography": "Gandhi Sagar Dam: Chambal Project",
-"2014|346|states": "rivers through Arunachal (Barak, Lohit, Subansiri)",
-"1999|396|location-map-based-indian-geography": "Tehri dam site on map",
-"2020|117|map-based": "Siachen location: north of Nubra Valley",
-"2025|43|equator": "Equator crossing: Tanganyika, Tonle Sap, Patos",
-"2001|172|human-and-economic-geography": "population density",
-"2020|422|oceans": "River mouths: Zambezi → Indian Ocean",
-"2004|468|location-map-based-world-geography": "Mekong riparian countries (not Malaysia)",
-"2008|442|location-map-based-world-geography": "city nearest to equator",
-"2006|457|location-map-based-world-geography": "countries crossed",
-"2024|23|writs": "Writ of Prohibition: to lower courts/tribunals",
-"2023|80|article-335": "Art 335 ruling",
-"2006|224|higher-judiciary-sc-and-hc": "CJI when PIL introduced (P.N. Bhagwati)",
-"2003|196|parliament": "Parliament enlarges SC jurisdiction (Art 138)",
-"2001|231|higher-judiciary-sc-and-hc": "Art 143 advice only if President seeks",
-"1996|234|higher-judiciary-sc-and-hc": "SC original jurisdiction: Centre–State disputes",
-"2023|11|sterilization": "Sterilisation via Open Market Operations",
-"2021|58|rbi": "Lender of last resort: liquidity to banks",
-"2020|62|monetary-policy": "Expansionary policy: MSF hike not done (SLR/repo cuts)",
-"2020|111|rbi": "CPI & inflation target",
-"2019|158|rbi": "RBI data localisation: payment data in India",
-"2018|169|g-secs": "RBI manages Centre & State securities; T-bills (Centre only, at discount)",
-"2015|78|monetary-policy-tools": "SLR cut effect: lower lending rates",
-"2013|88|functions-of-rbi": "RBI regulates liquidity, branches, mergers, winding-up",
-"2012|90|role-and-functions-of-rbi": "RBI bankers' bank: deposits, lending, advice",
-"2011|169|important-concepts-in-economy": "Bank Rate cut raises liquidity",
-"2010|198|rbi-monetary-policy": "CRR hike: banks have less money to lend",
-"2001|207|rbi-monetary-policy": "RBI functions: govt banker, debt, IMF agent",
-"1998|210|rbi-monetary-policy": "RBI accounting year",
-"2019|36|united-nations": "UNCAC vs UNTOC; UNODC mandate",
-"2018|134|environmental-organisations": "PAGE origin: Rio+20 (2012)",
-"2017|51|united-nations": "UN-Habitat mandate & partners",
-"2010|58|fundamental-rights": "Child Rights Convention",
-"2010|2|general-awareness-world": "UN-linked bodies: World Bank Group vs BIS",
-"2010|115|contemporary-events-world": "Stiglitz Commission: global financial system reform",
-"2010|116|contemporary-events-world": "UN-Habitat GRHS 2009: fastest urbanising region (Asia)",
-"2009|13|general-awareness-world": "ECOSOC: membership size & election/term",
-"2015|108|finance-commission": "14th FC: 42% devolution; no sector-specific grants",
-"2021|75|pollution": "UNEP Common Carbon Metric: buildings' carbon footprint",
-"2022|28|g20": "G20 Common Framework: debt relief, Paris Club",
-"2025|80|pm-surya-ghar": "PM Surya Ghar: 1 cr rooftops, MNRE training, 3 lakh skilling",
-"2016|114|atal-pension-yojana": "APY: unorganised sector, spouse pension, family eligibility",
-"2018|106|digital-india": "Digital India aims: village internet, public Wi-Fi",
-"2017|49|chabahar-port": "Chabahar: Afghanistan/Central Asia access bypassing Pakistan",
-"2013|79|election-of-the-vice-president": "VP election: nominated MPs can vote; RS Chairman not a member",
-"2012|142|pesa": "PESA Gram Sabha: land alienation, MFP ownership, minor minerals",
-"1997|354|important-concepts-in-economy": "HDI components: GDP per head at PPP",
-"2024|50|pm-sym": "PM-SYM: entry age, contribution, ₹3,000 pension, family pension",
-"2023|25|nocturnal-animals": "Nocturnal fauna: Lion-tailed macaque is diurnal",
-"2022|31|senkaku-islands": "Senkaku: China–Japan East China Sea dispute",
-"2013|143|pesa": "PESA objectives (not autonomous regions)",
-"2020|143|nuclear-technology": "IAEA safeguards: imported-uranium reactors",
-"2007|141|contemporary-events-world": "EU 2007 entrants: Bulgaria & Romania",
-"2016|125|pmfby": "PMFBY premium rates; post-harvest loss cover",
-"2012|86|speaker-of-lok-sabha": "Speaker: tenure, membership, resignation to Deputy Speaker",
-"2023|79|money-bill": "Money vs Finance Bill: RS powers, no joint sitting",
-"2015|75|brics": "Fortaleza Declaration: 6th BRICS summit",
-"2017|164|soil-health-card": "Soil Health Card aim: check fertiliser overuse",
-"2015|74|international-relations": "Golan Heights: Middle East",
-"2022|149|provisions-of-the-antidefection-law": "nominated member joining party; no decision deadline",
-"2024|2|71st-amendment": "71st Amdt: Konkani, Manipuri, Nepali added",
-"2016|65|imf": "Global Financial Stability Report: IMF",
-"2017|56|wef": "Global Gender Gap Index: WEF",
-"2016|124|stand-up-india": "Stand-Up India: SC/ST/women; SIDBI refinance",
-"2017|19|e-nam": "e-NAM: e-trading portal, nationwide market",
-"2017|82|himalayan-riverdrainage": "Teesta source, Rangeet tributary, outfall",
-"2010|253|indian-geography": "Luni ends in Rann of Kachchh",
-"2024|41|sahel": "Sahel instability linked to coups"
+"2012|51|cag": "CAG reports: PAC scrutiny, use by probe agencies; no judicial/exchequer power",
+"2001|86|constitutional-bodies": "CAG: no control over public money receipt/issue",
+"2011|45|finance-commission": "FC's role: none of FDI/PSU/transparency",
+"2000|10|constitutional-bodies": "FC primary function: Centre-State revenue distribution",
+"2013|12|attorney-general-of-india": "AG in Lok Sabha: speak, committees, no vote",
+"2000|5|constitutional-bodies": "AG: appointment, SC-judge qualification, not MP, removal",
+"2019|46|impeachment": "SC judge removal: Judges (Inquiry) Act, Speaker's discretion, special majority",
+"2014|71|supreme-court": "SC original jurisdiction: Centre–State disputes",
+"2014|75|supreme-court": "Parliament increases SC judges' number",
+"2012|60|supreme-court": "SC autonomy: CJI consultation, salaries charged on CFI",
+"2006|17|higher-judiciary-sc-and-hc": "HC for each State vs common HC (Art 214/231)",
+"2002|31|higher-judiciary-sc-and-hc": "HC judges' salaries: State Consolidated Fund",
+"1996|50|higher-judiciary-sc-and-hc": "HC CJ admin acts: writ review by HC judges",
+"2025|53|councils": "ISC (Art 263) vs NSC, Zonal Councils: constitutional?",
+"2024|71|delimitation-commissions": "number of Delimitation Commissions (four)",
+"2024|84|st-recognition": "ST notification by President, not Governor; state-specific",
+"2020|20|parliamentary-sessions": "President summons Parliament anywhere; no fixed sessions/min. sittings",
+"2018|53|state-emergency-presidents-rule": "Art 356: State legislature powers go to Parliament",
+"2018|32|election-of-president": "Presidential election: MLA vs MP vote value",
+"2008|37|vice-president": "past VPs: Hidayatullah, S.D. Sharma",
+"2004|33|vice-president": "VP removal resolution: Rajya Sabha only",
+"2024|93|speaker": "Speaker removal: preside/speak/vote rights",
+"2004|95|general-awareness-india": "Past LS Speakers (K.V.K. Sundaram never)",
+"2018|31|money-bill": "Money Bill scope: Consolidated not Contingency Fund",
+"2013|1|parliament": "Money Bill: RS only recommends; LS may reject",
+"2015|59|articles-schedules": "5th & 6th Schedules: protect ST interests",
+"2022|73|scheduled-areas": "Fifth Schedule effect: bars tribal land transfer",
+"2009|77|local-government-panchayats-and-municipalities": "Panchayat re-election within 6 months of dissolution",
+"1998|64|local-government-panchayats-and-municipalities": "PRI first introduced: Rajasthan (Nagaur 1959)",
+"2025|98|lokpal": "Lokpal: overseas staff, chair eligibility, age, PM",
+"2004|89|higher-judiciary-sc-and-hc": "NHRC Chairperson eligibility (retired CJI)",
+"1999|34|miscellaneous": "NHRC: chair, SHRCs, recommendatory powers, woman member",
+"2018|4|environmental-laws": "NGT vs CPCB: statutory basis & functions",
+"2012|4|and-policies": "NGT Act basis: Art 21 healthy environment",
+"2025|4|brsr": "BRSR mandate",
+"2024|49|foreign-banks": "foreign bank WOS: min capital, board nationality",
+"2022|63|rbi": "regulatory remit",
+"2021|1|rbi": "RBI Governor appointment; Centre's directions under RBI Act",
+"2018|23|fssai": "FSS Act replaced PFA Act 1954; FSSAI not under DGHS",
+"2015|42|niti-aayog": "NITI Aayog replaced Planning Commission",
+"2016|91|space-mission": "Mangalyaan: MOM, 1st-attempt success, not 2nd",
+"2008|33|space-and-space-technology": "Cryogenic engine test-stand: Mahendragiri",
+"2018|3|situation-assessment-survey-of-agricultural-households": "farm households survey",
+"2022|85|united-nations": "UNCLOS: 12 nm territorial sea, innocent passage, 200 nm EEZ",
+"2022|78|united-nations": "UNGA observer status (states, IGOs, missions)",
+"2022|76|united-nations": "UN Credentials Committee: set up by UNGA, role",
+"2021|97|united-nations": "UNCDF (statement-I/II question)",
+"2009|114|general-awareness-world": "UNSC non-permanent members: 2-year term",
+"2017|83|wto": "WTO TFA: India ratification, Bali 2013, entry into force",
+"2016|11|wto": "WTO AoA subsidy boxes (amber/blue/green)",
+"2001|99|general-awareness-india": "WTO's earlier name: GATT",
+"1998|52|general-awareness-world": "economist linked to WTO draft (Bhagwati)",
+"2016|14|imf": "SDR basket: Renminbi added",
+"2011|75|imf": "IMF lends only to member countries",
+"2019|77|world-bank": "Ease of Doing Business sub-indices",
+"2022|44|air-quality": "WHO AQG PM2.5 limits; ozone & PM10 effects",
+"2009|25|contemporary-events-india": "World Heritage: Kalka-Shimla Railway (2008)",
+"2025|32|cop28": "COP28 Climate & Health Declaration: India didn't sign",
+"2016|97|summits-and-conventions": "Paris Agreement: 2/1.5°C goal, entry, $100bn",
+"2010|56|climate-change": "UNFCCC opened for signature at Rio 1992 (UNCED)",
+"2018|30|conventions": "ILO Conventions 138 & 182: child labour",
+"2023|100|g20": "G20 origin (FMs & CB Governors forum); India's DPI priority",
+"2020|65|g20": "G20 member countries (identify group)",
+"2009|123|general-awareness-world": "Original G-7 members (Russia not)",
+"2025|97|brics": "16th Summit Kazan; Indonesia joins; theme",
+"2018|34|asean": "ASEAN FTA partners (Aus, China, India, Japan)",
+"2006|63|general-awareness-world": "ASEAN members (Bangladesh not)",
+"2005|66|general-awareness-world": "ASEAN members (China not a member)",
+"1996|37|general-awareness-world": "trading blocs",
+"2025|92|bimstec": "BIMSTEC: members, Bangkok Decl., founders, sector lead",
+"2015|67|international-relations": "IORA: est. 1997, not maritime-security only",
+"2010|132|general-awareness-world": "European Commission vs European Council: roles & composition",
+"2007|16|contemporary-events-world": "new members",
+"1999|62|general-awareness-world": "EU: ex-European Community, SEA & Maastricht, citizenship, Switzerland not member",
+"2022|66|aiib": "India's membership: AIIB, MTCR, SCO",
+"2019|71|stock-market": "AIIB: membership, largest shareholder, non-Asian members",
+"2016|67|ndb": "NDB: set up by BRICS (not APEC), Shanghai HQ",
+"2016|81|united-nations": "ISA launched at COP21; not all UN members",
+"2019|3|wef": "Global Competitiveness Report: by WEF",
+"2009|113|general-awareness-world": "WEF founder: Klaus Schwab",
+"2003|62|contemporary-events-world": "UNDP HDI ranking of South Asian countries",
+"1998|43|human-development-and-sustainable-development": "Human Poverty Index",
+"2019|40|wetlands": "Ramsar obligations; Wetlands Rules 2010",
+"2010|59|protected-areas": "Ramsar sites: ecosystem approach + wise (sustainable) use",
+"2023|13|iucn": "ISSG / invasive species database: IUCN",
+"2015|57|apec": "India's membership: APEC & ASEAN no, EAS yes",
+"2016|70|international-relations": "GCC members (Iran not)",
+"2018|7|treaties": "NSG membership: tech access, not automatic NPT",
+"2016|20|who": "OPCW: not EU body; monitoring & assistance",
+"2015|1|government-policies": "PMJDY aim: financial inclusion",
+"2016|73|human-development": "MUDRA aim: small entrepreneurs into formal finance",
+"2022|19|abdm": "ABDM: voluntary adoption, nationwide portability",
+"2012|87|tiger-reserves": "Which are Tiger Reserves (Bhitarkanika not)",
+"2018|94|protected-areas": "Pakhui (Pakke) WLS: Arunachal Pradesh",
+"2014|9|states": "Dampa TR–Mizoram (pairs: Gumti, Saramati)",
+"2020|95|protected-areas": "Desert NP: two districts, human habitation, GIB habitat",
+"2012|97|protected-areas": "Species native to India: cheetah extinct; snow leopard native",
+"2015|19|marine-species": "Dugong: herbivorous, range in India, WPA Schedule I",
+"2009|132|biology": "Dugong: animal class",
+"2017|67|species": "Gharial habitat: Chambal River",
+"2013|87|turtle-conservation": "Threatened status: Gharial, leatherback, swamp deer",
+"2013|7|protected-areas": "species native to India (pygmy hog yes)",
+"2013|35|species": "lion-tailed macaque: native states (Western Ghats)",
+"2021|23|protected-areas": "Animals that roll up: pangolin, hedgehog",
+"2012|100|protected-areas": "Vulture decline: veterinary drug (diclofenac)",
+"2024|89|red-sea": "Red Sea: low rainfall, no river inflow",
+"2016|28|himalayan-drainage-systembrahmaputra": "Brahmaputra tributaries: Dibang, Kameng, Lohit",
+"2011|97|himalayan-river-systemdrainage": "Brahmaputra U-turn: syntaxial bend",
+"2003|78|indian-geography": "Peninsular rivers ranked by length",
+"2024|9|waterfalls": "waterfall–region–river rows (Dhuandhar–Malwa–Narmada)",
+"2013|15|west-flowing-peninsular-rivers": "Narmada west flow: rift valley",
+"2020|73|major-places-and-riversmap-based": "Cauvery basin PAs: Nagarhole, Sathyamangalam, Wayanad",
+"2021|55|eastern-ghats": "Rivers rising in Eastern Ghats (Subarnarekha: Chhotanagpur)",
+"2023|1|lakes-rivers": "River-lake links: Jhelum-Wular, Kolleru, Kanwar",
+"2017|98|indian-ocean-region": "Great Nicobar closest to Sumatra",
+"2018|85|barren-island": "Barren Island: active volcano, location, eruptions",
+"2005|80|indian-geography": "Gandhi Sagar Dam: Chambal Project",
+"1999|64|location-map-based-indian-geography": "Tehri dam site on map",
+"2020|96|map-based": "Siachen location: north of Nubra Valley",
+"2025|23|equator": "Equator crossing: Tanganyika, Tonle Sap, Patos",
+"2001|84|human-and-economic-geography": "population density",
+"2004|19|location-map-based-world-geography": "Mekong riparian countries (not Malaysia)",
+"2008|50|location-map-based-world-geography": "city nearest to equator",
+"2006|35|location-map-based-world-geography": "countries crossed",
+"2024|83|writs": "Writ of Prohibition: to lower courts/tribunals",
+"2023|40|article-335": "Art 335 ruling",
+"2006|124|higher-judiciary-sc-and-hc": "CJI when PIL introduced (P.N. Bhagwati)",
+"2003|9|parliament": "Parliament enlarges SC jurisdiction (Art 138)",
+"2001|69|higher-judiciary-sc-and-hc": "Art 143 advice only if President seeks",
+"1996|26|higher-judiciary-sc-and-hc": "SC original jurisdiction: Centre–State disputes",
+"2023|24|sterilization": "Sterilisation via Open Market Operations",
+"2021|15|rbi": "Lender of last resort: liquidity to banks",
+"2020|57|monetary-policy": "Expansionary policy: MSF hike not done (SLR/repo cuts)",
+"2020|67|rbi": "CPI & inflation target",
+"2019|87|rbi": "RBI data localisation: payment data in India",
+"2018|56|g-secs": "RBI manages Centre & State securities; T-bills (Centre only, at discount)",
+"2015|22|monetary-policy-tools": "SLR cut effect: lower lending rates",
+"2013|42|functions-of-rbi": "RBI regulates liquidity, branches, mergers, winding-up",
+"2012|75|role-and-functions-of-rbi": "RBI bankers' bank: deposits, lending, advice",
+"2011|88|important-concepts-in-economy": "Bank Rate cut raises liquidity",
+"2010|81|rbi-monetary-policy": "CRR hike: banks have less money to lend",
+"2001|54|rbi-monetary-policy": "RBI functions: govt banker, debt, IMF agent",
+"1998|87|rbi-monetary-policy": "RBI accounting year",
+"2019|54|united-nations": "UNCAC vs UNTOC; UNODC mandate",
+"2018|83|environmental-organisations": "PAGE origin: Rio+20 (2012)",
+"2017|60|united-nations": "UN-Habitat mandate & partners",
+"2010|100|fundamental-rights": "Child Rights Convention",
+"2010|42|general-awareness-world": "UN-linked bodies: World Bank Group vs BIS",
+"2010|46|contemporary-events-world": "Stiglitz Commission: global financial system reform",
+"2010|68|contemporary-events-world": "UN-Habitat GRHS 2009: fastest urbanising region (Asia)",
+"2009|80|general-awareness-world": "ECOSOC: membership size & election/term",
+"2015|2|finance-commission": "14th FC: 42% devolution; no sector-specific grants",
+"2021|29|pollution": "UNEP Common Carbon Metric: buildings' carbon footprint",
+"2022|4|g20": "G20 Common Framework: debt relief, Paris Club",
+"2025|70|pm-surya-ghar": "PM Surya Ghar: 1 cr rooftops, MNRE training, 3 lakh skilling",
+"2016|76|atal-pension-yojana": "APY: unorganised sector, spouse pension, family eligibility",
+"2018|36|digital-india": "Digital India aims: village internet, public Wi-Fi",
+"2017|84|chabahar-port": "Chabahar: Afghanistan/Central Asia access bypassing Pakistan",
+"2012|1|pesa": "PESA Gram Sabha: land alienation, MFP ownership, minor minerals",
+"1997|46|important-concepts-in-economy": "HDI components: GDP per head at PPP",
+"2024|100|pm-sym": "PM-SYM: entry age, contribution, ₹3,000 pension, family pension",
+"2023|14|nocturnal-animals": "Nocturnal fauna: Lion-tailed macaque is diurnal",
+"2022|86|senkaku-islands": "Senkaku: China–Japan East China Sea dispute",
+"2013|25|pesa": "PESA objectives (not autonomous regions)",
+"2020|55|nuclear-technology": "IAEA safeguards: imported-uranium reactors",
+"2007|31|contemporary-events-world": "EU 2007 entrants: Bulgaria & Romania",
+"2016|21|pmfby": "PMFBY premium rates; post-harvest loss cover",
+"2012|9|speaker-of-lok-sabha": "Speaker: tenure, membership, resignation to Deputy Speaker",
+"2023|37|money-bill": "Money vs Finance Bill: RS powers, no joint sitting",
+"2015|3|brics": "Fortaleza Declaration: 6th BRICS summit",
+"2017|72|soil-health-card": "Soil Health Card aim: check fertiliser overuse",
+"2015|33|international-relations": "Golan Heights: Middle East",
+"2022|16|provisions-of-the-antidefection-law": "nominated member joining party; no decision deadline",
+"2024|72|71st-amendment": "71st Amdt: Konkani, Manipuri, Nepali added",
+"2016|75|imf": "Global Financial Stability Report: IMF",
+"2017|9|wef": "Global Gender Gap Index: WEF",
+"2016|26|stand-up-india": "Stand-Up India: SC/ST/women; SIDBI refinance",
+"2017|33|e-nam": "e-NAM: e-trading portal, nationwide market",
+"2017|30|himalayan-riverdrainage": "Teesta source, Rangeet tributary, outfall",
+"2010|94|indian-geography": "Luni ends in Rann of Kachchh",
+"2024|91|sahel": "Sahel instability linked to coups",
+"2022|17|attorney-general": "AG: Parliament participation (not SG); no resignation with govt",
+"2012|54|delimitation": "Delimitation orders: not court-challengeable, not modifiable by legislature",
+"2015|27|annual-financial-statement-money-bill": "Rajya Sabha: Money Bill, Demands for Grants, AFS discussion",
+"2020|13|basic-structure-of-indian-constitution": "Basic structure, judicial review not in text",
+"2025|21|nato": "NATO members: Bulgaria, Croatia, Sweden, N. Macedonia",
+"2010|64|protected-areas": "Desert National Park",
+"2019|29|dolphin-conservation": "Irrawaddy dolphin: Chilika, not Chambal",
+"2019|36|world-map": "sea–bordering country pairs (Caspian–Kazakhstan)",
+"2014|45|brahmaputra-and-its-tributary": "Rivers through Arunachal: Lohit, Subansiri (not Barak)",
+"2019|38|map-work-world": "glacier–river pairs (Bandarpunch–Yamuna, Siachen–Nubra)",
+"2019|23|famous-places": "Place–river pairs: Trichy on Cauvery",
+"2014|46|wetlands": "Harike confluence",
+"2013|17|lakes": "Nokrek–Garo Hills; Loktak not Barail",
+"2022|70|reservoirs": "reservoir-State pairs",
+"2020|68|oceans": "River mouths: Zambezi → Indian Ocean",
+"2013|70|election-of-the-vice-president": "VP election: nominated MPs can vote; RS Chairman not a member",
+"2017|90|election-commission-of-india": "ECI size (3 not 5), schedule-setting, party split/merger disputes",
+"2013|32|geography-of-protected-areas": "National parks – rivers pairs (Corbett: Ramganga, not Ganga)",
+"2019|22|rhino-conservation": "Asiatic lion endemic to India only",
+"2016|27|climate-change": "GIAHS goal: safeguard traditional farm systems & landscapes"
 },
 "drop": {
-"2004|137|vice-president": [
+"2004|33|vice-president": [
 "e:pres"
 ],
-"2003|433|contemporary-events-india": [
+"2003|140|contemporary-events-india": [
 "e:pres"
 ],
-"2025|12|cop28": [
+"2025|32|cop28": [
 "e:un"
 ],
-"2023|35|groundwater": [
+"2023|76|groundwater": [
 "e:un"
 ],
-"2025|74|wet-bulb": [
+"2025|64|wet-bulb": [
 "e:wb"
 ],
-"2022|22|who": [
+"2022|82|who": [
 "e:who"
 ],
-"2016|59|who": [
+"2016|20|who": [
 "e:who"
 ],
-"1996|512|biology": [
+"1996|30|biology": [
 "e:who"
 ],
-"2017|53|asean": [
+"2017|41|asean": [
 "e:asean"
 ],
-"2007|136|contemporary-events-world": [
+"2007|16|contemporary-events-world": [
 "e:eu"
 ],
-"2000|340|human-development-and-sustainable-development": [
+"2000|13|human-development-and-sustainable-development": [
 "e:undp"
 ],
-"1999|342|human-development-and-sustainable-development": [
-"e:undp"
-],
-"2016|261|ndb": [
+"2016|67|ndb": [
 "e:apec"
 ],
-"2022|147|abdm": [
+"2022|19|abdm": [
 "e:pmjay"
 ],
-"2024|48|land-records": [
+"2024|98|land-records": [
 "e:digitalindia"
 ],
-"2015|342|map-work-india": [
-"e:pa_nagarjunasagar",
-"m:krishna"
-],
-"2022|61|physiography": [
-"e:pa_ndbr"
-],
-"2022|219|himalayas": [
-"e:pa_ndbr"
-],
-"2015|102|locationmap-based": [
-"m:krishna"
-],
-"2003|57|harshavardhan-the-southern-dynasties": [
+"2003|93|harshavardhan-the-southern-dynasties": [
 "m:narmada"
 ],
-"2015|71|international-relations": [
+"2015|64|international-relations": [
 "m:mekong"
 ],
-"2001|306|indian-geography": [
+"2001|22|indian-geography": [
 "m:mekong"
 ],
-"2024|52|troposphere": [
+"2024|2|troposphere": [
 "m:equator"
 ],
-"2004|52|climatology": [
+"2004|71|climatology": [
 "m:equator"
 ],
-"2010|117|climate-change": [
+"2010|56|climate-change": [
 "e:un"
 ],
-"2016|57|united-nations": [
+"2016|81|united-nations": [
 "e:un"
 ],
-"2025|34|brsr": [
+"2025|4|brsr": [
 "e:rbi"
 ],
-"2018|161|situation-assessment-survey-of-agricultural-households": [
+"2018|3|situation-assessment-survey-of-agricultural-households": [
 "e:nso"
 ],
-"1996|112|general-awareness-world": [
+"1996|37|general-awareness-world": [
 "e:asean"
 ],
-"2001|172|human-and-economic-geography": [
+"2001|84|human-and-economic-geography": [
 "m:nile"
 ],
-"2023|80|article-335": [
+"2023|40|article-335": [
 "e:sc"
 ],
-"2022|146|rbi": [
+"2022|63|rbi": [
 "e:rbi"
 ],
-"2014|155|wetlands": [
-"m:chenab"
-],
-"2010|58|fundamental-rights": [
+"2010|100|fundamental-rights": [
 "e:un"
 ],
-"2022|220|reservoirs": [
-"m:chambal"
-],
-"2020|111|rbi": [
+"2020|67|rbi": [
 "e:rbi"
 ],
-"2014|152|climate-change": [
+"2014|79|climate-change": [
 "e:unep"
+],
+"2022|25|physiography": [
+"e:pa_ndbr"
+],
+"2015|15|locationmap-based": [
+"m:krishna"
+],
+"2014|46|wetlands": [
+"m:chenab"
+],
+"2022|70|reservoirs": [
+"m:chambal"
 ]
 }
 },
@@ -5078,7 +5065,7 @@
 "soil health card"
 ],
 "facts": [
-"Card gives nutrient status + fertiliser advice; reissued every 2 years"
+"Card gives nutrient status + fertiliser advice; objective: a card every 2 years (an older PIB text says 3)"
 ],
 "traps": [
 "Merged into RKVY (2022-23) as 'Soil Health & Fertility'; card tests 12 parameters"
@@ -6231,6 +6218,76 @@
 "facts": [],
 "traps": [
 "Split into 4 species (2024); Western Ghats king cobra = Ophiophagus kaalinga"
+]
+},
+{
+"id": "montreal",
+"kind": "International",
+"name": "Montreal Protocol",
+"line": "Protects the ozone layer | 1987, in force 1989 | under the Vienna Convention (1985) | India party 1992",
+"match": [
+"montreal protocol",
+"ozone layer",
+"ozone-depleting",
+"ozone depleting",
+"=ODS"
+],
+"facts": [
+"First UN treaty ratified by every country",
+"World Ozone Day: 16 September"
+],
+"traps": [
+"Kigali Amendment (2016) adds HFCs — which do not deplete ozone but warm the climate"
+]
+},
+{
+"id": "minamata",
+"kind": "International",
+"name": "Minamata Convention",
+"line": "Global treaty on mercury | adopted 2013, in force 2017 | under UNEP | India ratified 2018",
+"match": [
+"minamata"
+],
+"facts": [
+"Named after mercury poisoning at Minamata, Japan"
+],
+"traps": [
+"Allows some mercury uses with phase-out dates; not an immediate total ban"
+]
+},
+{
+"id": "brs",
+"kind": "International",
+"name": "Basel, Rotterdam & Stockholm Conventions",
+"line": "Basel (1989): hazardous waste movement | Rotterdam (1998): prior informed consent for chemicals | Stockholm (2001): persistent organic pollutants",
+"match": [
+"basel convention",
+"rotterdam convention",
+"stockholm convention",
+"persistent organic pollutant*",
+"=POPs"
+],
+"facts": [
+"India is a party to all three; joint secretariat under UNEP (Geneva)"
+],
+"traps": [
+"Basel = waste, Rotterdam = trade consent, Stockholm = eliminate POPs"
+]
+},
+{
+"id": "redd",
+"kind": "International",
+"name": "REDD+",
+"line": "Reducing Emissions from Deforestation & forest Degradation | under UNFCCC | Warsaw Framework for REDD+ (2013)",
+"match": [
+"=REDD",
+"reducing emissions from deforestation"
+],
+"facts": [
+"'+' = conservation, sustainable forest management, enhancement of forest carbon stocks"
+],
+"traps": [
+"A UNFCCC mechanism, not a separate treaty"
 ]
 }
 ],
@@ -7888,7 +7945,8 @@
 "facts": [],
 "traps": [
 "MSP has no statutory backing",
-"Sugarcane gets FRP (Fair & Remunerative Price), not MSP"
+"Sugarcane gets FRP (Fair & Remunerative Price), not MSP",
+"22 mandated crops get MSP; with sugarcane's FRP the count is 23"
 ]
 },
 {
@@ -7949,9 +8007,12 @@
 "match": [
 "biosphere reserve*"
 ],
-"facts": [],
+"facts": [
+"India: 18 biosphere reserves; 13 in UNESCO's World Network (13th: Cold Desert, Himachal, Sep 2025)"
+],
 "traps": [
-"Biosphere reserves are not created under the Wildlife (Protection) Act"
+"Biosphere reserves are not created under the Wildlife (Protection) Act",
+"Nilgiri: India's first biosphere reserve (1986); in UNESCO's network from 2000"
 ]
 },
 {
@@ -8871,6 +8932,537 @@
 "The Lion Capital of Ashoka at Sarnath is India's National Emblem"
 ],
 "traps": []
+},
+{
+"id": "c_caa",
+"kind": "Concept",
+"name": "Citizenship (Amendment) Act 2019",
+"line": "Citizenship for Hindu, Sikh, Buddhist, Jain, Parsi & Christian migrants from Afghanistan, Bangladesh, Pakistan | entered on or before 31 Dec 2014 | naturalisation residency cut from 11 to 5 yrs",
+"match": [
+"citizenship amendment act",
+"citizenship (amendment) act",
+"=CAA rules",
+"citizenship amendment rules"
+],
+"facts": [
+"Rules notified 11 Mar 2024; applications online"
+],
+"traps": [
+"Not applicable in Sixth Schedule tribal areas and Inner Line Permit areas",
+"Covers 6 communities from 3 countries only"
+]
+},
+{
+"id": "c_citizenship",
+"kind": "Concept",
+"name": "Citizenship (Constitution & Act)",
+"line": "Part II, Art 5–11 | Parliament regulates (Art 11) | Citizenship Act 1955: 5 ways to acquire, 3 ways to lose",
+"match": [
+"citizenship act",
+"acquisition of citizenship",
+"deprivation of citizenship",
+"renunciation of citizenship"
+],
+"facts": [
+"Acquire: birth, descent, registration, naturalisation, incorporation of territory",
+"Lose: renunciation, termination, deprivation"
+],
+"traps": [
+"India has single citizenship (no separate State citizenship)"
+]
+},
+{
+"id": "c_oci",
+"kind": "Concept",
+"name": "Overseas Citizen of India (OCI)",
+"line": "Sec 7A, Citizenship Act | introduced 2005 | PIO card merged into OCI (2015) | lifelong multiple-entry visa",
+"match": [
+"overseas citizen of india",
+"=OCI",
+"OCI card*",
+"OCI cardholder*"
+],
+"facts": [
+"No voting rights; cannot hold constitutional posts or buy agricultural/plantation land"
+],
+"traps": [
+"OCI is not dual citizenship"
+]
+},
+{
+"id": "c_art371",
+"kind": "Concept",
+"name": "Special provisions (Art 371–371J)",
+"line": "Part XXI | special provisions for 12 States | e.g. 371A Nagaland (13th CAA 1962), 371F Sikkim (36th CAA 1975), 371J Karnataka (98th CAA 2012)",
+"match": [
+"article 371",
+"art 371",
+"article 371a",
+"article 371f",
+"article 371j"
+],
+"facts": [
+"371A: Parliament's laws on Naga customary law & land apply only if the Assembly agrees",
+"371J: Hyderabad-Karnataka region development board"
+],
+"traps": [
+"Art 371 (special provisions) is different from the repealed Art 370"
+]
+},
+{
+"id": "c_offlang",
+"kind": "Concept",
+"name": "Official language & classical languages",
+"line": "Part XVII, Art 343–351 | Hindi in Devanagari, international form of numerals (Art 343) | Official Languages Act 1963",
+"match": [
+"official language*",
+"official languages act",
+"classical language*",
+"=Rajbhasha"
+],
+"facts": [
+"Art 350A: primary education in mother tongue; Art 350B: Special Officer for linguistic minorities",
+"11 classical languages; Tamil first (2004); 2024: Marathi, Pali, Prakrit, Assamese, Bengali added"
+],
+"traps": [
+"The Constitution names no 'national language'"
+]
+},
+{
+"id": "c_coop",
+"kind": "Concept",
+"name": "Cooperatives (97th CAA)",
+"line": "97th CAA 2011: Art 19(1)(c) right to form cooperatives, Art 43B (DPSP), Part IXB (Art 243ZH–243ZT)",
+"match": [
+"cooperative societ*",
+"co-operative societ*",
+"ministry of cooperation",
+"multi-state cooperative",
+"97th amendment"
+],
+"facts": [
+"Board: max 21 members; 5-year term",
+"Ministry of Cooperation created July 2021"
+],
+"traps": [
+"SC (2021) struck down Part IXB for State cooperatives; it survives only for multi-State cooperatives"
+]
+},
+{
+"id": "c_privileges",
+"kind": "Concept",
+"name": "Parliamentary privileges",
+"line": "Art 105 (Parliament) / Art 194 (State legislatures) | not codified | breach & contempt punishable by the House",
+"match": [
+"breach of privilege",
+"privilege motion",
+"parliamentary privilege*",
+"privileges committee"
+],
+"facts": [
+"Sita Soren case (2024, 7 judges): no immunity for bribery; overruled P.V. Narasimha Rao (1998)"
+],
+"traps": [
+"Privileges also extend to the Attorney General and ministers who speak in the House"
+]
+},
+{
+"id": "c_motions",
+"kind": "Concept",
+"name": "Parliamentary motions",
+"line": "No-confidence: LS only, needs 50 members' support, no reason required | Censure: must state reasons | Adjournment: LS only, 50 members",
+"match": [
+"no-confidence motion",
+"no confidence motion",
+"censure motion",
+"adjournment motion",
+"cut motion*",
+"calling attention"
+],
+"facts": [
+"Cut motions: policy cut (to ₹1), economy cut, token cut (₹100)"
+],
+"traps": [
+"A no-confidence motion cannot be moved in the Rajya Sabha"
+]
+},
+{
+"id": "c_parlcomm",
+"kind": "Concept",
+"name": "Parliamentary committees",
+"line": "Financial: PAC (22: 15 LS + 7 RS), Estimates (30, all LS), Public Undertakings (22: 15 + 7) | 24 Department-related Standing Committees",
+"match": [
+"public accounts committee",
+"estimates committee",
+"committee on public undertakings",
+"standing committee*",
+"joint parliamentary committee",
+"=JPC",
+"select committee"
+],
+"facts": [
+"PAC chair from the Opposition by convention (since 1967); examines CAG reports"
+],
+"traps": [
+"No minister can be a member of the financial committees",
+"Estimates Committee has no Rajya Sabha member"
+]
+},
+{
+"id": "c_preamble",
+"kind": "Concept",
+"name": "Preamble",
+"line": "Based on Objectives Resolution (Nehru, 13 Dec 1946) | amended once: 42nd CAA 1976 added 'socialist', 'secular', 'integrity'",
+"match": [
+"preamble"
+],
+"facts": [
+"Kesavananda (1973): Preamble is part of the Constitution; LIC case (1995) reaffirmed"
+],
+"traps": [
+"Berubari (1960) had said it is NOT part — overruled",
+"Not enforceable in court"
+]
+},
+{
+"id": "c_dpsp",
+"kind": "Concept",
+"name": "Directive Principles (DPSP)",
+"line": "Part IV, Art 36–51 | from Irish Constitution | non-justiciable (Art 37)",
+"match": [
+"directive principle*",
+"=DPSP",
+"=DPSPs"
+],
+"facts": [
+"42nd CAA added Art 39A (legal aid), 43A (workers in management), 48A (environment); 97th CAA added 43B (cooperatives)",
+"Minerva Mills (1980): FR–DPSP balance is part of basic structure"
+],
+"traps": [
+"Art 31C protects laws for 39(b)/(c) from Art 14 & 19 challenges"
+]
+},
+{
+"id": "c_fduties",
+"kind": "Concept",
+"name": "Fundamental Duties",
+"line": "Part IVA, Art 51A | Swaran Singh Committee | added by 42nd CAA 1976 (10 duties) | from USSR",
+"match": [
+"fundamental dut*",
+"article 51a"
+],
+"facts": [
+"11th duty (51A(k)): parents to provide education to children 6–14 — 86th CAA 2002"
+],
+"traps": [
+"Apply to citizens only, not foreigners",
+"Not directly enforceable"
+]
+},
+{
+"id": "c_writs",
+"kind": "Concept",
+"name": "Writs",
+"line": "Art 32 (Supreme Court) and Art 226 (High Courts) | habeas corpus, mandamus, prohibition, certiorari, quo warranto",
+"match": [
+"habeas corpus",
+"mandamus",
+"certiorari",
+"quo warranto",
+"writ petition*",
+"writ of prohibition"
+],
+"facts": [
+"Art 226 is wider: HCs issue writs for legal rights too, not only Fundamental Rights"
+],
+"traps": [
+"Mandamus does not lie against the President, Governors or private persons",
+"Quo warranto can be sought by any person, not only the aggrieved"
+]
+},
+{
+"id": "c_sec",
+"kind": "Concept",
+"name": "State Election Commission",
+"line": "Art 243K (panchayats) / 243ZA (municipalities) | appointed by Governor | removed like a High Court judge",
+"match": [
+"state election commission*",
+"state poll panel"
+],
+"facts": [
+"Conducts panchayat & municipal polls; ECI has no role in them"
+],
+"traps": [
+"Not the same body as the Election Commission of India"
+]
+},
+{
+"id": "c_npa",
+"kind": "Concept",
+"name": "NPAs & Insolvency (IBC)",
+"line": "NPA: interest/principal overdue > 90 days | substandard (≤ 12 months NPA) → doubtful → loss | IBC 2016 for resolution",
+"match": [
+"non-performing asset*",
+"=NPA",
+"=NPAs",
+"bad loan*",
+"insolvency and bankruptcy",
+"=IBC",
+"=NCLT"
+],
+"facts": [
+"IBC: resolution within 330 days incl. litigation; IBBI regulates; NCLT adjudicates companies, DRT individuals"
+],
+"traps": [
+"Gross NPA ratio ≠ net NPA (net deducts provisions)"
+]
+},
+{
+"id": "c_moneymkt",
+"kind": "Concept",
+"name": "Money market instruments",
+"line": "Short-term debt (≤ 1 year) | regulated by RBI | T-bills 91/182/364 days issued by RBI for the Centre",
+"match": [
+"treasury bill*",
+"=T-bills",
+"commercial paper*",
+"certificate of deposit",
+"certificates of deposit",
+"money market"
+],
+"facts": [
+"Commercial paper: corporates; certificate of deposit: banks & select FIs"
+],
+"traps": [
+"States do not issue T-bills (they borrow via State Development Loans)",
+"T-bills are zero-coupon, issued at a discount"
+]
+},
+{
+"id": "c_gdp",
+"kind": "Concept",
+"name": "GDP & national accounts",
+"line": "Compiled by NSO (MoSPI) | new series base year 2022-23 | measured by production, income and expenditure methods",
+"match": [
+"gross domestic product",
+"=GDP",
+"gross value added",
+"=GVA",
+"national income"
+],
+"facts": [
+"GVA at basic prices + product taxes − product subsidies = GDP",
+"Real GDP = nominal GDP ÷ GDP deflator"
+],
+"traps": [
+"GNP = GDP + net factor income from abroad"
+]
+},
+{
+"id": "c_nfsa",
+"kind": "Concept",
+"name": "Food security (NFSA & PMGKAY)",
+"line": "NFSA 2013 | covers up to 75% rural & 50% urban population | 5 kg grain/person/month; AAY 35 kg/household",
+"match": [
+"national food security act",
+"=NFSA",
+"=PMGKAY",
+"garib kalyan anna yojana",
+"one nation one ration card",
+"=ONORC",
+"public distribution system"
+],
+"facts": [
+"Free grain under PMGKAY since 1 Jan 2023; extended for 5 years from 1 Jan 2024"
+],
+"traps": [
+"Eldest woman (18+) is head of household for ration cards"
+]
+},
+{
+"id": "c_msme",
+"kind": "Concept",
+"name": "MSME classification",
+"line": "Composite criteria (investment + turnover) | revised from 1 Apr 2025",
+"match": [
+"=MSME",
+"=MSMEs",
+"micro, small and medium",
+"micro small and medium"
+],
+"facts": [
+"Micro: ≤ ₹2.5 cr investment & ≤ ₹10 cr turnover; Small: ≤ ₹25 cr & ≤ ₹100 cr; Medium: ≤ ₹125 cr & ≤ ₹500 cr"
+],
+"traps": [
+"Same limits for manufacturing and services (since 2020)"
+]
+},
+{
+"id": "c_masala",
+"kind": "Concept",
+"name": "Masala bonds",
+"line": "Rupee-denominated bonds issued abroad | currency risk borne by the investor",
+"match": [
+"masala bond*"
+],
+"facts": [
+"First: IFC (World Bank) 2014; HDFC first Indian corporate (2016)"
+],
+"traps": [
+"Issuer is protected from rupee depreciation, not the buyer"
+]
+},
+{
+"id": "c_carbonmkt",
+"kind": "Concept",
+"name": "Carbon markets (CCTS)",
+"line": "Carbon Credit Trading Scheme 2023 | under Energy Conservation (Amendment) Act 2022 | administered by BEE; Grid-India registry",
+"match": [
+"carbon credit*",
+"carbon market*",
+"carbon credit trading",
+"=CCTS"
+],
+"facts": [
+"Paris Agreement Art 6: international carbon trading rules (finalised at COP29)"
+],
+"traps": [
+"Carbon credit = 1 tonne CO2-equivalent"
+]
+},
+{
+"id": "c_ist",
+"kind": "Concept",
+"name": "Indian Standard Time",
+"line": "Standard meridian 82.5°E (near Mirzapur, UP) | IST = GMT + 5:30 | India spans ~30° of longitude (~2 hrs)",
+"match": [
+"indian standard time",
+"time zone*",
+"standard meridian"
+],
+"facts": [
+"82.5°E passes through UP, MP, Chhattisgarh, Odisha and Andhra Pradesh"
+],
+"traps": [
+"Each 1° of longitude = 4 minutes"
+]
+},
+{
+"id": "c_coral",
+"kind": "Concept",
+"name": "Coral reefs",
+"line": "Calcium carbonate structures built by polyps living with algae (zooxanthellae) | warm, clear, shallow water",
+"match": [
+"coral reef*",
+"coral bleaching"
+],
+"facts": [
+"India's 4 major reef areas: Gulf of Mannar, Gulf of Kutch, Lakshadweep, Andaman & Nicobar"
+],
+"traps": [
+"Bleaching = corals expel zooxanthellae under heat stress; not immediate death"
+]
+},
+{
+"id": "c_hotspots",
+"kind": "Concept",
+"name": "Biodiversity hotspots",
+"line": "Concept by Norman Myers (1988) | ≥ 1,500 endemic vascular plants + ≥ 70% original habitat lost | 36 worldwide",
+"match": [
+"biodiversity hotspot*"
+],
+"facts": [
+"India has 4: Himalaya, Indo-Burma, Western Ghats & Sri Lanka, Sundaland (Nicobar Islands)"
+],
+"traps": [
+"Eastern Ghats are NOT a hotspot"
+]
+},
+{
+"id": "c_mangroves",
+"kind": "Concept",
+"name": "Mangroves",
+"line": "Salt-tolerant coastal forests | Sundarbans: world's largest mangrove forest | MISHTI scheme (2023) for mangrove plantation",
+"match": [
+"mangrove*",
+"=MISHTI"
+],
+"facts": [
+"West Bengal has the most mangrove cover, then Gujarat and Andaman & Nicobar"
+],
+"traps": [
+"Mangroves have pneumatophores (breathing roots) and viviparous seeds"
+]
+},
+{
+"id": "c_critmin",
+"kind": "Concept",
+"name": "Critical minerals",
+"line": "National Critical Mineral Mission (2025) | 30 critical minerals identified by the Mines Ministry (2023)",
+"match": [
+"critical mineral*",
+"rare earth*",
+"=NCMM"
+],
+"facts": [
+"Lithium found in Reasi (J&K, 2023); critical mineral blocks auctioned under MMDR Amendment 2023"
+],
+"traps": [
+"Lithium, cobalt, rare earths are critical for batteries & clean energy"
+]
+},
+{
+"id": "c_ewaste",
+"kind": "Concept",
+"name": "E-waste rules",
+"line": "E-Waste (Management) Rules 2022 | in force 1 Apr 2023 | Extended Producer Responsibility (EPR) certificates via CPCB portal",
+"match": [
+"e-waste",
+"electronic waste"
+],
+"facts": [
+"India is the 3rd-largest e-waste generator (after China and the US)"
+],
+"traps": [
+"Rules made under the Environment (Protection) Act 1986"
+]
+},
+{
+"id": "c_fra",
+"kind": "Concept",
+"name": "Forest Rights Act 2006",
+"line": "Scheduled Tribes & Other Traditional Forest Dwellers Act | Ministry of Tribal Affairs | Gram Sabha starts the process",
+"match": [
+"forest rights act",
+"=FRA",
+"forest rights",
+"community forest resource*"
+],
+"facts": [
+"Cut-off: forest occupation before 13 Dec 2005; individual land up to 4 ha",
+"Other traditional forest dwellers must show 3 generations (75 yrs) of residence"
+],
+"traps": [
+"Nodal ministry is Tribal Affairs, not Environment"
+]
+},
+{
+"id": "c_wpa",
+"kind": "Concept",
+"name": "Wildlife (Protection) Act 1972",
+"line": "Schedules cut from 6 to 4 by the 2022 amendment | Schedule I = highest protection | also implements CITES",
+"match": [
+"wildlife protection act",
+"wildlife (protection) act",
+"schedule i species",
+"=WPA"
+],
+"facts": [
+"2022 amendment: Schedule IV for CITES-listed species; Management Authority & Scientific Authority under CITES"
+],
+"traps": [
+"Tiger reserves are notified under Sec 38V of this Act"
+]
 }
 ],
 "noise": [

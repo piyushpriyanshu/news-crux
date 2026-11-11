@@ -40,6 +40,10 @@ public final class Pyq {
     public static final class Row {
         String asp;
         public Set<String> ids = new HashSet();
+        /** Cards named only in the question's statements (weaker evidence than the lead or the answer). */
+        Set<String> ids2 = new HashSet();
+        /** Whole question text (null when not available). */
+        String full;
         public String qno;
         public String stem;
         public String subj;
@@ -97,8 +101,40 @@ public final class Pyq {
     }
 
     public Pyq(String str, Kb kb) throws Exception {
+        this(str, null, kb);
+    }
+
+    /** Full question texts by "year|q": [stem, [a, b, c, d], answer index] (pyq_text.js). */
+    JSONObject text;
+
+    /** @param textJs full questions with options and answers; matching then uses the whole stem plus the correct option. */
+    public Pyq(String str, String textJs, Kb kb) throws Exception {
         this.kb = kb;
+        if (textJs != null) {
+            String t = textJs.trim();
+            int a = t.indexOf('{'), b = t.lastIndexOf('}');
+            if (a >= 0 && b > a) this.text = new JSONObject(t.substring(a, b + 1));
+        }
         load(str, this.rows, this.df, null);
+    }
+
+    /** The correct option's text when it names something ("Sundarbans"), else "". */
+    String right(Row row) {
+        if (text == null) return "";
+        JSONArray q = text.optJSONArray(row.year + "|" + row.qno);
+        if (q == null) return "";
+        row.full = q.optString(0);
+        JSONArray o = q.optJSONArray(1);
+        int ans = q.optInt(2, -1);
+        String right = (o != null && ans >= 0 && ans < o.length()) ? o.optString(ans) : "";
+        if (right.matches("(?i)^(?:[1-4IV]+(?:\\s*(?:,|and|&)\\s*[1-4IV]+)*\\s*only|both.*|neither.*|none.*|all.*|only (one|two|three|four)|[1-4IV, and]+)$")) right = "";
+        return right;
+    }
+
+    /** "year|q" key of a CSE question with full text, or null. */
+    public String key(Row row) {
+        String k = row.year + "|" + row.qno;
+        return row.exam == null && text != null && text.has(k) ? k : null;
     }
 
     /** Adds CDS / CAPF rows ([year, q, subject, topic, theme, stem, exam]). */
@@ -124,11 +160,15 @@ public final class Pyq {
                 row.stem = jSONArray2.getString(5);
                 if (examDefault != null) row.exam = jSONArray2.optString(6, examDefault);
                 if (!row.stem.startsWith("Directions")) {
-                    row.tok = new HashSet(tok(row.stem + " " + row.theme.replace('-', ' ')));
+                    // lead of the question + the correct option = what was asked; the statements are weaker evidence
+                    String core = examDefault == null ? (row.stem + " " + right(row)).trim() : row.stem;
+                    row.tok = new HashSet(tok(core + " " + row.theme.replace('-', ' ')));
                     if (kb != null) {
-                        row.ids.addAll(kb.idsIn(row.stem));
+                        row.ids.addAll(kb.idsIn(core));
+                        if (row.full != null) for (String id : kb.idsIn(row.full)) if (!row.ids.contains(id)) row.ids2.add(id);
                         String replace = row.theme.replace('-', ' ');
-                        if (row.stem.split("\\s+").length < 7) {
+                        if (!row.theme.startsWith("x-") && !GENERIC.contains(row.theme) && row.full != null) row.ids.addAll(kb.idsIn(replace)); // researched theme names the subject
+                        if (core.split("\\s+").length < 7) {
                             row.ids.addAll(kb.idsIn(replace));
                         } else if (row.theme.length() <= 6) {
                             row.ids.addAll(kb.idsIn(row.theme.toUpperCase(Locale.ROOT)));
@@ -206,6 +246,13 @@ public final class Pyq {
             for (Row row : rs) {
                 for (String id : set) if (row.ids.contains(id)) { arrayList.add(row); break; }
             }
+            final Set<Row> weak = new HashSet<Row>();
+            if (arrayList.size() < 2) { // few direct questions: also those that name it in a statement
+                for (Row row : rs) {
+                    if (arrayList.contains(row)) continue;
+                    for (String id : set) if (row.ids2.contains(id)) { arrayList.add(row); weak.add(row); break; }
+                }
+            }
             if (!arrayList.isEmpty()) {
                 final HashMap hashMap = new HashMap();
                 HashSet<String> hashSet2 = new HashSet();
@@ -231,10 +278,15 @@ public final class Pyq {
                 Collections.sort(arrayList, new Comparator<Row>() { // from class: app.newsbreak.core.Pyq.1
                     @Override // java.util.Comparator
                     public int compare(Row row3, Row row4) {
+                        int w = Boolean.compare(weak.contains(row3), weak.contains(row4));
+                        if (w != 0) return w;
                         int compare = Double.compare(((Double) hashMap.get(row4)).doubleValue(), ((Double) hashMap.get(row3)).doubleValue());
                         return compare != 0 ? compare : row4.year - row3.year;
                     }
                 });
+                // a weak row must share at least one real word with the story
+                for (java.util.Iterator<Row> it = arrayList.iterator(); it.hasNext(); ) { Row r = it.next(); if (weak.contains(r) && ((Double) hashMap.get(r)).doubleValue() <= 0) it.remove(); }
+                if (arrayList.isEmpty()) return match(rs, dfm, str, str2, str3, i);
                 return arrayList.size() > i ? new ArrayList(arrayList.subList(0, i)) : arrayList;
             }
         }
@@ -323,7 +375,7 @@ public final class Pyq {
         }
         String tidy = tidy(aspect0(row));
         if (bad(tidy)) {
-            tidy = tidy(row.theme.replace('-', ' '));
+            tidy = row.theme.startsWith("x-") ? "asked" : tidy(row.theme.replace('-', ' '));
             if (GENERIC.contains(row.theme) || bad(tidy)) {
                 tidy = "asked";
             }
@@ -353,10 +405,13 @@ public final class Pyq {
         if (lowerCase.matches("^(recently|according|a present|which|who|whom|what|consider|not |never|economist|pairs|bilateral|with |in |the following|it is|and |or |as per|how |why |where |when ).*")) {
             return true;
         }
+        if (lowerCase.matches("^(statements?|the statements?|match list|: ).*") || lowerCase.matches(".*\\b\\d$") || lowerCase.matches(".*\\b(is|are) (not )?(correct|incorrect|true|false)\\b.*")) return true;
         return lowerCase.matches("^(india|indian|the world|world|indian economy|the indian economy|india's|the country|countries|statements?|the context|following)$");
     }
 
     static String aspect0(Row row) {
+        String a = aspectFull(row);
+        if (a != null) return a;
         Matcher matcher = ASPECT.matcher(row.stem);
         if (matcher.find()) {
             String replaceAll = matcher.group(1).trim().replaceAll("\\s+(consider|which|the following).*$", "").replaceAll("\\s+", " ");
@@ -368,7 +423,7 @@ public final class Pyq {
         if (matcher2.find()) {
             return Text.cap(matcher2.group(1).trim(), 36);
         }
-        if (!GENERIC.contains(row.theme)) {
+        if (!GENERIC.contains(row.theme) && !row.theme.startsWith("x-")) {
             return row.theme.replace('-', ' ');
         }
         String[] split = row.stem.replaceAll("(?i)^(consider the following( statements)?:?|which (one )?of the following|who (among|amongst) the following|what is|what are|in india,?)\\s*", "").replaceAll("(?i)^(is|are|was|were|has|have)\\s+", "").replaceAll("[:?….]+$", "").trim().split("\\s+");
@@ -383,6 +438,37 @@ public final class Pyq {
             return sb.toString().replaceAll("^(?i)the ", "");
         }
         return row.topic.toLowerCase(Locale.ROOT);
+    }
+
+    private static final Pattern STMT1 = Pattern.compile("(?:^|\\s)(?:1\\.|I\\.)\\s*([^.;:?]{8,80})");
+    private static final Pattern WHICH = Pattern.compile("(?i)^(?:which|who|what|where)\\b(?: one)?(?: (?:of|among|amongst) the following)?\\s+(?:is|are|was|were|has|have|can|does)?\\s*(?:the |an? )?(.{6,60}?)[?:.]?$");
+
+    /** "What was asked" from the whole question when the short stem says too little. */
+    static String aspectFull(Row row) {
+        if (row.full == null || row.full.length() < 20) return null;
+        if (!row.theme.startsWith("x-")) return null; // researched/specific themes keep the old wording
+        String a = aspectFull0(row);
+        return a == null || a.toLowerCase(Locale.ROOT).matches(".*\\b(statements?|correct|following|above|given below|code)\\b.*") ? null : a;
+    }
+
+    static String aspectFull0(Row row) {
+        Matcher m = ASPECT.matcher(row.full);
+        if (m.find()) {
+            String t = m.group(1).trim().replaceAll("\\s+(consider|which|the following).*$", "").replaceAll("\\s+", " ");
+            if (t.length() >= 3 && !bad(tidy(t))) return Text.cap(t, 36);
+        }
+        Matcher q = QUOTED.matcher(row.full);
+        if (q.find()) return Text.cap(q.group(1).trim(), 36);
+        Matcher s1 = STMT1.matcher(row.full);
+        if (s1.find() && row.full.matches("(?is)^\\s*consider the following.*")) {
+            String t = s1.group(1).replaceAll("\\s+(?:\\d|I{1,3}|IV|V)\\.?\\s*.*$", "").replaceAll("[\\s:,;–—-]+$", "").trim();
+            if (t.length() < 8 || t.matches("(?i)^(according|the following|which|in the|it is).*")) return null;
+            if (!bad(tidy(t))) return Text.cap(t, 40);
+        }
+        String first = row.full.split("(?<=[?:])\\s")[0].trim();
+        Matcher w = WHICH.matcher(first);
+        if (w.find() && !bad(tidy(w.group(1)))) return Text.cap(w.group(1).trim(), 40);
+        return null;
     }
 
     public static String compact(List<Row> list, String str) {

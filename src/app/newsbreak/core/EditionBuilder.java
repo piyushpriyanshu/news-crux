@@ -607,14 +607,39 @@ public final class EditionBuilder {
         return arrayList2;
     }
 
-    private static boolean junk(String str) {
+    /** Quiz text, exam tags, bylines, captions and page furniture: never a bullet. */
+    private static final Pattern NOISE = Pattern.compile("(?i)consider the following|which (one )?of the following|select the correct (answer|code)|^(statement[- ]?ii?\\b|how many of the|assertion \\(a\\)|q\\.?\\s?\\d+[.)]|question\\s*\\d|ans(wer)?\\s*[:.-]|by\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+\\s*$|written by|edited by|updated\\s*:|published\\s*:|last updated|photo\\s*:|image\\s*:|file photo|representational|credit\\s*:|source\\s*:|also read|read more|tags?\\s*:|gs paper|syllabus|mains (question|practice)|prelims (question|practice)|practice question|daily quiz|test your)|\\(a\\)\\s*[^()]{1,40}\\(b\\)\\s*[^()]{1,40}\\(c\\)|\\[[^\\]]{0,40}(u\\.?p\\.?p\\.?c\\.?s|upsc|cse|pcs|ssc|cds|capf|\\(pre\\)|prelims|mains)|\\(pre\\)\\s*\\d{4}|https?://|www\\.|@\\w+\\.(com|in)|\\b(click|tap) here\\b|\\|\\s*\\w+\\s*\\|");
+
+    static boolean junk(String str) {
         String lowerCase = str.toLowerCase();
         for (String str2 : JUNK) {
             if (lowerCase.contains(str2)) {
                 return true;
             }
         }
+        if (NOISE.matcher(str.trim()).find()) return true;
+        String t = str.trim().replaceAll("[\\s.…]+$", "");
+        if (t.contains(" ? ") || t.matches("(?i).*\\b(of|at|to|the|a|an|is|are|was|were|by|in|on|for|with|from|and|or|as)$")) return true; // a cut-off question stem
         return str.endsWith("?") || str.length() < 30;
+    }
+
+    /** One fact, short: a long sentence is cut at a clause break (never mid-word). */
+    static String concise(String s) {
+        String n = Text.note(s, 210);
+        if (n.length() <= 170) return n;
+        int best = -1;
+        for (String br : new String[]{"; ", " — ", " – ", ", while ", ", whereas ", ", which ", ", but ", ", and "}) {
+            int k = n.lastIndexOf(br, 168);
+            if (k >= 70 && k > best) best = k;
+        }
+        return best > 0 ? n.substring(0, best).replaceAll("[,;:\\s]+$", "") : n;
+    }
+
+    /** A bullet from another item must name something the headline or the lead item names. */
+    static boolean onTopic(String line, Set<String> topicWords) {
+        if (topicWords.isEmpty()) return true;
+        for (String w : strong(Text.tokens(line))) if (topicWords.contains(w)) return true;
+        return Text.overlap(strongSim(Text.simTokens(line)), topicWords) > 0;
     }
 
     JSONObject topic(Cluster cluster, Set<String> set, String str) throws Exception {
@@ -692,6 +717,7 @@ public final class EditionBuilder {
             }
         }
         ArrayList<String> arrayList2 = new ArrayList();
+        HashSet<String> headLines = new HashSet<String>();
         HashSet hashSet = new HashSet();
         final HashMap hashMap = new HashMap();
         ArrayList<JSONObject> arrayList3 = new ArrayList(cluster.items);
@@ -719,6 +745,7 @@ public final class EditionBuilder {
                         }
                         double d2 = d - (0.15d * i5);
                         if (!hashMap.containsKey(str4)) {
+                            if (jSONObject6 == jSONObject3) headLines.add(str4);
                             arrayList2.add(str4);
                             hashMap.put(str4, Double.valueOf(d2));
                             i4++;
@@ -730,6 +757,7 @@ public final class EditionBuilder {
                 for (int i7 = 0; optJSONArray != null && i7 < optJSONArray.length(); i7++) {
                     String optString = optJSONArray.optString(i7);
                     if (!junk(optString) && !hashMap.containsKey(optString)) {
+                        if (jSONObject6 == jSONObject3) headLines.add(optString);
                         double d3 = 1.3d - (0.1d * i7);
                         if (Text.hasFigure(optString)) {
                             d3 += 1.8d;
@@ -756,7 +784,8 @@ public final class EditionBuilder {
                     int i8 = 0;
                     while (i8 < optJSONArray2.length() && i8 < 5) {
                         String optString2 = optJSONArray2.optString(i8);
-                        if (optString2.length() >= 30 && !hashMap.containsKey(optString2)) {
+                        if (optString2.length() >= 30 && !hashMap.containsKey(optString2) && !junk(optString2)) {
+                            if (jSONObject7 == jSONObject3) headLines.add(optString2);
                             double d4 = ((1.4d - (0.12d * i8)) + (Text.hasFigure(optString2) ? 1.5d : 0.0d)) - (i3 >= 3 ? 0.9d : 0.0d);
                             double d5 = i8 == 0 ? 0.4d : 0.0d;
                             arrayList2.add(optString2);
@@ -785,11 +814,14 @@ public final class EditionBuilder {
         });
         ArrayList arrayList4 = new ArrayList();
         ArrayList arrayList5 = new ArrayList();
+        Set<String> topicWords = new HashSet<String>(strong(Text.tokens(cap)));
+        topicWords.addAll(strongSim(Text.simTokens(cap)));
         for (String str5 : arrayList2) {
             if (arrayList4.size() >= 5) {
                 break;
             }
-            String note = Text.note(str5, 210);
+            if (!headLines.contains(str5) && !hashSet.contains(str5) && !onTopic(str5, topicWords)) continue; // a neighbouring story's line
+            String note = concise(str5);
             Set<String> set3 = Text.tokens(note);
             if (set3.size() >= 3 && Text.jaccard(set3, set2) < 0.7d && addsInfo(note, cap, 3) && (!hashSet.contains(str5) || addsInfo(note, cap + ". " + join(arrayList4), 4))) {
                 Iterator it4 = arrayList5.iterator();
@@ -1068,7 +1100,10 @@ public final class EditionBuilder {
             JSONArray jSONArray3 = new JSONArray();
             for (Pyq.Row row : matchTopic) {
                 String aspect = Pyq.aspect(row);
-                jSONArray3.put(new JSONArray().put(row.year).put((str12 == null || !Pyq.sameAs(aspect, str12)) ? aspect : "asked"));
+                JSONArray ev = new JSONArray().put(row.year).put((str12 == null || !Pyq.sameAs(aspect, str12)) ? aspect : "asked");
+                String qk = this.pyq.key(row);
+                if (qk != null) ev.put(qk); // opens the full question in the app
+                jSONArray3.put(ev);
             }
             jSONObject14.put("pyqEv", jSONArray3);
             if (str3 != null) {

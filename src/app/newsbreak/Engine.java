@@ -82,7 +82,7 @@ public final class Engine {
         synchronized (Engine.class) {
             if (pyq == null && !pyqFailed) {
                 try {
-                    Pyq p = new Pyq(Store.asset(context, "www/data/pyq.js"), kb(context));
+                    Pyq p = new Pyq(Store.asset(context, "www/data/pyq.js"), Store.asset(context, "www/data/pyq_text.js"), kb(context));
                     try { p.addMore(Store.asset(context, "www/data/pyq_more.js")); } catch (Throwable t) {} // CDS / CAPF: optional
                     pyq = p;
                 } catch (Throwable th) {

@@ -110,8 +110,10 @@
       const who = m && m[1] ? m[1] : '';
       // one row per distinct "what was asked", years merged, newest first
       const rows = [], idx = {};
-      ev.forEach(e => { const k = String(e[1]).toLowerCase(); if (idx[k] == null) { idx[k] = rows.length; rows.push({ a: e[1], y: [e[0]] }); } else if (rows[idx[k]].y.indexOf(e[0]) < 0) rows[idx[k]].y.push(e[0]); });
-      const list = rows.map(r => `<div class="pqr"><span class="pqy">${r.y.map(y => '’' + pad(y % 100)).join(' ')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
+      ev.forEach(e => { const k = String(e[1]).toLowerCase(); if (idx[k] == null) { idx[k] = rows.length; rows.push({ a: e[1], y: [e[0]], q: [e[2] || ''] }); } else if (rows[idx[k]].y.indexOf(e[0]) < 0) { rows[idx[k]].y.push(e[0]); rows[idx[k]].q.push(e[2] || ''); } });
+      // a year with the full question saved opens it (question, options, correct answer)
+      const yr = (r, j) => r.q[j] ? `<button class="pqy pqo" data-pyq="${esc(r.q[j])}" aria-label="Open the ${r.y[j]} question">’${pad(r.y[j] % 100)}</button>` : `<span class="pqy">’${pad(r.y[j] % 100)}</span>`;
+      const list = rows.map(r => `<div class="pqr"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
       return `<div class="pyq"><div class="lab">${ic('target', 'xs')}<span>Asked in Prelims${who ? `: <b>${esc(who)}</b>` : ''}</span></div>${list}</div>`;
     }
     const th = THEME[t.theme];
@@ -777,7 +779,7 @@
         <div class="set" data-act="rules"><div class="t"><b>Your master prompt</b><small>The locked format and rules every edition follows.</small></div>${ic('chev', 'sm')}</div>
         <div class="set" data-act="checklog"><div class="t"><b>Pre-send check log</b><small>Rule trips by date (pattern flagged after 3 in a row).</small></div>${ic('chev', 'sm')}</div>
       </div>
-      <div class="foot">News Crux ${esc(S.boot.version || '')} · 3,489 CSE + 1,668 CDS/CAPF PYQs · ${KB.entities.length} verified profiles · ${(window.SOURCES || []).length} sources</div>
+      <div class="foot">News Crux ${esc(S.boot.version || '')} · ${PYQ.length.toLocaleString("en-IN")} CSE (1995–2026) + 1,668 CDS/CAPF PYQs · ${KB.entities.length} verified profiles · ${(window.SOURCES || []).length} sources</div>
     </div>`;
   }
   function updRow() {
@@ -832,6 +834,23 @@
   }
 
   /* ---------------- sheet ---------------- */
+  /* Full PYQ (question, options, answer) — loaded on first use */
+  function loadPyqText(cb) {
+    if (window.PYQ_TEXT) return cb();
+    const sc = document.createElement('script'); sc.src = 'data/pyq_text.js';
+    sc.onload = () => cb(); sc.onerror = () => toast('Could not open the question');
+    document.head.appendChild(sc);
+  }
+  function openPyq(key) {
+    loadPyqText(() => {
+      const q = (window.PYQ_TEXT || {})[key];
+      if (!q) { toast('Question text not available'); return; }
+      const yr = key.split('|')[0];
+      const stem = esc(q[0]).replace(/\s((?:\d|I{1,3}|IV|V)\.)\s/g, '<br>$1 ');
+      const opts = (q[1] || []).map((o, i) => `<div class="pqopt${i === q[2] ? ' ok' : ''}"><span class="pql">${'abcd'[i]}</span><span>${esc(o)}</span>${i === q[2] ? `<span class="pqk">${ic('check', 'xs')}Answer</span>` : ''}</div>`).join('');
+      openSheet(`<h3>UPSC Prelims ${esc(yr)}</h3><div class="pqq">${stem}</div><div class="pqopts">${opts}</div><div class="note">Answer as per the UPSC key.</div>`);
+    });
+  }
   function openSheet(html) { $('#sheet').innerHTML = '<div class="grab"></div>' + html; $('#sheet').classList.add('on'); $('#scrim').classList.add('on'); S.sheetOpen = true; }
   function closeSheet() { $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.sheetOpen = false; }
   function findTopic(id) {
@@ -847,7 +866,7 @@
 
   /* ---------------- events ---------------- */
   function onClick(e) {
-    const el = e.target.closest('[data-up],[data-prov],[data-tab],[data-date],[data-mode],[data-act],[data-lf],[data-lmode],[data-fs],[data-ps],[data-py],[data-rev],[data-open],[data-url],[data-fdel],[data-int],[data-theme-set],[data-ts],[data-dlv],[data-span],[data-unrep],[data-goto],[data-shtheme],[data-shfull],[data-cu]');
+    const el = e.target.closest('[data-up],[data-prov],[data-tab],[data-date],[data-mode],[data-act],[data-lf],[data-lmode],[data-fs],[data-ps],[data-py],[data-rev],[data-open],[data-url],[data-fdel],[data-int],[data-theme-set],[data-ts],[data-dlv],[data-span],[data-unrep],[data-goto],[data-shtheme],[data-shfull],[data-cu],[data-pyq]');
     if (!el) return;
     const d = el.dataset;
     if (d.tab) return go(d.tab);
@@ -863,6 +882,7 @@
       else { el.dataset.armed = '1'; el.style.color = 'var(--red)'; toast('Tap ✕ again to delete'); setTimeout(() => { delete el.dataset.armed; el.style.color = ''; }, 2500); }
       return;
     }
+    if (d.pyq) { openPyq(d.pyq); return; }
     if (d.up) { const ord = (S.boot.settings.order || []).slice(); const i = ord.indexOf(d.up); if (i > 0) { ord.splice(i, 1); ord.splice(i - 1, 0, d.up); } N.setString('aiOrder', ord.join(',')); S.boot.settings.order = ord; openPage(settingsPage()); toast((S.boot.settings.providers[ord[0]] || {}).name + ' is now primary'); return; }
     if (d.prov) { N.setString('aiProvider', d.prov); S.aitest = ''; openPage(settingsPage()); return; }
     if (d.int) { N.setInt('intervalHours', Number(d.int)); S.boot.settings.intervalHours = Number(d.int); openPage(settingsPage()); toast('Sync every ' + d.int + 'h'); return; }
