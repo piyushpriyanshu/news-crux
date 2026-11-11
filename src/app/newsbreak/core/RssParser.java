@@ -33,6 +33,7 @@ public final class RssParser {
             String trim = str.trim();
             int indexOf = trim.indexOf(60);
             String substring = indexOf > 0 ? trim.substring(indexOf) : trim;
+            if (substring.contains("<urlset")) return sitemap(substring);
             try {
                 arrayList = pull(substring, parserFactory);
             } catch (Throwable th) {
@@ -154,6 +155,24 @@ public final class RssParser {
             return trim.substring(9, trim.endsWith("]]>") ? trim.length() - 3 : trim.length());
         }
         return trim;
+    }
+
+    private static final Pattern URL_BLOCK = Pattern.compile("<url>(.*?)</url>", Pattern.DOTALL);
+
+    /** A Google News sitemap (every article of the last two days): address, headline and publication time per entry. */
+    static List<Raw> sitemap(String str) {
+        List<Raw> out = new ArrayList<Raw>();
+        Matcher m = URL_BLOCK.matcher(str);
+        while (m.find()) {
+            String u = m.group(1);
+            Raw raw = new Raw();
+            raw.link = tag(u, "loc");
+            raw.title = tag(u, "news:title");
+            raw.date = tag(u, "news:publication_date");
+            if (raw.date.length() == 0) raw.date = tag(u, "lastmod");
+            if (raw.title.trim().length() > 0 && raw.link.startsWith("http")) out.add(raw);
+        }
+        return out;
     }
 
     static List<Raw> regex(String str) {

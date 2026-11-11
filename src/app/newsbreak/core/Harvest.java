@@ -400,16 +400,20 @@ public final class Harvest {
     static boolean readOne(JSONObject it, java.util.concurrent.atomic.AtomicBoolean shut) {
         try {
             synchronized (WRITE) { if (shut.get()) return false; it.put("xa", it.optInt("xa") + 1); }
-            String u = GNews.resolve(it.optString("u"), 12000);
-            if (u == null) return false;
+            String u = Reader.rewrite(GNews.resolve(it.optString("u"), 12000));
+            if (u == null || u.toLowerCase(Locale.ROOT).matches(".*\\.(pdf|jpe?g|png|docx?|xlsx?|zip)(\\?.*)?$")) return false;
             Net.Resp r = fetch(u, 15000);
-            if (r.code != 200 || r.body.length() < 500) return false;
+            if (r.code != 200 || r.body.length() < 500 || r.body.startsWith("%PDF")) return false;
             if (EditionBuilder.isCoaching(it)) {
                 Extract.CoachArticle a = Extract.single(r.body, u);
                 if (a.sections.isEmpty()) return false;
                 synchronized (WRITE) { if (shut.get()) return false; it.put("cx", Extract.coachJson(a)); it.put("full", true); coachFloor(it); }
             } else {
-                Html.Article a = Html.article(r.body, u);
+                Reader.Result rr = Reader.read(r.body, u, new Reader.Fetcher() { // structured data first, then the page's article container (see Reader)
+                    public String get(String x) { try { Net.Resp f = fetch(x, 12000); return f.code == 200 ? f.body : null; } catch (Exception e) { return null; } }
+                });
+                Html.Article a = rr.article;
+                synchronized (WRITE) { it.put("xm", rr.method); }
                 if (a.paras.isEmpty()) {
                     if (a.desc.length() > 60) synchronized (WRITE) { if (shut.get()) return false; if (it.optString("d").length() < a.desc.length()) it.put("d", Text.cap(a.desc, 600)); }
                     return false;

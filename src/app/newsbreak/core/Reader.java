@@ -38,11 +38,11 @@ public final class Reader {
     }
 
     /** Containers that hold the article text on most news and coaching sites. */
-    static final Pattern BODY = Pattern.compile("<(div|section|article|main)\\b[^>]*?(?:itemprop=[\"']articleBody[\"']|\\b(?:class|id)=[\"'][^\"']*?\\b("
+    static final Pattern BODY = Pattern.compile("<(div|section|article|main|table|td)\\b[^>]*?(?:itemprop=[\"']articleBody[\"']|\\b(?:class|id)=[\"'][^\"']*?\\b("
             + "articlebodycontent|article-body|articlebody|article_body|article__body|article-content|article__content|articlecontent|story-body|storybody|story_body|"
             + "story-details|storydetails|storyDetails|story-content|story_content|full-details|fullstory|artText|art_text|entry-content|post-content|post_content|"
             + "td-post-content|content-body|detail-body|detail_body|news-detail|newsdetail|article-text|main-content|innner-page-main-about-us-content-right-part|"
-            + "ReleaseText|releaseText|pressrelease|press-release|_s30J|clearfix\\s+article)\\b[^\"']*[\"'])[^>]*>", Pattern.CASE_INSENSITIVE);
+            + "ReleaseText|releaseText|pressrelease|press-release|_s30J|clearfix\\s+article|tablebg|tablecontent\\d?|news-bg|news-description|left-content|pageContent|body_content)\\b[^\"']*[\"'])[^>]*>", Pattern.CASE_INSENSITIVE);
     static final Pattern AMP = Pattern.compile("<link[^>]+rel=[\"']amphtml[\"'][^>]*>", Pattern.CASE_INSENSITIVE);
     static final Pattern WPJSON = Pattern.compile("<link[^>]+type=[\"']application/json[\"'][^>]*href=[\"']([^\"']+/wp-json/wp/v2/(?:posts|pages)/\\d+)[\"']|<link[^>]+href=[\"']([^\"']+/wp-json/wp/v2/(?:posts|pages)/\\d+)[\"'][^>]*type=[\"']application/json[\"']", Pattern.CASE_INSENSITIVE);
     static final Pattern NEXT = Pattern.compile("<script[^>]+id=[\"']__NEXT_DATA__[\"'][^>]*>(.*?)</script>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
@@ -50,6 +50,17 @@ public final class Reader {
     static final Pattern PROMO = Pattern.compile("(?i)(also read|read more|read also|click here|subscribe|sign up|newsletter|download the app|follow us|join our|whatsapp|telegram|"
             + "premium|unlock this|log ?in to|already a subscriber|advertisement|sponsored|copyright|all rights reserved|cookie|privacy policy|terms of use|"
             + "share this|comments? \\(|you may also like|recommended for you|trending now|watch:|listen to this|for more news|catch the latest)");
+
+    /** Addresses whose readable copy lives elsewhere: PIB loads the release text from its "iframe" page. */
+    public static String rewrite(String u) {
+        if (u == null) return null;
+        Matcher m = Pattern.compile("(?i)^https?://(?:www\\.)?pib\\.gov\\.in/PressRelease(?:Detail|Detailm|Page)\\.aspx\\?PRID=(\\d+).*$").matcher(u);
+        if (m.find()) return "https://pib.gov.in/PressReleaseIframePage.aspx?PRID=" + m.group(1);
+        return u.replaceFirst("(?i)^https?://m\\.rbi\\.org\\.in/", "https://www.rbi.org.in/");
+    }
+
+    /** "Posted On: 11 NOV 2026 7:39PM by PIB Delhi" (also in Hindi) opens PIB releases: a date line, not text. */
+    static final Pattern POSTED = Pattern.compile("^(?:Posted On|प्रविष्टि तिथि)\\s*:?\\s*\\d{1,2}\\s+\\w{3,9}\\s+\\d{4}\\s+[\\d:]+\\s*[AP]M(?:\\s+by\\s+[A-Za-z ]{2,30}?(?=\\s+[A-Z][a-z])|\\s+by\\s+\\S+(?:\\s+\\S+)?)?\\s*", Pattern.CASE_INSENSITIVE);
 
     public static Result read(String html, String url, Fetcher f) {
         if (html == null || html.startsWith("%PDF") || html.indexOf('<') < 0) { Result r = new Result(); r.method = "not-html"; return r; } // a PDF or plain file, not a page
@@ -217,7 +228,7 @@ public final class Reader {
     }
 
     static void add(Result r, String text) {
-        String t = text == null ? "" : text.trim();
+        String t = text == null ? "" : POSTED.matcher(text.trim()).replaceFirst("").trim();
         if (t.length() < 40 || Html.boiler(t)) return;
         if (PROMO.matcher(t).find() && t.length() < 200) return;
         if (r.article.paras.contains(t)) return;

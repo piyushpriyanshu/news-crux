@@ -30,14 +30,14 @@ public class Probe {
             JSONArray feeds = s.getJSONArray("feeds");
             for (int j = 0; j < feeds.length(); j++) {
                 final JSONObject f = feeds.getJSONObject(j);
-                fs.add(pool.submit(new Callable<JSONObject>() { public JSONObject call() { return feed(s.getString("code"), f.getString("url"), f.optBoolean("gn"), 3); } }));
+                fs.add(pool.submit(new Callable<JSONObject>() { public JSONObject call() { return feed(s.getString("code"), f.getString("url"), f.optBoolean("gn"), 3, f); } }));
             }
         }
         // 2. candidate direct feeds and sitemaps
         JSONArray cf = cand.optJSONArray("feeds");
         for (int i = 0; cf != null && i < cf.length(); i++) {
             final JSONObject f = cf.getJSONObject(i);
-            fs.add(pool.submit(new Callable<JSONObject>() { public JSONObject call() { JSONObject o = feed(f.getString("code"), f.getString("url"), false, 2); try { o.put("candidate", true); } catch (Exception e) {} return o; } }));
+            fs.add(pool.submit(new Callable<JSONObject>() { public JSONObject call() { JSONObject o = feed(f.getString("code"), f.getString("url"), false, 2, f); try { o.put("candidate", true); } catch (Exception e) {} return o; } }));
         }
         JSONArray feedsOut = new JSONArray();
         for (Future<JSONObject> f : fs) { try { feedsOut.put(f.get(150, TimeUnit.SECONDS)); } catch (Exception e) { feedsOut.put(new JSONObject().put("error", String.valueOf(e))); } }
@@ -66,7 +66,7 @@ public class Probe {
         System.out.println(md(rep));
     }
 
-    static JSONObject feed(String code, String url, boolean gn, int samples) {
+    static JSONObject feed(String code, String url, boolean gn, int samples, JSONObject spec) {
         JSONObject o = new JSONObject();
         try {
             o.put("code", code).put("url", url);
@@ -75,11 +75,13 @@ public class Probe {
             o.put("http", r.code).put("ms", System.currentTimeMillis() - t).put("bytes", r.body == null ? 0 : r.body.length());
             if (r.code != 200 || r.body == null) return o;
             boolean sitemap = r.body.contains("<urlset") || r.body.contains("<sitemapindex");
-            if (sitemap) { o.put("sitemap", sitemapInfo(r.body)); return o; }
+            if (sitemap) o.put("sitemap", sitemapInfo(r.body));
+            if (sitemap && !spec.has("keep") && !spec.has("max")) return o;
             List<RssParser.Raw> raws = RssParser.parse(r.body, new RssParser.ParserFactory() {
                 public org.xmlpull.v1.XmlPullParser create() { return new org.kxml2.io.KXmlParser(); }
             });
             List<JSONObject> items = RssParser.normalise(raws, code, "probe", gn, System.currentTimeMillis());
+            if (spec.has("keep") || spec.has("max")) { o.put("beforeFilter", items.size()); items = keepOnly(items, spec, System.currentTimeMillis()); }
             o.put("items", items.size());
             long newest = 0; int desc = 0;
             for (JSONObject it : items) { newest = Math.max(newest, it.optLong("p")); desc += it.optString("d").length(); }
@@ -94,11 +96,22 @@ public class Probe {
         return o;
     }
 
+    /** Same limits as Engine.keepOnly in the app. */
+    static List<JSONObject> keepOnly(List<JSONObject> items, JSONObject feed, long now) {
+        Pattern keep = feed.has("keep") ? Pattern.compile(feed.optString("keep"), Pattern.CASE_INSENSITIVE) : null;
+        long oldest = now - feed.optLong("hours", 36) * 3600000L;
+        List<JSONObject> out = new ArrayList<JSONObject>();
+        for (JSONObject it : items) { if (keep != null && !keep.matcher(it.optString("u")).find()) continue; if (it.optLong("p") > 0 && it.optLong("p") < oldest) continue; out.add(it); }
+        Collections.sort(out, new Comparator<JSONObject>() { public int compare(JSONObject a, JSONObject b) { return Long.compare(b.optLong("p"), a.optLong("p")); } });
+        int max = feed.optInt("max", 150);
+        return out.size() > max ? new ArrayList<JSONObject>(out.subList(0, max)) : out;
+    }
+
     static JSONObject article(String u, String title) {
         JSONObject o = new JSONObject();
         try {
             o.put("title", Text.cap(title, 90));
-            String real = GNews.isGn(u) ? GNews.resolve(u, 12000) : u;
+            String real = Reader.rewrite(GNews.isGn(u) ? GNews.resolve(u, 12000) : u);
             o.put("url", real == null ? u : real);
             if (real == null) { o.put("error", "google news link not resolved"); return o; }
             Net.Resp r = Net.page(real, 20000);
