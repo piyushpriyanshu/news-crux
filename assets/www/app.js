@@ -909,22 +909,32 @@
       }
       const lastHtml = last && !done ? `<div class="pqlast">Last try: ${last[0] ? 'right' : 'missed'}, ${esc(ago(last[1]))}</div>` : '';
       const st = keepScroll ? $('#sheet').scrollTop : 0;
-      openSheet(`<h3>UPSC Prelims ${esc(yr)}, question ${esc(qn)}</h3>${ctx.length ? `<div class="pqc">${ctx.join('<br>')}</div>` : ''}${lastHtml}<div class="pqq">${stem}</div><div class="pqopts">${opts}</div>${after}${nav}`);
+      const lost = q[3] === 1 ? '<div class="pqlost">Part of this question (its list or table) did not come through from the source paper. You can still try it, or tap Show answer.</div>' : '';
+      openSheet(`<h3>UPSC Prelims ${esc(yr)}, question ${esc(qn)}</h3>${ctx.length ? `<div class="pqc">${ctx.join('<br>')}</div>` : ''}${lastHtml}<div class="pqq">${stem}</div>${lost}<div class="pqopts">${opts}</div>${after}${nav}`);
       $('#sheet').scrollTop = st;
       if (done) { const r = $('#sheet .pqres'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
     } catch (err) { console.log('pyq open failed: ' + err); toast('Could not open the question'); }
   }
   /** Question in bold; numbered statements on their own lines; the closing ask ("Which of the …") in bold again. */
   function stemHtml(s) {
-    const parts = String(s || '').split(/\s(?=(?:\d{1,2}|I{1,3}|IV|V|VI)\.\s)/);
-    let tail = '';
-    if (parts.length > 1) {
-      const lastP = parts[parts.length - 1], k = lastP.search(/\s(Which|How many|Select|What|Choose|Of the above|In which|The correct)\b/);
-      if (k > 0) { tail = lastP.slice(k + 1); parts[parts.length - 1] = lastP.slice(0, k); }
-    }
-    const head = `<p class="pqqh">${esc(parts[0])}</p>`;
-    const sts = parts.slice(1).map(x => `<p class="pqqs">${esc(x)}</p>`).join('');
-    return head + sts + (tail ? `<p class="pqqh">${esc(tail)}</p>` : '');
+    const src = String(s || '');
+    // 1. / I. statements, "Statement-I :", list headings; A. B. C. D. only in match-the-list questions (not initials like B. R. Ambedkar)
+    const lists = /\bList[-–‑ ]?I\b/.test(src) && /\sA\.\s/.test(src) && /\sB\.\s/.test(src);
+    const st = '(?:\\d{1,2}|I{1,3}|IV|V|VI' + (lists ? '|[A-F]' : '') + ')\\.\\s|Statement[-–‑ ]?(?:I{1,3}|IV|V)\\s*:' + (lists ? '|List[-–‑ ]?I{1,2}\\s*[(:]' : '');
+    const raw = src.split(new RegExp('\\s(?=' + st + ')'));
+    const parts = [];
+    raw.forEach(x => { if (parts.length && x.trim().length < 6) parts[parts.length - 1] += ' ' + x; else parts.push(x); }); // "age of 14. 2. …" or "Statement I. 3. …": a bare number is not a new line
+    const ASK = /(?=(?:Which|How many|Select|Choose|In which|Of the above|What)\b|Code\s*:)/;
+    const out = [`<p class="pqqh">${esc(parts[0])}</p>`];
+    parts.slice(1).forEach((x, i) => {
+      // the closing ask can follow the last statement ("… rooms. Which of the following …")
+      let k = x.search(new RegExp('[.?]\\s+' + ASK.source));
+      if (k > 0) k = x.indexOf(' ', k) ; else if (i === parts.length - 2) { const m = x.search(new RegExp('\\s' + ASK.source)); k = m > 0 ? m : -1; }
+      const body = k > 0 ? x.slice(0, k) : x, ask = k > 0 ? x.slice(k + 1).trim() : '';
+      out.push(/^List[-–‑ ]?I/.test(body) ? `<p class="pqqh pql2">${esc(body)}</p>` : `<p class="pqqs">${esc(body)}</p>`);
+      if (ask) out.push(`<p class="pqqh">${esc(ask)}</p>`);
+    });
+    return out.join('');
   }
   function pqAnswer(i) {
     const p = S.pq;
