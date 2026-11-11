@@ -9,10 +9,6 @@
     "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3"
    },
    {
-    "label": "PIB HQ (English releases)",
-    "url": "https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1"
-   },
-   {
     "label": "Google News \u00b7 pib.gov.in",
     "url": "https://news.google.com/rss/search?q=site:pib.gov.in+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
@@ -24,10 +20,6 @@
   "name": "PM India",
   "tier": "primary",
   "feeds": [
-   {
-    "label": "pmindia.gov.in feed",
-    "url": "https://www.pmindia.gov.in/en/feed/"
-   },
    {
     "label": "Google News \u00b7 pmindia.gov.in",
     "url": "https://news.google.com/rss/search?q=site:pmindia.gov.in+when:3d&hl=en-IN&gl=IN&ceid=IN:en",
@@ -68,6 +60,12 @@
     "label": "Google News \u00b7 thehindu.com",
     "url": "https://news.google.com/rss/search?q=site:thehindu.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
+   },
+   {
+    "label": "The Hindu news sitemap",
+    "url": "https://www.thehindu.com/sitemap/googlenews/all/all.xml",
+    "keep": "thehindu\\.com/(news/(national|international)|business/(Economy|agri-business)|sci-tech/(science|energy-and-environment|agriculture|technology)|opinion/(editorial|lead|op-ed))/",
+    "max": 120
    }
   ]
  },
@@ -116,6 +114,12 @@
     "label": "Google News \u00b7 hindustantimes.com",
     "url": "https://news.google.com/rss/search?q=site:hindustantimes.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
+   },
+   {
+    "label": "HT news sitemap",
+    "url": "https://www.hindustantimes.com/sitemap/news.xml",
+    "keep": "hindustantimes\\.com/(india-news|world-news|environment|business|science)/",
+    "max": 120
    }
   ]
  },
@@ -157,13 +161,15 @@
     "url": "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms"
    },
    {
-    "label": "Top stories",
-    "url": "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
-   },
-   {
     "label": "Google News \u00b7 economictimes",
     "url": "https://news.google.com/rss/search?q=site:economictimes.indiatimes.com+economy+OR+policy+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
+   },
+   {
+    "label": "ET news sitemap",
+    "url": "https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-today.xml",
+    "keep": "/news/(economy|india|defence|politics-and-nation|international/world-news|science)/|/industry/(renewables|energy)/",
+    "max": 100
    }
   ]
  },
@@ -184,6 +190,12 @@
     "label": "Google News \u00b7 business-standard.com",
     "url": "https://news.google.com/rss/search?q=site:business-standard.com+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
+   },
+   {
+    "label": "BS news sitemap",
+    "url": "https://www.business-standard.com/sitemap/news-sitemap.xml",
+    "keep": "business-standard\\.com/(economy|india-news|external-affairs-defence-security|world-news|industry/agriculture)/",
+    "max": 100
    }
   ]
  },
@@ -193,13 +205,26 @@
   "tier": "primary",
   "feeds": [
    {
-    "label": "Economy",
-    "url": "https://www.moneycontrol.com/rss/economy.xml"
-   },
-   {
     "label": "Google News \u00b7 moneycontrol.com",
     "url": "https://news.google.com/rss/search?q=site:moneycontrol.com+economy+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
+   }
+  ]
+ },
+ {
+  "code": "Mint",
+  "name": "Mint",
+  "tier": "primary",
+  "feeds": [
+   {
+    "label": "Mint economy",
+    "url": "https://www.livemint.com/rss/economy"
+   },
+   {
+    "label": "Mint news sitemap",
+    "url": "https://www.livemint.com/sitemap/today.xml",
+    "keep": "livemint\\.com/(economy|news/india|politics|news/world|industry)/",
+    "max": 60
    }
   ]
  },
@@ -297,9 +322,18 @@
   "tier": "primary",
   "feeds": [
    {
+    "label": "Down To Earth (latest)",
+    "url": "https://www.downtoearth.org.in/feed"
+   },
+   {
     "label": "Google News \u00b7 downtoearth.org.in",
     "url": "https://news.google.com/rss/search?q=site:downtoearth.org.in+when:2d&hl=en-IN&gl=IN&ceid=IN:en",
     "gn": true
+   },
+   {
+    "label": "DTE news sitemap",
+    "url": "https://www.downtoearth.org.in/news_sitemap.xml",
+    "max": 40
    }
   ]
  },
@@ -360,6 +394,10 @@
   "name": "Vajiram & Ravi",
   "tier": "coaching",
   "feeds": [
+   {
+    "label": "Vajiram current affairs",
+    "url": "https://vajiramandravi.com/current-affairs/feed/"
+   },
    {
     "label": "Google News \u00b7 vajiramandravi.com",
     "url": "https://news.google.com/rss/search?q=site:vajiramandravi.com+when:4d&hl=en-IN&gl=IN&ceid=IN:en",

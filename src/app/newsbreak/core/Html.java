@@ -78,6 +78,8 @@ public final class Html {
         return false;
     }
 
+    public static String attrOf(String str, String str2) { return attr(str, str2); }
+
     static String attr(String str, String str2) {
         Matcher matcher = ATTR.matcher(str);
         while (matcher.find()) {

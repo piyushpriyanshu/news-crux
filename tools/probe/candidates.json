@@ -1,0 +1,69 @@
+{
+  "feeds": [
+    {
+      "code": "DTE",
+      "url": "https://www.downtoearth.org.in/rss/latest-news"
+    },
+    {
+      "code": "DTE",
+      "url": "https://www.downtoearth.org.in/feed"
+    },
+    {
+      "code": "Vajiram",
+      "url": "https://vajiramandravi.com/current-affairs/feed/"
+    },
+    {
+      "code": "TH",
+      "url": "https://www.thehindu.com/sci-tech/agriculture/feeder/default.rss"
+    },
+    {
+      "code": "HT",
+      "url": "https://www.hindustantimes.com/feeds/rss/environment/rssfeed.xml"
+    },
+    {
+      "code": "Mint",
+      "url": "https://www.livemint.com/rss/economy"
+    },
+    {
+      "code": "PIB",
+      "url": "https://www.pib.gov.in/RssMain.aspx?ModId=8&Lang=1&Regid=3"
+    },
+    {
+      "code": "PIB",
+      "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=2&Regid=3"
+    },
+    {
+      "code": "PIB",
+      "url": "https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3&reg=3&lang=1"
+    },
+    {
+      "code": "PIB",
+      "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1"
+    },
+    {
+      "code": "Mint",
+      "url": "https://www.livemint.com/sitemap/today.xml",
+      "max": 60
+    }
+  ],
+  "robots": [
+    "www.thehindu.com",
+    "indianexpress.com",
+    "www.hindustantimes.com",
+    "timesofindia.indiatimes.com",
+    "economictimes.indiatimes.com",
+    "www.business-standard.com",
+    "www.moneycontrol.com",
+    "www.downtoearth.org.in",
+    "www.newsonair.gov.in",
+    "www.pib.gov.in",
+    "www.insightsonindia.com",
+    "www.drishtiias.com",
+    "visionias.in",
+    "vajiramandravi.com",
+    "www.mea.gov.in",
+    "prsindia.org",
+    "www.isro.gov.in",
+    "www.livemint.com"
+  ]
+}

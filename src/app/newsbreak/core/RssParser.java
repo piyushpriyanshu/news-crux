@@ -33,6 +33,7 @@ public final class RssParser {
             String trim = str.trim();
             int indexOf = trim.indexOf(60);
             String substring = indexOf > 0 ? trim.substring(indexOf) : trim;
+            if (substring.contains("<urlset")) return sitemap(substring);
             try {
                 arrayList = pull(substring, parserFactory);
             } catch (Throwable th) {
@@ -156,6 +157,24 @@ public final class RssParser {
         return trim;
     }
 
+    private static final Pattern URL_BLOCK = Pattern.compile("<url>(.*?)</url>", Pattern.DOTALL);
+
+    /** A Google News sitemap (every article of the last two days): address, headline and publication time per entry. */
+    static List<Raw> sitemap(String str) {
+        List<Raw> out = new ArrayList<Raw>();
+        Matcher m = URL_BLOCK.matcher(str);
+        while (m.find()) {
+            String u = m.group(1);
+            Raw raw = new Raw();
+            raw.link = tag(u, "loc");
+            raw.title = tag(u, "news:title");
+            raw.date = tag(u, "news:publication_date");
+            if (raw.date.length() == 0) raw.date = tag(u, "lastmod");
+            if (raw.title.trim().length() > 0 && raw.link.startsWith("http")) out.add(raw);
+        }
+        return out;
+    }
+
     static List<Raw> regex(String str) {
         ArrayList arrayList = new ArrayList();
         Matcher matcher = ITEM.matcher(str);
@@ -192,6 +211,14 @@ public final class RssParser {
         return arrayList;
     }
 
+    /** A headline mostly in Devanagari (Hindi). */
+    static boolean devanagari(String t) {
+        if (t == null) return false;
+        int d = 0, l = 0;
+        for (int i = 0; i < t.length(); i++) { char c = t.charAt(i); if (c >= '\u0900' && c <= '\u097F') d++; else if (Character.isLetter(c)) l++; }
+        return d > 0 && d >= l;
+    }
+
     public static long urlDate(String str) {
         if (str == null) {
             return 0L;
@@ -215,6 +242,7 @@ public final class RssParser {
     public static List<JSONObject> normalise(List<Raw> raws, String code, String label, boolean gn, long now) throws Exception {
         List<JSONObject> out = new ArrayList<JSONObject>();
         for (Raw r : raws) {
+            if (devanagari(r.title)) continue; // PIB's "English" feed also carries Hindi releases: the English one comes separately
             String pub = Text.clean(r.publisher);
             String t = Text.cleanTitle(r.title, pub);
             if (t.length() < 12) continue;

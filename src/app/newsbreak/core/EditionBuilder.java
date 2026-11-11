@@ -1169,6 +1169,8 @@ public final class EditionBuilder {
         }
         jSONObject14.put("links", jSONArray5);
         jSONObject14.put("corrob", linkedHashSet.size());
+        JSONObject fx = figureSources(cluster.items);
+        if (fx.length() > 0) jSONObject14.put("fx", fx); // figures the reader can trust more: carried by 2+ outlets or by an official source
         JSONArray conflicts = conflicts(cluster.items);
         if (conflicts.length() > 0) {
             jSONObject14.put("conflicts", conflicts);
@@ -1224,6 +1226,55 @@ public final class EditionBuilder {
         return sb.toString();
     }
 
+    /** Official sources: their figure is the figure of record. */
+    public static final List<String> OFFICIAL = Arrays.asList("PIB", "PMI", "RBI", "MEA", "PRS", "ISRO");
+    /** Amounts with a unit (₹, $, %, crore, MW, km …): the figures that get quoted and asked. Bare years and counts are not checked. */
+    static final Pattern FIGX = Pattern.compile("(?i)((?:₹|rs\\.?\\s?)\\s?\\d[\\d,.]*(?:\\s?(?:lakh crore|crore|lakh|bn|mn|tn|billion|million|trillion))?|\\$\\s?\\d[\\d,.]*(?:\\s?(?:bn|mn|tn|billion|million|trillion))?|\\b\\d[\\d,.]*\\s?(?:%|per ?cent|lakh crore|crore|lakh|bn|mn|tn|billion|million|sq km|km|MW|GW|GWh|ha|hectares?|tonnes?|MT)(?![a-z]))");
+
+    /** Same figure, same key: "Rs 16,300 crore" = "₹16300 crore"; "5.5 per cent" = "5.5%". */
+    public static String figKey(String f) {
+        String k = f.toLowerCase(Locale.ROOT).replaceAll("rs\\.?\\s?", "₹").replaceAll("per ?cent", "%").replace("billion", "bn").replace("million", "mn").replace("trillion", "tn").replace("hectares", "ha").replace("hectare", "ha").replace("tonnes", "tonne");
+        return k.replaceAll("[\\s,]", "").replaceAll("\\.$", "");
+    }
+
+    /**
+     * Every quotable figure in a story's texts (headline, summary, full article) → the outlets that carry it. Kept when
+     * two independent outlets agree or an official source states it. Coaching notes are not independent (they retell
+     * the papers), so they don't count.
+     */
+    static JSONObject figureSources(List<JSONObject> items) {
+        Map<String, Set<String>> by = new LinkedHashMap<String, Set<String>>();
+        for (JSONObject it : items) {
+            if (isCoaching(it)) continue;
+            String code = it.optString("s");
+            StringBuilder t = new StringBuilder(it.optString("t")).append(". ").append(it.optString("d")).append(". ").append(it.optString("xb"));
+            JSONArray x = it.optJSONArray("x");
+            for (int i = 0; x != null && i < x.length(); i++) t.append(". ").append(x.optString(i));
+            Matcher m = FIGX.matcher(t);
+            while (m.find()) {
+                String k = figKey(m.group(1));
+                if (k.length() < 2 || k.replaceAll("[^0-9]", "").length() == 0) continue;
+                Set<String> c = by.get(k);
+                if (c == null) { c = new LinkedHashSet<String>(); by.put(k, c); }
+                c.add(code);
+            }
+        }
+        JSONObject out = new JSONObject();
+        try {
+            for (Map.Entry<String, Set<String>> e : by.entrySet()) {
+                boolean off = false;
+                for (String c : e.getValue()) if (OFFICIAL.contains(c)) off = true;
+                if (e.getValue().size() >= 2 || off) {
+                    StringBuilder b = new StringBuilder();
+                    for (String c : e.getValue()) b.append(b.length() > 0 ? "," : "").append(c);
+                    out.put(e.getKey(), b.toString());
+                    if (out.length() >= 40) break;
+                }
+            }
+        } catch (Exception ignored) {}
+        return out;
+    }
+
     static JSONArray conflicts(List<JSONObject> list) {
         HashMap hashMap = new HashMap();
         JSONArray jSONArray = new JSONArray();
@@ -1246,7 +1297,8 @@ public final class EditionBuilder {
                                 double parseDouble = Double.parseDouble(strArr[0]);
                                 double parseDouble2 = Double.parseDouble(replace2);
                                 if (Math.abs(parseDouble - parseDouble2) > Math.max(Math.abs(parseDouble), Math.abs(parseDouble2)) * 0.005d && jSONArray.length() < 2) {
-                                    jSONArray.put(str2.substring(0, str2.indexOf(124)) + ": " + strArr[2] + " (" + strArr[1] + ") vs " + matcher.group().trim() + " (" + optString + ")");
+                                    String offc = OFFICIAL.contains(strArr[1]) ? strArr[1] : OFFICIAL.contains(optString) ? optString : null;
+                                    jSONArray.put(str2.substring(0, str2.indexOf(124)) + ": " + strArr[2] + " (" + strArr[1] + ") vs " + matcher.group().trim() + " (" + optString + ")" + (offc != null ? "; " + offc + " is the official source" : ""));
                                 }
                             } catch (NumberFormatException e) {
                             }

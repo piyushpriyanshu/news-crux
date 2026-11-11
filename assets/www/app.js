@@ -100,8 +100,10 @@
     return m.length > 80 ? m.slice(0, 78).replace(/\s+\S*$/, '') + '…' : m;
   }
   function toast(msg) { const t = $('#toast'); t.textContent = short(msg); t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2600); }
-  const FIG = /(₹\s?[\d][\d,.]*(?:\s?(?:lakh crore|crore|lakh|bn|mn|tn|k))?|\$\s?[\d][\d,.]*(?:\s?(?:bn|mn|tn|billion|million|trillion))?|\b\d[\d,.]*\s?(?:%|crore|lakh|bn|mn|tn|km|sq km|MW|GW|GWh|ha|tonnes?|MT|years?|yrs|days?|months?|members|countries|states|seats|judges)(?![a-z])|\b(?:1[89]|20)\d\d(?:[-–]\d{2,4})?\b|\b\d+[-–]\d+\b|\bArts?\s?\d+[A-Z]?(?:\(\d+\))?|\b\d+(?:st|nd|rd|th)\b|\b\d[\d,.]*\b)/g;
-  const figs = s => esc(s).replace(FIG, '<span class="fig">$1</span>');
+  const FIG = /(₹\s?[\d][\d,.]*(?:\s?(?:lakh crore|crore|lakh|bn|mn|tn|k))?|\$\s?[\d][\d,.]*(?:\s?(?:bn|mn|tn|billion|million|trillion))?|\b\d[\d,.]*\s?(?:%|per ?cent|crore|lakh|bn|mn|tn|km|sq km|MW|GW|GWh|ha|tonnes?|MT|years?|yrs|days?|months?|members|countries|states|seats|judges)(?![a-z])|\b(?:1[89]|20)\d\d(?:[-–]\d{2,4})?\b|\b\d+[-–]\d+\b|\bArts?\s?\d+[A-Z]?(?:\(\d+\))?|\b\d+(?:st|nd|rd|th)\b|\b\d[\d,.]*\b)/g;
+  // a figure two outlets (or an official release) agree on gets a small tick; fx = {figure key: "TH,PIB"} from the app
+  const figKey = f => String(f).toLowerCase().replace(/rs\.?\s?/g, '₹').replace(/per ?cent/g, '%').replace(/billion/g, 'bn').replace(/million/g, 'mn').replace(/trillion/g, 'tn').replace(/hectares?/g, 'ha').replace(/tonnes/g, 'tonne').replace(/[\s,]/g, '').replace(/\.$/, '');
+  const figs = (s, fx) => esc(s).replace(FIG, (m, g) => { const k = figKey(m), by = fx && (fx[k] || fx['₹' + k] || fx[k.replace(/^[₹$]/, '')]); return by ? `<span class="fig fok">${g}<span class="fv" aria-label="checked in ${esc(by.replace(/,/g, ', '))}">✓</span></span>` : `<span class="fig">${g}</span>`; });
   function gsClass(gs) { gs = gs || ''; if (gs.startsWith('GS-I/')) return 'gs1'; if (gs.startsWith('GS-II/')) return 'gs2'; if (gs.startsWith('GS-III/')) return 'gs3'; if (gs.startsWith('GS-IV')) return 'gs4'; return 'gsm'; }
   function gsPaper(gs) { const m = /^GS-(I{1,3}|IV)\//.exec(gs || ''); return m ? 'GS-' + m[1] : 'Misc'; }
 
@@ -195,7 +197,7 @@
     const n = (t.corrob || (t.srcs || []).length) + (t.coach || []).length; // a coaching page counts as a confirmation
     const single = n >= 2 ? `<span class="ver">${ic('check', 'xs')}${n} sources</span>` : '<span class="sgl">single-source</span>';
     const pay = t.paywalled ? `<span class="sgl">${esc(t.paywalled)}: full text paywalled</span>` : '';
-    const bul = bulletsOf(t).filter(b => !hid(b)).map(b => `<li>${figs(b)}</li>`).join('');
+    const bul = bulletsOf(t).filter(b => !hid(b)).map(b => `<li>${figs(b, t.fx)}</li>`).join('');
     const ents = (t.cons || []).map(id => CON[id]).concat((t.ents || []).map(id => ENT[id])).filter(Boolean); // the exact subject first, then the parent body
     const thr = (t.thread || []);
     const thread = thr.length ? `<div class="thread"><button class="smore" data-act="thread">${ic('thread', 'xs')}Story so far, ${thr.length} earlier ${thr.length > 1 ? 'editions' : 'edition'}</button><div class="thb${t.cont ? ' on' : ''}">${thr.map(x => { const k = keyParts(x.d); return `<div class="th1" data-open="${esc(x.d)}"><span class="td">${k.d} ${k.mon}</span><div><b>${esc(x.h)}</b>${x.b && !hid(x.b) ? `<small>${figs(x.b)}</small>` : ''}</div></div>`; }).join('')}</div></div>` : '';
@@ -205,7 +207,7 @@
     if (seen) fresh.forEach(e => { seen.e[e.id] = i + 1; });
     let prof = fresh.map((e, k) => staticBlock(e, k === 0, t.id + ':' + e.id)).join('');
     if (already.length) prof += `<div class="seen">${ic('book', 'xs')}<span>Background already covered:</span>${already.map(e => `<button class="seenb" data-goto="${seen.e[e.id]}">${esc(e.name)}, story ${seen.e[e.id]}</button>`).join('')}</div>`;
-    const also = (t.also || []).filter(x => !hid(x.head)).map(x => `<div class="ali"><div class="alh">${figs(x.head)}${(x.srcs || []).length ? ` <small>${esc((x.srcs || []).join('/'))}</small>` : ''}</div>${(x.bullets || []).filter(b => !hid(b)).map(b => `<div class="alb">${figs(b)}</div>`).join('')}</div>`).join('');
+    const also = (t.also || []).filter(x => !hid(x.head)).map(x => `<div class="ali"><div class="alh">${figs(x.head)}${(x.srcs || []).length ? ` <small>${esc((x.srcs || []).join('/'))}</small>` : ''}</div>${(x.bullets || []).filter(b => !hid(b)).map(b => `<div class="alb">${figs(b, t.fx)}</div>`).join('')}</div>`).join('');
     const alsoHtml = also ? `<div class="also"><div class="all">${ic('layers', 'xs')}${t.pent && ENT[t.pent] ? 'More on ' + esc(ENT[t.pent].name) + ' today' : 'More on this today'}</div>${also}</div>` : '';
     const mp = (t.maps || []).map(id => MAP[id]).filter(m => m && !hid(m.line) && !(seen && seen.m[m.id])).map(m => { if (seen) seen.m[m.id] = i + 1; return m; }).map(m => `<div class="mapl">${ic('pin', 'sm')}<div><b>Map: ${esc(m.name)}</b> — ${esc(m.line)} <span class="mhook">| PYQ: ${esc(m.hook)}</span>${(m.traps || []).filter(x => !hid(x)).map(x => `<div class="st"><span class="tb">Trap</span><span>${figs(x)}</span></div>`).join('')}</div></div>`).join('');
     const pyqHtml = hid('pyq|' + t.id) ? '' : pyqBlock(t);
@@ -467,6 +469,8 @@
     const multi = c.tp.filter(t => (t.corrob || (t.srcs || []).length) + (t.coach || []).length >= 2).length;
     const rows = [];
     rows.push(['ok', `${c.tp.length} ${c.tp.length === 1 ? 'story' : 'stories'}; ${multi} confirmed by two or more sources (newspapers, PIB, coaching)`]);
+    const figN = c.tp.reduce((n, t) => n + Object.keys(t.fx || {}).length, 0);
+    if (figN) rows.push(['ok', `✓ beside a figure: two outlets or an official release give the same number`]);
     if (cv && cv.pages != null) {
       rows.push([c.missed.length ? 'warn' : 'ok', `Coaching, last ${cv.days || 10} days: ${cv.pages} pages, ${cv.prelims} Prelims topics. ${cv.today} today, ${cv.earlier} in earlier editions, ${cv.catchup} in catch-up, ${c.missed.length} missed`]);
       if (cv.mains) rows.push(['off', `${cv.mains} Mains-only piece${cv.mains > 1 ? 's' : ''} left out`]);

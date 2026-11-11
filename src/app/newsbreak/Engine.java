@@ -94,6 +94,24 @@ public final class Engine {
         return any;
     }
 
+    /**
+     * A feed entry's "keep" (address pattern, e.g. only /news/national/), "hours" (age limit, default 36) and "max"
+     * (newest N) limits. Used for news sitemaps, which list every article of the site.
+     */
+    static List<JSONObject> keepOnly(List<JSONObject> items, JSONObject feed, long now) {
+        java.util.regex.Pattern keep = feed.has("keep") ? java.util.regex.Pattern.compile(feed.optString("keep"), java.util.regex.Pattern.CASE_INSENSITIVE) : null;
+        long oldest = now - feed.optLong("hours", 36) * 3600000L;
+        List<JSONObject> out = new ArrayList<JSONObject>();
+        for (JSONObject it : items) {
+            if (keep != null && !keep.matcher(it.optString("u")).find()) continue;
+            if (it.optLong("p") > 0 && it.optLong("p") < oldest) continue;
+            out.add(it);
+        }
+        Collections.sort(out, new Comparator<JSONObject>() { public int compare(JSONObject a, JSONObject b) { return Long.compare(b.optLong("p"), a.optLong("p")); } });
+        int max = feed.optInt("max", 150);
+        return out.size() > max ? new ArrayList<JSONObject>(out.subList(0, max)) : out;
+    }
+
     static synchronized Pyq pyq(Context context) {
         Pyq pyq2;
         synchronized (Engine.class) {
@@ -377,11 +395,12 @@ public final class Engine {
                                     public XmlPullParser create() { return Xml.newPullParser(); }
                                 });
                                 List<JSONObject> items = RssParser.normalise(raws, code, feed.optString("label"), feed.optBoolean("gn"), now);
+                                if (feed.has("keep") || feed.has("max")) items = keepOnly(items, feed, now); // news sitemaps: only the sections that matter, newest first
                                 for (JSONObject it : items) k.score(it);
                                 synchronized (fetched) { if (!closed.get()) fetched.addAll(items); }
-                                h.put("ok", !items.isEmpty());
+                                h.put("ok", !raws.isEmpty());
                                 h.put("count", items.size());
-                                if (items.isEmpty()) throw new Exception("No items parsed");
+                                if (raws.isEmpty()) throw new Exception("No items parsed"); // a sitemap filtered to nothing new is still a working feed
                                 synchronized (fstate) { fstate.remove(url); }
                             } catch (Throwable e) {
                                 try {

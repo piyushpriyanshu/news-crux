@@ -1,0 +1,58 @@
+name: Source check
+
+# Reads every news source live the way the app does and reports what works.
+# Runs daily, on a push to the "probe" branch, or by hand. The report goes to the probe-report branch;
+# a failing source opens (or updates) an issue titled "Source check".
+on:
+  schedule:
+    - cron: '17 23 * * *'   # 4:47 AM IST, before the morning edition
+  push:
+    branches: [probe]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Read every source
+        run: |
+          mkdir -p probe
+          if ! ./tools/probe/run.sh > probe/stdout.txt 2>&1; then
+            tail -c 3000 probe/stdout.txt | grep -v '^\s*$' | tail -15 | while IFS= read -r l; do echo "::error::$l"; done
+            exit 1
+          fi
+      - name: Save the report
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p out && cp probe/report.* probe/stdout.txt out/ 2>/dev/null || true
+          cd out && git init -q && git checkout -q -b probe-report
+          git -c user.name=news-crux-check -c user.email=check@users.noreply.github.com add . 
+          git -c user.name=news-crux-check -c user.email=check@users.noreply.github.com commit -qm "Source check $(date -u +%F' '%H:%M)"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" probe-report
+      - name: Tell me if something broke
+        if: always() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [ -f probe/report.json ] || { echo "No report"; exit 0; }
+          if python3 tools/probe/alert.py; then BAD=0; else BAD=1; fi
+          N=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "Source check in:title" --json number --jq '.[0].number // empty')
+          if [ "$BAD" = 1 ]; then
+            if [ -n "$N" ]; then gh issue comment "$N" --repo "$GITHUB_REPOSITORY" --body-file probe/problems.md
+            else gh issue create --repo "$GITHUB_REPOSITORY" --title "Source check: problems found" --body-file probe/problems.md; fi
+          elif [ -n "$N" ]; then
+            gh issue close "$N" --repo "$GITHUB_REPOSITORY" --comment "All sources answered again on $(date -u +%F)."
+          fi
+
