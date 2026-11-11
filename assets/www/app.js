@@ -8,7 +8,7 @@
     checklog: () => '[]', asset: () => '', bookmarks: () => '[]', saveBookmarks() {}, saveFactbank() {}, sync: () => 'busy', generateAi: () => 'busy',
     setString() {}, setBool() {}, setInt() {}, setLong() {}, openUrl(u) { window.open(u, '_blank'); }, share() {}, copy() {}, setBars() {},
     testNotification() {}, requestNotifPermission() {}, openBatterySettings() {}, openNotifSettings() {}, resetData() {},
-    reported: () => '[]', saveReported() {}, backup() {}, restore() {}, printHtml() {}, openAppSettings() {}, updateInfo: () => '{}', checkUpdate() {}, installUpdate() {},
+    reported: () => '[]', saveReported() {}, backup() {}, restore() {}, printHtml() {}, openAppSettings() {}, updateInfo: () => '{}', checkUpdate() {}, installUpdate() {}, pwExplain: () => '',
     shareImage(d) { const w = window.open(); if (w) w.document.write('<img src="' + d + '">'); }, saveImage(d, n) { const a = document.createElement('a'); a.href = d; a.download = n + '.png'; a.click(); return 'ok'; }
   };
   const $ = (s, r) => (r || document).querySelector(s);
@@ -848,7 +848,11 @@
       const yr = key.split('|')[0];
       const stem = esc(q[0]).replace(/\s((?:\d|I{1,3}|IV|V)\.)\s/g, '<br>$1 ');
       const opts = (q[1] || []).map((o, i) => `<div class="pqopt${i === q[2] ? ' ok' : ''}"><span class="pql">${'abcd'[i]}</span><span>${esc(o)}</span>${i === q[2] ? `<span class="pqk">${ic('check', 'xs')}Answer</span>` : ''}</div>`).join('');
-      openSheet(`<h3>UPSC Prelims ${esc(yr)}</h3><div class="pqq">${stem}</div><div class="pqopts">${opts}</div><div class="note">Answer as per the UPSC key.</div>`);
+      // your own explanation file (imported with Restore), if any
+      const ex = J(N.pwExplain ? N.pwExplain(key) : '', null);
+      const paras = t => esc(t).split(/\n+/).filter(Boolean).map(x => `<p>${x}</p>`).join('');
+      const exHtml = ex && ex.e ? `<div class="pqx"><div class="pqxh">Explanation</div>${paras(ex.e)}</div>${ex.h ? `<details class="pqxd"><summary>Super hint</summary>${paras(ex.h)}</details>` : ''}${ex.x ? `<details class="pqxd"><summary>Extra edge</summary>${paras(ex.x)}</details>` : ''}` : '';
+      openSheet(`<h3>UPSC Prelims ${esc(yr)}</h3><div class="pqq">${stem}</div><div class="pqopts">${opts}</div>${exHtml}<div class="note">Answer as per the UPSC key.</div>`);
     });
   }
   function openSheet(html) { $('#sheet').innerHTML = '<div class="grab"></div>' + html; $('#sheet').classList.add('on'); $('#scrim').classList.add('on'); S.sheetOpen = true; }

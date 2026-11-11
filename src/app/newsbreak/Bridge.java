@@ -208,6 +208,26 @@ public final class Bridge {
         return "started";
     }
 
+    static volatile org.json.JSONObject pwCache;
+
+    /** Your private explanation for a PYQ ("year|q"), imported with Restore; "" when not imported. */
+    @JavascriptInterface
+    public String pwExplain(String key) {
+        try {
+            org.json.JSONObject pw = pwCache;
+            if (pw == null) {
+                String raw = Store.read(this.c, "pw.json");
+                if (raw == null) return "";
+                pw = new org.json.JSONObject(raw);
+                pwCache = pw;
+            }
+            org.json.JSONObject e = pw.optJSONObject(key);
+            return e == null ? "" : e.toString();
+        } catch (Exception ex) {
+            return "";
+        }
+    }
+
     @JavascriptInterface
     public String updateInfo() {
         return Updater.info(this.c).toString();

@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 /* loaded from: classes.dex */
 public final class Backup {
-    static final String[] FILES = {"factbank.json", "bookmarks.json", "reported.json", "adapt.json", "checklog.json"};
+    static final String[] FILES = {"factbank.json", "bookmarks.json", "reported.json", "adapt.json", "checklog.json", "pw.json"};
 
     private Backup() {
     }
@@ -58,7 +58,7 @@ public final class Backup {
         JSONObject o;
         try { o = new JSONObject(json); } catch (Exception e) { throw new Exception("Not a News Crux backup file"); }
         if (!"newsbreak".equals(o.optString("app"))) throw new Exception("Not a News Crux backup file");
-        int prefsN = 0, filesN = 0, edN = 0;
+        int prefsN = 0, filesN = 0, edN = 0, pwN = 0;
         JSONObject prefs = o.optJSONObject("prefs");
         if (prefs != null) {
             SharedPreferences.Editor ed = Store.prefs(c).edit();
@@ -91,6 +91,13 @@ public final class Backup {
                     if (cur != null) { Iterator<String> it = cur.keys(); while (it.hasNext()) { String k = it.next(); in.put(k, Math.max(in.optDouble(k, 0), cur.optDouble(k, 0))); } }
                     v = in.toString();
                 }
+                if (f.equals("pw.json")) {
+                    JSONObject pw = new JSONObject(v); // your private PYQ explanations: validated, then kept on this phone only
+                    Store.write(c, f, v);
+                    Bridge.pwCache = null;
+                    pwN = pw.length();
+                    continue;
+                }
                 Store.write(c, f, v);
                 filesN++;
             }
@@ -114,7 +121,8 @@ public final class Backup {
         }
         SyncJobService.schedule(c, true);
         DeliverReceiver.arm(c);
-        return "Restored " + prefsN + " settings, " + filesN + " lists and " + edN + " editions";
+        if (pwN > 0 && prefsN == 0 && filesN == 0 && edN == 0) return "PYQ explanations added for " + pwN + " questions";
+        return "Restored " + prefsN + " settings, " + filesN + " lists and " + edN + " editions" + (pwN > 0 ? "; explanations for " + pwN + " questions" : "");
     }
 
     static JSONArray mergeBy(JSONArray jSONArray, JSONArray jSONArray2, String str) throws Exception {
