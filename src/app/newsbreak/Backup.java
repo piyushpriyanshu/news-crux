@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 /* loaded from: classes.dex */
 public final class Backup {
-    static final String[] FILES = {"factbank.json", "bookmarks.json", "reported.json", "adapt.json", "checklog.json", "pw.json"};
+    static final String[] FILES = {"factbank.json", "bookmarks.json", "reported.json", "adapt.json", "checklog.json", "pw.json", "pyq_tries.json"};
 
     private Backup() {
     }
@@ -89,6 +89,11 @@ public final class Backup {
                 else if (f.equals("adapt.json")) {
                     JSONObject cur = Store.readObj(c, f), in = new JSONObject(v);
                     if (cur != null) { Iterator<String> it = cur.keys(); while (it.hasNext()) { String k = it.next(); in.put(k, Math.max(in.optDouble(k, 0), cur.optDouble(k, 0))); } }
+                    v = in.toString();
+                }
+                else if (f.equals("pyq_tries.json")) { // your PYQ attempts: keep the latest try of each question
+                    JSONObject cur = Store.readObj(c, f), in = new JSONObject(v);
+                    if (cur != null) { Iterator<String> it = cur.keys(); while (it.hasNext()) { String k = it.next(); JSONArray a = cur.optJSONArray(k), b = in.optJSONArray(k); if (a != null && (b == null || a.optLong(1) > b.optLong(1))) in.put(k, a); } }
                     v = in.toString();
                 }
                 if (f.equals("pw.json")) {

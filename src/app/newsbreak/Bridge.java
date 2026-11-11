@@ -195,6 +195,21 @@ public final class Bridge {
         return Store.readArr(this.c, "bookmarks.json").toString();
     }
 
+    /** Your PYQ attempts: {"year|q": [1 right / 0 wrong, time, option]}. */
+    @JavascriptInterface
+    public String pyqTries() {
+        JSONObject o = Store.readObj(this.c, "pyq_tries.json");
+        return o == null ? "{}" : o.toString();
+    }
+
+    @JavascriptInterface
+    public void savePyqTries(String str) {
+        try {
+            if (str.length() < 400000) { new JSONObject(str); Store.write(this.c, "pyq_tries.json", str); }
+        } catch (Exception e) {
+        }
+    }
+
     @JavascriptInterface
     public void saveBookmarks(String str) {
         try {

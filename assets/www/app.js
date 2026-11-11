@@ -8,7 +8,7 @@
     checklog: () => '[]', asset: () => '', bookmarks: () => '[]', saveBookmarks() {}, saveFactbank() {}, sync: () => 'busy', generateAi: () => 'busy',
     setString() {}, setBool() {}, setInt() {}, setLong() {}, openUrl(u) { window.open(u, '_blank'); }, share() {}, copy() {}, setBars() {},
     testNotification() {}, requestNotifPermission() {}, openBatterySettings() {}, openNotifSettings() {}, resetData() {},
-    reported: () => '[]', saveReported() {}, backup() {}, restore() {}, printHtml() {}, openAppSettings() {}, updateInfo: () => '{}', checkUpdate() {}, installUpdate() {}, pwExplain: () => '', pyqQuestion: () => '',
+    reported: () => '[]', saveReported() {}, backup() {}, restore() {}, printHtml() {}, openAppSettings() {}, updateInfo: () => '{}', checkUpdate() {}, installUpdate() {}, pwExplain: () => '', pyqQuestion: () => '', pyqTries: () => '{}', savePyqTries() {},
     shareImage(d) { const w = window.open(); if (w) w.document.write('<img src="' + d + '">'); }, saveImage(d, n) { const a = document.createElement('a'); a.href = d; a.download = n + '.png'; a.click(); return 'ok'; }
   };
   const $ = (s, r) => (r || document).querySelector(s);
@@ -112,8 +112,9 @@
       const rows = [], idx = {};
       ev.forEach(e => { const k = String(e[1]).toLowerCase(); if (idx[k] == null) { idx[k] = rows.length; rows.push({ a: e[1], y: [e[0]], q: [e[2] || ''] }); } else if (rows[idx[k]].y.indexOf(e[0]) < 0) { rows[idx[k]].y.push(e[0]); rows[idx[k]].q.push(e[2] || ''); } });
       // a year with the full question saved opens it (question, options, correct answer)
-      const yr = (r, j) => r.q[j] ? `<button class="pqy pqo" data-pyq="${esc(r.q[j])}" aria-label="Open the ${r.y[j]} question">’${pad(r.y[j] % 100)}</button>` : `<span class="pqy">’${pad(r.y[j] % 100)}</span>`;
-      const list = rows.map(r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}" data-pyq="${r.q.some(Boolean) ? esc(r.q.find(Boolean)) : '-'}" role="button"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (see question)' : esc(r.a)}</span></div>`).join('');
+      const tr = tries();
+      const yr = (r, j) => { if (!r.q[j]) return `<span class="pqy">’${pad(r.y[j] % 100)}</span>`; const x = tr[r.q[j]], m = x ? (x[0] ? ' r' : ' w') : ''; return `<button class="pqy pqo${m}" data-pyq="${esc(r.q[j])}" aria-label="Try the ${r.y[j]} question${x ? (x[0] ? ', answered right before' : ', missed before') : ''}">’${pad(r.y[j] % 100)}${x ? (x[0] ? ' ✓' : ' ✗') : ''}</button>`; };
+      const list = rows.map(r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}" data-pyq="${r.q.some(Boolean) ? esc(r.q.find(Boolean)) : '-'}" role="button"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (try the question)' : esc(r.a)}</span></div>`).join('');
       return `<div class="pyq"><div class="lab">${ic('target', 'xs')}<span>Asked in Prelims${who ? `: <b>${esc(who)}</b>` : ''}</span></div>${list}</div>`;
     }
     const th = THEME[t.theme];
@@ -841,26 +842,80 @@
     sc.onload = () => cb(); sc.onerror = () => toast('Could not open the question');
     document.head.appendChild(sc);
   }
-  function openPyq(key) {
-    const fromApp = N.pyqQuestion ? J(N.pyqQuestion(key), null) : null; // the app hands it over directly
-    if (fromApp) return showPyq(key, fromApp);
-    loadPyqText(() => {
-      const q = (window.PYQ_TEXT || {})[key];
-      if (!q) { toast('Question text not available'); return; }
-      showPyq(key, q);
-    });
+  /* ---------------- PYQ practice: try first, then see the answer ---------------- */
+  let TRIES = null;
+  const tries = () => TRIES || (TRIES = J(N.pyqTries ? N.pyqTries() : '{}', {}));
+  function saveTry(key, ok, ch) { const t = tries(); t[key] = [ok ? 1 : 0, Date.now(), ch]; try { if (N.savePyqTries) N.savePyqTries(JSON.stringify(t)); } catch (e) {} }
+  function pyqSet(t) { // every question linked to this card, newest first
+    const out = [], seen = {};
+    ((t && t.pyqEv) || []).forEach(e => { if (e[2] && !seen[e[2]]) { seen[e[2]] = 1; out.push({ k: e[2], y: Number(e[0]), a: String(e[1] || '') }); } });
+    return out.sort((x, y) => y.y - x.y);
   }
-  function showPyq(key, q) {
+  function getQ(key, cb) {
+    const q = N.pyqQuestion ? J(N.pyqQuestion(key), null) : null; // the app hands it over directly
+    if (q) return cb(q);
+    loadPyqText(() => { const x = (window.PYQ_TEXT || {})[key]; if (!x) toast('Question text not available'); else cb(x); });
+  }
+  function openPyq(key, tid) {
+    const t = tid ? findTopic(tid) : null;
+    const set = pyqSet(t);
+    let i = set.findIndex(x => x.k === key);
+    if (i < 0) { set.unshift({ k: key, y: Number(key.split('|')[0]), a: '' }); i = 0; }
+    S.pq = { set, i, t };
+    loadPq();
+  }
+  function loadPq() {
+    const p = S.pq, cur = p.set[p.i];
+    p.q = null; p.pick = null; p.out = {};
+    getQ(cur.k, q => { p.q = q; showPyq(); });
+  }
+  function showPyq(keepScroll) {
     try {
-      const yr = key.split('|')[0];
+      const p = S.pq, cur = p.set[p.i], q = p.q, key = cur.k, done = p.pick != null, ans = q[2];
+      const yr = key.split('|')[0], qn = key.split('|')[1];
       const stem = esc(q[0]).replace(/\s((?:\d|I{1,3}|IV|V)\.)\s/g, '<br>$1 ');
-      const opts = (q[1] || []).map((o, i) => `<div class="pqopt${i === q[2] ? ' ok' : ''}"><span class="pql">${'abcd'[i]}</span><span>${esc(o)}</span>${i === q[2] ? `<span class="pqk">${ic('check', 'xs')}Answer</span>` : ''}</div>`).join('');
-      // your own explanation file (imported with Restore), if any
-      const ex = J(N.pwExplain ? N.pwExplain(key) : '', null);
-      const paras = t => esc(t).split(/\n+/).filter(Boolean).map(x => `<p>${x}</p>`).join('');
-      const exHtml = ex && ex.e ? `<div class="pqx"><div class="pqxh">Explanation</div>${paras(ex.e)}</div>${ex.h ? `<details class="pqxd"><summary>Super hint</summary>${paras(ex.h)}</details>` : ''}${ex.x ? `<details class="pqxd"><summary>Extra edge</summary>${paras(ex.x)}</details>` : ''}` : '';
-      openSheet(`<h3>UPSC Prelims ${esc(yr)}</h3><div class="pqq">${stem}</div><div class="pqopts">${opts}</div>${exHtml}<div class="note">Answer as per the UPSC key.</div>`);
+      const last = tries()[key];
+      const ctx = [];
+      if (cur.a && cur.a !== 'asked') ctx.push(`Asked about: <b>${esc(cur.a)}</b>`);
+      if (p.t && p.t.head) ctx.push(`In the news: ${esc(p.t.head.length > 90 ? p.t.head.slice(0, 88) + '…' : p.t.head)}`);
+      const opts = (q[1] || []).map((o, i) => {
+        let cls = '', tag = '';
+        if (done) {
+          if (i === ans) { cls = ' ok'; tag = `<span class="pqk">${ic('check', 'xs')}${p.pick === i ? 'Your answer' : 'Answer'}</span>`; }
+          else if (i === p.pick) { cls = ' bad'; tag = `<span class="pqk bad">${ic('x', 'xs')}Your pick</span>`; }
+        }
+        const out = p.out[i] && !done ? ' out' : '';
+        return `<div class="pqrow${out}"><button class="pqopt${cls}" data-pqa="${i}"${done ? ' disabled' : ''}><span class="pql">${'abcd'[i]}</span><span class="pqt">${esc(o)}</span>${tag}</button>${done ? '' : `<button class="pqs" data-pqs="${i}" aria-label="Rule out option ${'abcd'[i]}" aria-pressed="${p.out[i] ? 'true' : 'false'}">${ic('x', 'xs')}</button>`}</div>`;
+      }).join('');
+      let after = '';
+      if (done) {
+        const res = p.pick === -1 ? `<div class="pqres">Answer: (${'abcd'[ans]})</div>` : p.pick === ans ? `<div class="pqres ok">Correct.</div>` : `<div class="pqres bad">Not this one. The answer is (${'abcd'[ans]}).</div>`;
+        const ex = J(N.pwExplain ? N.pwExplain(key) : '', null); // your own explanation file (imported with Restore), if any
+        const paras = x => esc(x).split(/\n+/).filter(Boolean).map(y => `<p>${y}</p>`).join('');
+        const exHtml = ex && ex.e ? `<div class="pqx"><div class="pqxh">Explanation</div>${paras(ex.e)}</div>${ex.h ? `<details class="pqxd"><summary>Super hint</summary>${paras(ex.h)}</details>` : ''}${ex.x ? `<details class="pqxd"><summary>Extra edge</summary>${paras(ex.x)}</details>` : ''}` : '<div class="note">Answer as per the UPSC key.</div>';
+        after = res + exHtml;
+      } else {
+        after = `<div class="pqhelp"><span>Tap an option to answer. Use ${ic('x', 'xs')} to rule one out first.</span><button class="btn ghost sm" data-pqa="-1">Show answer</button></div>`;
+      }
+      let nav = '';
+      if (p.set.length > 1) {
+        const tried = p.set.filter(x => tries()[x.k]), right = tried.filter(x => tries()[x.k][0] === 1).length;
+        nav = `<div class="pqnav"><span class="pqcount">Question ${p.i + 1} of ${p.set.length} on this story${tried.length ? `. ${right} of ${tried.length} right so far` : ''}</span>${p.i > 0 ? `<button class="btn ghost sm" data-pqn="-1">Previous</button>` : ''}${p.i < p.set.length - 1 ? `<button class="btn sm" data-pqn="1">Next question</button>` : ''}</div>`;
+      }
+      const lastHtml = last && !done ? `<div class="pqlast">Last try: ${last[0] ? 'right' : 'missed'}, ${esc(ago(last[1]))}</div>` : '';
+      const st = keepScroll ? $('#sheet').scrollTop : 0;
+      openSheet(`<h3>UPSC Prelims ${esc(yr)}, question ${esc(qn)}</h3>${ctx.length ? `<div class="pqc">${ctx.join('<br>')}</div>` : ''}${lastHtml}<div class="pqq">${stem}</div><div class="pqopts">${opts}</div>${after}${nav}`);
+      $('#sheet').scrollTop = st;
+      if (done) { const r = $('#sheet .pqres'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
     } catch (err) { console.log('pyq open failed: ' + err); toast('Could not open the question'); }
+  }
+  function pqAnswer(i) {
+    const p = S.pq;
+    if (!p || !p.q || p.pick != null) return;
+    p.pick = i;
+    if (i >= 0) saveTry(p.set[p.i].k, i === p.q[2], i);
+    showPyq(true);
+    if (S.ed || S.live) render({ keepScroll: true }); // the year marks on the card update
   }
   function openSheet(html) { $('#sheet').innerHTML = '<div class="grab"></div>' + html; $('#sheet').classList.add('on'); $('#scrim').classList.add('on'); S.sheetOpen = true; }
   function closeSheet() { $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.sheetOpen = false; }
@@ -877,7 +932,7 @@
 
   /* ---------------- events ---------------- */
   function onClick(e) {
-    const el = e.target.closest('[data-up],[data-prov],[data-tab],[data-date],[data-mode],[data-act],[data-lf],[data-lmode],[data-fs],[data-ps],[data-py],[data-rev],[data-open],[data-url],[data-fdel],[data-int],[data-theme-set],[data-ts],[data-dlv],[data-span],[data-unrep],[data-goto],[data-shtheme],[data-shfull],[data-cu],[data-pyq]');
+    const el = e.target.closest('[data-up],[data-prov],[data-tab],[data-date],[data-mode],[data-act],[data-lf],[data-lmode],[data-fs],[data-ps],[data-py],[data-rev],[data-open],[data-url],[data-fdel],[data-int],[data-theme-set],[data-ts],[data-dlv],[data-span],[data-unrep],[data-goto],[data-shtheme],[data-shfull],[data-cu],[data-pyq],[data-pqa],[data-pqs],[data-pqn]');
     if (!el) return;
     const d = el.dataset;
     if (d.tab) return go(d.tab);
@@ -893,7 +948,10 @@
       else { el.dataset.armed = '1'; el.style.color = 'var(--red)'; toast('Tap ✕ again to delete'); setTimeout(() => { delete el.dataset.armed; el.style.color = ''; }, 2500); }
       return;
     }
-    if (d.pyq) { if (d.pyq === '-') toast('Full question not saved for this one (CDS/CAPF or not in the paper set)'); else openPyq(d.pyq); return; }
+    if (d.pyq) { if (d.pyq === '-') toast('Full question not saved for this one (CDS/CAPF or not in the paper set)'); else { const art = el.closest('article.card'); openPyq(d.pyq, art ? art.dataset.id : null); } return; }
+    if (d.pqa !== undefined) { pqAnswer(Number(d.pqa)); return; }
+    if (d.pqs !== undefined) { const p = S.pq; if (p && p.pick == null) { p.out[d.pqs] = !p.out[d.pqs]; showPyq(true); } return; }
+    if (d.pqn) { const p = S.pq; if (p) { p.i = Math.max(0, Math.min(p.set.length - 1, p.i + Number(d.pqn))); loadPq(); } return; }
     if (d.up) { const ord = (S.boot.settings.order || []).slice(); const i = ord.indexOf(d.up); if (i > 0) { ord.splice(i, 1); ord.splice(i - 1, 0, d.up); } N.setString('aiOrder', ord.join(',')); S.boot.settings.order = ord; openPage(settingsPage()); toast((S.boot.settings.providers[ord[0]] || {}).name + ' is now primary'); return; }
     if (d.prov) { N.setString('aiProvider', d.prov); S.aitest = ''; openPage(settingsPage()); return; }
     if (d.int) { N.setInt('intervalHours', Number(d.int)); S.boot.settings.intervalHours = Number(d.int); openPage(settingsPage()); toast('Sync every ' + d.int + 'h'); return; }
@@ -1063,7 +1121,7 @@
         }
       } else if (ev.type === 'backup' || ev.type === 'restore' || ev.type === 'print') {
         toast(ev.msg || (ev.ok ? 'Done' : 'Failed'));
-        if (ev.type === 'restore' && ev.ok) { loadBoot(); applyTheme(); S.bookmarks = J(N.bookmarks(), []); loadReported(); S.ed = null; if (S.pageOpen) openPage(settingsPage()); render({ keepScroll: true }); }
+        if (ev.type === 'restore' && ev.ok) { TRIES = null; loadBoot(); applyTheme(); S.bookmarks = J(N.bookmarks(), []); loadReported(); S.ed = null; if (S.pageOpen) openPage(settingsPage()); render({ keepScroll: true }); }
       } else if (ev.type === 'update') {
         S.boot.update = ev;
         if (ev.state === 'install') {
