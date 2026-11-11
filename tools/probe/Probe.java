@@ -71,7 +71,9 @@ public class Probe {
         try {
             o.put("code", code).put("url", url);
             long t = System.currentTimeMillis();
-            Net.Resp r = Net.get(url, 20000);
+            Net.Resp r;
+            try { r = Net.get(url, 20000); } catch (Exception first) { r = null; }
+            if (r == null || r.code >= 500 || r.code == 429) { Thread.sleep(2500); r = Net.get(url, 20000); o.put("retried", true); } // the app retries once too
             o.put("http", r.code).put("ms", System.currentTimeMillis() - t).put("bytes", r.body == null ? 0 : r.body.length());
             if (r.code != 200 || r.body == null) return o;
             boolean sitemap = r.body.contains("<urlset") || r.body.contains("<sitemapindex");
