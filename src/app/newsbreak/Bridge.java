@@ -134,6 +134,7 @@ public final class Bridge {
         try {
             JSONObject o = new JSONObject(s);
             boolean ch = Sentinel.dropMeta(o);
+            if (app.newsbreak.core.EditionBuilder.consolidate(o.optJSONArray("topics"))) ch = true;
             if (Engine.addPyqKeys(this.c, o) || ch) return o.toString();
         } catch (Throwable ignored) {
         }

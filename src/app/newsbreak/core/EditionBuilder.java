@@ -1106,7 +1106,18 @@ public final class EditionBuilder {
                 if (qk != null) ev.put(qk); // opens the full question in the app
                 jSONArray3.put(ev);
             }
+            // every other related question from any UPSC paper (each opens in full)
+            Set<String> have = new HashSet<String>();
+            for (Pyq.Row row : matchTopic) have.add(row.year + "|" + row.qno + "|" + row.exam);
+            @SuppressWarnings("unchecked") List<Pyq.Row> all = this.pyq.matchAll(Foreign.mask(cap), Foreign.mask(join(arrayList4)), theme != null ? theme.optString("gs") : "", (Set<String>) linkedHashSet3);
+            for (Pyq.Row row : all) {
+                if (!have.add(row.year + "|" + row.qno + "|" + row.exam)) continue;
+                String qk = this.pyq.key(row);
+                if (qk == null) continue; // only questions that open
+                jSONArray3.put(new JSONArray().put(row.year).put(Pyq.aspect(row)).put(qk));
+            }
             jSONObject14.put("pyqEv", jSONArray3);
+            jSONObject14.put("pyqAll", 2);
             if (str3 != null) {
                 jSONObject14.put("pyqId", str3);
             }
@@ -1517,6 +1528,68 @@ public final class EditionBuilder {
         }
     }
 
+    /** Past questions and checked figures of a merged card join the host's, each question once. */
+    static void unionEv(JSONObject host, JSONObject other) throws Exception {
+        JSONArray a = host.optJSONArray("pyqEv"), b = other.optJSONArray("pyqEv");
+        if (a != null && b != null) {
+            Set<String> seen = new HashSet<String>();
+            for (int i = 0; i < a.length(); i++) { JSONArray e = a.optJSONArray(i); if (e != null) seen.add(e.length() > 2 && e.optString(2).length() > 0 ? e.optString(2) : e.optString(0) + "|" + e.optString(1)); }
+            for (int i = 0; i < b.length(); i++) {
+                JSONArray e = b.optJSONArray(i);
+                if (e == null) continue;
+                String k = e.length() > 2 && e.optString(2).length() > 0 ? e.optString(2) : e.optString(0) + "|" + e.optString(1);
+                if (seen.add(k)) a.put(e);
+            }
+        }
+        JSONObject fa = host.optJSONObject("fx"), fb = other.optJSONObject("fx");
+        if (fb != null) {
+            if (fa == null) { host.put("fx", new JSONObject(fb.toString())); }
+            else { JSONArray n = fb.names(); for (int i = 0; n != null && i < n.length(); i++) if (!fa.has(n.optString(i))) fa.put(n.optString(i), fb.get(n.optString(i))); }
+        }
+    }
+
+    /** The body a card is about: its primary entity, else its first entity. Catch-all bodies (courts, UN) never merge cards. */
+    static String bodyKey(JSONObject t) {
+        String k = t.optString("pent", "");
+        if (k.isEmpty()) { JSONArray e = t.optJSONArray("ents"); k = e != null && e.length() > 0 ? e.optString(0) : ""; }
+        return k.isEmpty() || Sentinel.GENERIC.contains("e:" + k) ? "" : k;
+    }
+
+    /**
+     * One card per body per day: several stories about the same body today (three Election Commission stories, say)
+     * become one card, with the other stories as "More on … today" and one combined list of past questions. Runs on a
+     * single day's cards only, so a body in the news again tomorrow gets its own card then.
+     * @return true if any cards were merged.
+     */
+    public static boolean consolidate(JSONArray topics) {
+        if (topics == null || topics.length() < 2) return false;
+        boolean any = false;
+        try {
+            List<JSONObject> keep = new ArrayList<JSONObject>();
+            Map<String, JSONObject> byBody = new HashMap<String, JSONObject>();
+            for (int i = 0; i < topics.length(); i++) {
+                JSONObject t = topics.optJSONObject(i);
+                if (t == null) continue;
+                String k = bodyKey(t);
+                JSONObject host = k.isEmpty() ? null : byBody.get(k);
+                if (host != null) {
+                    JSONArray before = host.optJSONArray("pyqEv");
+                    mergeInto(host, t, 0L);
+                    if (before == null && host.optJSONArray("pyqEv") != null) host.put("pyqEv", host.getJSONArray("pyqEv"));
+                    any = true;
+                    continue;
+                }
+                if (!k.isEmpty()) byBody.put(k, t);
+                keep.add(t);
+            }
+            if (any) {
+                while (topics.length() > 0) topics.remove(topics.length() - 1);
+                for (JSONObject t : keep) topics.put(t);
+            }
+        } catch (Exception ignored) {}
+        return any;
+    }
+
     static boolean mergeInto(JSONObject jSONObject, JSONObject jSONObject2, long j) throws Exception {
         boolean z;
         JSONArray jSONArray;
@@ -1591,6 +1664,7 @@ public final class EditionBuilder {
         }
         jSONObject.put("corrob", jSONObject.optJSONArray("srcs") == null ? 0 : jSONObject.getJSONArray("srcs").length());
         jSONObject.put("single", jSONObject.optJSONArray("srcs") == null || jSONObject.getJSONArray("srcs").length() <= 1);
+        unionEv(jSONObject, jSONObject2);
         if (!jSONObject.has("pyqEv") && jSONObject2.has("pyqEv")) {
             jSONObject.put("pyq", jSONObject2.optString("pyq"));
             jSONObject.put("pyqEv", jSONObject2.get("pyqEv"));

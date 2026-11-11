@@ -67,16 +67,45 @@ public class PyqTest {
             ok(!p.addKeys(t, kb), "second run adds nothing");
         }
         // CDS / CAPF: full questions with exam and paper (since 1.9.1)
-        p.addMore(r("pyq_more.js"));
         String mt = r("pyq_more_text.js");
-        p.addMoreText(mt);
+        p.addMoreText(mt); // full questions first: their answers feed the matching
+        p.addMore(r("pyq_more.js"));
         JSONObject more = new JSONObject(mt.substring(mt.indexOf('{'), mt.lastIndexOf('}') + 1));
         boolean mshape = more.length() > 1500;
         for (Iterator<String> it = more.keys(); it.hasNext(); ) {
             String k = it.next(); JSONArray q = more.getJSONArray(k);
-            if (!k.matches("20\\d\\d\\|(CDS(I|II)?|CAPF)-\\d+-\\d+") || q.getJSONArray(1).length() != 4 || q.getInt(2) < 0 || q.getInt(2) > 3 || !q.getString(4).matches("(CDS( \\((I|II)\\))?|CAPF) 20\\d\\d")) { mshape = false; System.out.println("  bad CDS/CAPF entry " + k); break; }
+            if (!k.matches("20\\d\\d\\|(CDS(I|II)?|CAPF|NDA(I|II)?|CGS|EPFO(APFC|EOAO)?|ESE)-\\d+-\\d+") || q.getJSONArray(1).length() != 4 || q.getInt(2) < 0 || q.getInt(2) > 3 || q.optInt(3) != 0 || !q.getString(4).matches("(CDS|CAPF|NDA|Geo-Scientist|EPFO|ESE)( \\([A-Z/I]+\\))? 20\\d\\d")) { mshape = false; System.out.println("  bad entry " + k + " " + q.optString(4)); break; }
         }
-        ok(mshape, "CDS/CAPF questions: " + more.length() + ", each with 4 options, answer and exam label");
+        ok(mshape, "other-paper questions: " + more.length() + ", each complete with 4 options, answer and exam label");
+        // every listed question opens
+        String mr = r("pyq_more.js");
+        JSONArray mrows = new JSONArray(mr.substring(mr.indexOf('['), mr.lastIndexOf(']') + 1));
+        int open = 0;
+        for (int i = 0; i < mrows.length(); i++) { JSONArray x = mrows.getJSONArray(i); if (more.has(x.getInt(0) + "|" + x.getString(1))) open++; }
+        ok(open == mrows.length(), "every CDS/CAPF/NDA/Geo-Scientist/EPFO/ESE row opens: " + open + "/" + mrows.length());
+        // an Election Commission story lists questions from several papers, each once, each opening
+        Set<String> eciIds = new LinkedHashSet<String>(kb.idsIn("Election Commission of India announces the schedule"));
+        List<Pyq.Row> all = p.matchAll("Election Commission announces bypolls", "Election Commission of India; model code of conduct comes into force", "GS-II/Polity", eciIds);
+        Map<String, Integer> byExam = new TreeMap<String, Integer>();
+        Set<String> seenK = new HashSet<String>(); boolean allOpen = true, dup = false;
+        for (Pyq.Row x : all) { String ex = x.exam == null ? "CSE" : x.exam; byExam.put(ex, byExam.containsKey(ex) ? byExam.get(ex) + 1 : 1); String k = p.key(x); if (k == null || p.question(k) == null) allOpen = false; else if (!seenK.add(k)) dup = true; }
+        System.out.println("  Election Commission story: " + byExam);
+        ok(byExam.containsKey("CSE") && byExam.size() >= 3, "questions from CSE and other papers: " + byExam);
+        ok(allOpen && !dup, "each listed once and each opens");
+        // same-day cards about one body become one card, with one list of questions
+        JSONArray tp = new JSONArray();
+        tp.put(new JSONObject("{\"id\":\"a\",\"head\":\"ECI announces bypolls to 8 seats\",\"pent\":\"eci\",\"ents\":[\"eci\"],\"bullets\":[\"Polling on 4 December.\"],\"srcs\":[\"TH\"],\"pyqEv\":[[2017,\"composition\",\"2017|7\"]]}"));
+        tp.put(new JSONObject("{\"id\":\"b\",\"head\":\"Supreme Court on Governor assent\",\"pent\":\"sc\",\"ents\":[\"sc\"],\"bullets\":[\"Bench of five judges.\"],\"srcs\":[\"IE\"]}"));
+        tp.put(new JSONObject("{\"id\":\"c\",\"head\":\"Election Commission revises rolls in Bihar\",\"pent\":\"eci\",\"ents\":[\"eci\"],\"bullets\":[\"Special Intensive Revision ends.\"],\"srcs\":[\"HT\"],\"pyqEv\":[[2017,\"composition\",\"2017|7\"],[2015,\"powers\",\"2015|12\"]]}"));
+        tp.put(new JSONObject("{\"id\":\"d\",\"head\":\"Supreme Court stays order on mining lease\",\"pent\":\"sc\",\"ents\":[\"sc\"],\"bullets\":[\"Interim stay.\"],\"srcs\":[\"TH\"]}"));
+        tp.put(new JSONObject("{\"id\":\"e\",\"head\":\"Election Commission launches voter app\",\"ents\":[\"eci\"],\"bullets\":[\"App in 12 languages.\"],\"srcs\":[\"PIB\"]}"));
+        ok(EditionBuilder.consolidate(tp), "same-body cards merged");
+        int eciN = 0, sc = 0; JSONObject host = null;
+        for (int i = 0; i < tp.length(); i++) { String k = tp.getJSONObject(i).optString("pent", tp.getJSONObject(i).optJSONArray("ents").optString(0)); if (k.equals("eci")) { eciN++; host = tp.getJSONObject(i); } if (k.equals("sc")) sc++; }
+        ok(eciN == 1, "one Election Commission card: " + eciN);
+        ok(sc == 2, "Supreme Court stories stay separate (a catch-all body): " + sc);
+        ok(host != null && host.getJSONArray("pyqEv").length() == 2, "questions joined, none repeated: " + (host == null ? "" : host.getJSONArray("pyqEv")));
+        ok(host != null && host.optJSONArray("also") != null && host.getJSONArray("also").length() >= 1, "the other stories sit inside the card");
         List<Pyq.Row> vk = p.matchTopic("Vikramkhol Cave rock shelter in Odisha", "prehistoric rock art", "GS-I/History", new LinkedHashSet<String>(), 4);
         boolean cds = false;
         for (Pyq.Row x : vk) if (x.exam != null && p.key(x) != null && p.question(p.key(x)).length() == 5) cds = true;

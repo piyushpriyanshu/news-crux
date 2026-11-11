@@ -182,6 +182,37 @@ public final class Pyq {
         return added;
     }
 
+    /**
+     * Cards built before 1.9.2 list only a few CSE questions: add every other related question from all papers
+     * (see {@link #matchAll}). Marked "pyqAll" so it runs once per card.
+     * @return true if anything was added.
+     */
+    public boolean addAll(JSONObject t) {
+        if (t == null || t.optInt("pyqAll") >= 2 || text == null) return false;
+        try {
+            Set<String> ids = new LinkedHashSet<String>();
+            String[][] kinds = {{"ents", "e:"}, {"maps", "m:"}};
+            for (String[] k : kinds) { JSONArray a = t.optJSONArray(k[0]); for (int i = 0; a != null && i < a.length(); i++) ids.add(k[1] + a.optString(i)); }
+            if (t.optString("pyqId").length() > 0) ids.add(t.optString("pyqId"));
+            StringBuilder b = new StringBuilder();
+            JSONArray bl = t.optJSONArray("bullets");
+            for (int i = 0; bl != null && i < bl.length(); i++) b.append(bl.optString(i)).append(' ');
+            JSONArray ev = t.optJSONArray("pyqEv");
+            Set<String> seen = new HashSet<String>();
+            for (int i = 0; ev != null && i < ev.length(); i++) { JSONArray e = ev.optJSONArray(i); if (e != null && e.length() > 2) seen.add(e.optString(2)); }
+            boolean added = false;
+            for (Row r : matchAll(Foreign.mask(t.optString("head")), Foreign.mask(b.toString()), t.optString("gs"), ids)) {
+                String k = key(r);
+                if (k == null || !seen.add(k)) continue;
+                if (ev == null) { ev = new JSONArray(); t.put("pyqEv", ev); }
+                ev.put(new JSONArray().put(r.year).put(aspect(r)).put(k));
+                added = true;
+            }
+            t.put("pyqAll", 2);
+            return added;
+        } catch (Exception e) { return false; }
+    }
+
     /** Full question for "year|q": [stem, [a, b, c, d], answer index], or null. */
     public JSONArray question(String key) {
         return text == null || key == null ? null : text.optJSONArray(key);
@@ -228,7 +259,7 @@ public final class Pyq {
                 if (examDefault != null) row.exam = jSONArray2.optString(6, examDefault);
                 if (!row.stem.startsWith("Directions")) {
                     // lead of the question + the correct option = what was asked; the statements are weaker evidence
-                    String core = examDefault == null ? (row.stem + " " + right(row)).trim() : row.stem;
+                    String core = (row.stem + " " + right(row)).trim();
                     row.tok = new HashSet(tok(core + " " + row.theme.replace('-', ' ')));
                     if (kb != null) {
                         row.ids.addAll(kb.idsIn(core));
@@ -286,6 +317,30 @@ public final class Pyq {
             }
         }
         return hashSet;
+    }
+
+    /**
+     * Every past question related to a story, from every UPSC paper in the app: CSE Prelims first (up to 15), then CDS,
+     * CAPF, NDA, Geo-Scientist, EPFO and ESE (up to 10 each). When the story names a body, scheme, place or concept the
+     * knowledge base knows, every question that names it is listed; otherwise only the few closest by wording.
+     */
+    public List<Row> matchAll(String head, String body, String gs, Set<String> ids) {
+        Set<String> strong = new HashSet<String>();
+        if (ids != null) for (String id : ids) if (!GENERIC_IDS.contains(id)) strong.add(id);
+        boolean named = false;
+        for (Row r : this.rows) { for (String id : strong) if (r.ids.contains(id)) { named = true; break; } if (named) break; }
+        if (!named) for (Row r : this.rows2) { for (String id : strong) if (r.ids.contains(id)) { named = true; break; } if (named) break; }
+        List<Row> out = new ArrayList<Row>(matchTopic(this.rows, this.df, head, body, gs, ids, named ? 15 : 4));
+        if (!this.rows2.isEmpty()) {
+            Map<String, Integer> per = new HashMap<String, Integer>();
+            for (Row r : matchTopic(this.rows2, this.df2, head, body, gs, ids, named ? 80 : 6)) {
+                int n = per.containsKey(r.exam) ? per.get(r.exam) : 0;
+                if (n >= (named ? 10 : 2)) continue;
+                per.put(r.exam, n + 1);
+                out.add(r);
+            }
+        }
+        return out;
     }
 
     public List<Row> matchTopic(String str, String str2, String str3, Set<String> set, int i) {
@@ -432,8 +487,26 @@ public final class Pyq {
     }
 
     public static String aspect(Row row) {
-        String a = aspect1(row);
-        return row.exam == null ? a : a + " (" + row.exam + ")";
+        if (row.exam == null) return aspect1(row);
+        return lead(row.stem) + " (" + row.exam + ")";
+    }
+
+    private static final Pattern LEAD_DROP = Pattern.compile("(?i)^(?:consider the following(?: statements| pairs)?(?: (?:about|regarding|with reference to|with regard to|in respect of|in the context of))?\\s*:?|with reference to|which (?:one )?(?:of|among) the following(?: statements)?(?: is| are| was| were)?(?: (?:not )?correct(?:ly)?)?(?: (?:about|regarding|with regard to|with respect to|in respect of))?|which one of the following|the following|match list[- ]?i with list[- ]?ii.*?:)\\s*");
+
+    /** What a CDS / NDA / … question is about, in a few words: its subject, without the boilerplate opening. */
+    static String lead(String stem) {
+        String s = stem == null ? "" : stem.replaceAll("\\s+", " ").trim();
+        String t = LEAD_DROP.matcher(s).replaceFirst("");
+        t = t.replaceFirst("(?i)^(?:statements? )?(?:/?are|is/are|is)?\\s*(?:not )?correct(?:ly matched)?\\s*\\??\\s*", "");
+        String t2 = t.replaceFirst("(?i)\\s+(?:is|are|is/are)\\s+(?:not\\s+)?correct(?:ly matched)?\\s*\\??(?=\\s|$)", "");
+        if (t2.length() >= 12) t = t2;
+        Matcher first = Pattern.compile("\\s(?:1|I)\\.\\s(.*?)(?=\\s(?:2|II)\\.\\s|$)").matcher(" " + t);
+        String head = t.replaceFirst("\\s*(?:1|I)\\.\\s.*$", "").replaceFirst("[\\s:,;?]+$", "");
+        if (head.length() < 12 && first.find()) head = first.group(1); // "Which of the statements … are correct? 1. X" → X
+        t = head.length() < 12 ? s : head;
+        t = t.replaceFirst("[\\s:,;?]+$", "");
+        if (t.length() > 70) { int k = t.lastIndexOf(' ', 68); t = t.substring(0, k > 30 ? k : 68) + "…"; }
+        return t.isEmpty() ? "asked" : Character.toUpperCase(t.charAt(0)) + t.substring(1);
     }
 
     static String aspect1(Row row) {

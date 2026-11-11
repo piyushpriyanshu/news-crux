@@ -87,7 +87,10 @@ public final class Engine {
             if (p == null || ed == null) return false;
             for (String key : new String[]{"topics", "catchup"}) {
                 JSONArray a = ed.optJSONArray(key);
-                for (int i = 0; a != null && i < a.length(); i++) if (p.addKeys(a.optJSONObject(i), k)) any = true;
+                for (int i = 0; a != null && i < a.length(); i++) {
+                    if (p.addKeys(a.optJSONObject(i), k)) any = true;
+                    if ("topics".equals(key) && p.addAll(a.optJSONObject(i))) any = true; // every exam's related questions
+                }
             }
         } catch (Throwable ignored) {
         }
@@ -118,8 +121,8 @@ public final class Engine {
             if (pyq == null && !pyqFailed) {
                 try {
                     Pyq p = new Pyq(Store.asset(context, "www/data/pyq.js"), Store.asset(context, "www/data/pyq_text.js"), kb(context));
-                    try { p.addMore(Store.asset(context, "www/data/pyq_more.js")); } catch (Throwable t) {} // CDS / CAPF: optional
-                    try { p.addMoreText(Store.asset(context, "www/data/pyq_more_text.js")); } catch (Throwable t) {} // their full questions
+                    try { p.addMoreText(Store.asset(context, "www/data/pyq_more_text.js")); } catch (Throwable t) {} // other UPSC papers: full questions first (their answers feed the matching)
+                    try { p.addMore(Store.asset(context, "www/data/pyq_more.js")); } catch (Throwable t) {} // CDS, CAPF, NDA, Geo-Scientist, EPFO, ESE
                     pyq = p;
                 } catch (Throwable th) {
                     pyqFailed = true;

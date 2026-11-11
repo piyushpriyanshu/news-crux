@@ -340,6 +340,7 @@ public final class Sentinel {
     public static boolean cleanEdition(JSONObject ed, Kb kb) {
         if (ed == null || kb == null) return false;
         boolean ch = dropMeta(ed);
+        if (EditionBuilder.consolidate(ed.optJSONArray("topics"))) ch = true; // one card per body per day
         for (String key : new String[]{"topics", "catchup"}) {
             JSONArray a = ed.optJSONArray(key);
             for (int i = 0; a != null && i < a.length(); i++) if (clean(a.optJSONObject(i), kb)) ch = true;

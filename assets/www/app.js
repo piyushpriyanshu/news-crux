@@ -109,20 +109,36 @@
 
   /* ---------------- PYQ line (evidence computed natively from your PYQ database) ---------------- */
   const PYQ = window.PYQ || [];
+  const PAPER = { CSE: 'Civil Services Prelims', CDS: 'CDS', CAPF: 'CAPF', NDA: 'NDA', CGS: 'Geo-Scientist', EPFO: 'EPFO', ESE: 'Engineering Services' };
   function pyqBlock(t) {
     const line = String(t.pyq || '');
     const ev = t.pyqEv || [];
     if (ev.length) {
       const m = /^PYQ:\s*(?:(.+?)\s+—\s+)?/.exec(line);
       const who = m && m[1] ? m[1] : '';
-      // one row per distinct "what was asked", years merged, newest first
-      const rows = [], idx = {};
-      ev.forEach(e => { const k = String(e[1]).toLowerCase(); if (idx[k] == null) { idx[k] = rows.length; rows.push({ a: e[1], y: [e[0]], q: [e[2] || ''] }); } else if (rows[idx[k]].y.indexOf(e[0]) < 0) { rows[idx[k]].y.push(e[0]); rows[idx[k]].q.push(e[2] || ''); } });
-      // a year with the full question saved opens it (question, options, correct answer)
+      // grouped by paper (CSE Prelims first), one row per distinct "what was asked", years merged
+      const EX = /\s\((CDS|CAPF|NDA|CGS|EPFO|ESE)\)$/;
+      const groups = {}, order = ['CSE', 'CDS', 'CAPF', 'NDA', 'CGS', 'EPFO', 'ESE'];
+      ev.forEach(e => {
+        const m2 = EX.exec(String(e[1])), ex = m2 ? m2[1] : 'CSE', a = m2 ? String(e[1]).replace(EX, '') : String(e[1]);
+        const g = groups[ex] || (groups[ex] = { rows: [], idx: {} }), k = a.toLowerCase();
+        if (g.idx[k] == null) { g.idx[k] = g.rows.length; g.rows.push({ a, y: [e[0]], q: [e[2] || ''] }); }
+        else if (g.rows[g.idx[k]].q.indexOf(e[2] || '') < 0) { g.rows[g.idx[k]].y.push(e[0]); g.rows[g.idx[k]].q.push(e[2] || ''); }
+      });
       const tr = tries();
+      // every year opens its question (question, options; the answer after you try)
       const yr = (r, j) => { if (!r.q[j]) return `<span class="pqy">’${pad(r.y[j] % 100)}</span>`; const x = tr[r.q[j]], m = x ? (x[0] ? ' r' : ' w') : ''; return `<button class="pqy pqo${m}" data-pyq="${esc(r.q[j])}" aria-label="Try the ${r.y[j]} question${x ? (x[0] ? ', answered right before' : ', missed before') : ''}">’${pad(r.y[j] % 100)}${x ? (x[0] ? ' ✓' : ' ✗') : ''}</button>`; };
-      const list = rows.map(r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}" data-pyq="${r.q.some(Boolean) ? esc(r.q.find(Boolean)) : '-'}" role="button"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (try the question)' : esc(r.a)}</span></div>`).join('');
-      return `<div class="pyq"><div class="lab">${ic('target', 'xs')}<span>Asked in Prelims${who ? `: <b>${esc(who)}</b>` : ''}</span></div>${list}</div>`;
+      const row = r => `<div class="pqr${r.q.some(Boolean) ? ' tap' : ''}" data-pyq="${r.q.some(Boolean) ? esc(r.q.find(Boolean)) : '-'}" role="button"><span class="pqys">${r.y.map((y, j) => yr(r, j)).join('')}</span><span class="pqa">${r.a === 'asked' ? 'asked (try the question)' : esc(r.a)}</span></div>`;
+      const present = order.filter(x => groups[x]), multi = present.length > 1 || !groups.CSE;
+      let shown = 0, total = 0;
+      const body = present.map(x => {
+        const rs = groups[x].rows; total += rs.length;
+        const hidden = shown >= 6;
+        const html = rs.map(r => { shown++; return shown > 6 ? row(r).replace('class="pqr', 'class="pqr pqmore') : row(r); }).join('');
+        return (multi ? `<div class="pqg${hidden ? ' pqmore' : ''}">${esc(PAPER[x])} <span>${rs.reduce((n, r) => n + r.q.filter(Boolean).length, 0)}</span></div>` : '') + html;
+      }).join('');
+      const more = total > 6 ? `<button class="pqall" data-act="pqall" data-lab="Show all ${total} questions">Show all ${total} questions</button>` : '';
+      return `<div class="pyq"><div class="lab">${ic('target', 'xs')}<span>${multi ? 'Asked in UPSC exams' : 'Asked in Prelims'}${who ? `: <b>${esc(who)}</b>` : ''}</span></div>${body}${more}</div>`;
     }
     const th = THEME[t.theme];
     const ang = th && th.angles ? th.angles : [];
@@ -789,7 +805,7 @@
         <div class="set" data-act="rules"><div class="t"><b>Your master prompt</b><small>The locked format and rules every edition follows.</small></div>${ic('chev', 'sm')}</div>
         <div class="set" data-act="checklog"><div class="t"><b>Pre-send check log</b><small>Rule trips by date (pattern flagged after 3 in a row).</small></div>${ic('chev', 'sm')}</div>
       </div>
-      <div class="foot">News Crux ${esc(S.boot.version || '')} · 3,726 CSE (1995–2026) + 1,740 CDS/CAPF PYQs (1,612 with full questions) · ${KB.entities.length} verified profiles · ${(window.SOURCES || []).length} sources</div>
+      <div class="foot">News Crux ${esc(S.boot.version || '')} · 3,726 CSE (1995–2026) + 3,363 CDS, CAPF, NDA, Geo-Scientist, EPFO and ESE PYQs · ${KB.entities.length} verified profiles · ${(window.SOURCES || []).length} sources</div>
     </div>`;
   }
   function updRow() {
@@ -1043,6 +1059,7 @@
         break;
       }
       case 'thread': { const b = el.nextElementSibling; if (b) b.classList.toggle('on'); break; }
+      case 'pqall': { const box = el.closest('.pyq'); if (box) { const on = box.classList.toggle('all'); el.textContent = on ? 'Show fewer' : el.dataset.lab; } break; }
       case 'report': if (t) reportSheet(t); break;
       case 'repsave': {
         const picked = $$('[data-rep]').filter(x => x.checked).map(x => S.repRows[Number(x.dataset.rep)]);
