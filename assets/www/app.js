@@ -878,7 +878,7 @@
     try {
       const p = S.pq, cur = p.set[p.i], q = p.q, key = cur.k, done = p.pick != null, ans = q[2];
       const yr = key.split('|')[0], qn = key.split('|')[1];
-      const stem = esc(q[0]).replace(/\s((?:\d|I{1,3}|IV|V)\.)\s/g, '<br>$1 ');
+      const stem = stemHtml(q[0]);
       const last = tries()[key];
       const ctx = [];
       if (cur.a && cur.a !== 'asked') ctx.push(`Asked about: <b>${esc(cur.a)}</b>`);
@@ -913,6 +913,18 @@
       $('#sheet').scrollTop = st;
       if (done) { const r = $('#sheet .pqres'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
     } catch (err) { console.log('pyq open failed: ' + err); toast('Could not open the question'); }
+  }
+  /** Question in bold; numbered statements on their own lines; the closing ask ("Which of the …") in bold again. */
+  function stemHtml(s) {
+    const parts = String(s || '').split(/\s(?=(?:\d{1,2}|I{1,3}|IV|V|VI)\.\s)/);
+    let tail = '';
+    if (parts.length > 1) {
+      const lastP = parts[parts.length - 1], k = lastP.search(/\s(Which|How many|Select|What|Choose|Of the above|In which|The correct)\b/);
+      if (k > 0) { tail = lastP.slice(k + 1); parts[parts.length - 1] = lastP.slice(0, k); }
+    }
+    const head = `<p class="pqqh">${esc(parts[0])}</p>`;
+    const sts = parts.slice(1).map(x => `<p class="pqqs">${esc(x)}</p>`).join('');
+    return head + sts + (tail ? `<p class="pqqh">${esc(tail)}</p>` : '');
   }
   function pqAnswer(i) {
     const p = S.pq;

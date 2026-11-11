@@ -615,3 +615,11 @@ button.pqs{flex:none;width:44px;border:1px solid var(--line-2);border-radius:10p
 .pqcount{flex:1 1 160px;font-size:12.5px;line-height:1.4;color:var(--muted)}
 button.pqo.r{color:var(--teal);background:var(--teal-soft)}
 button.pqo.w{color:var(--red);background:var(--red-soft)}
+/* question vs options: bold question, statements indented, options set in */
+.pqq{margin:0 0 16px}
+.pqqh{margin:0 0 6px;font-size:15px;line-height:1.5;font-weight:700;color:var(--text)}
+.pqqs{margin:0 0 6px;padding-left:12px;border-left:2px solid var(--line-2);font-size:14.5px;line-height:1.5;font-weight:600;color:var(--text)}
+.pqqs+.pqqh{margin-top:10px}
+.pqopts{margin-left:14px}
+button.pqopt{font-weight:400;color:var(--text-2)}
+.pqopt.ok,.pqopt.bad{color:var(--text)}
