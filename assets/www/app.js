@@ -163,14 +163,18 @@
     S.syncing = !!S.boot.syncing;
     setSyncBtn();
   }
-  /* Sync progress is drawn on the C of the logo: the curve fills as the sync moves on. null = idle. */
+  /* Sync progress: a saffron ring runs around the logo as the sync moves on. null = idle (ring hidden). */
   function setProg(p) {
     const lg = $('#logo'); if (!lg) return;
-    const lp = lg.querySelector('.lp'), was = lg.classList.contains('busy');
-    if (p != null && !was) { lp.style.transition = 'none'; lp.style.strokeDashoffset = '100'; lp.getBoundingClientRect(); lp.style.transition = ''; }
-    lg.classList.toggle('busy', p != null);
-    S.pct = p == null ? 0 : p;
-    lp.style.strokeDashoffset = p == null ? '0' : String(100 - Math.max(0, Math.min(100, p)));
+    const rp = lg.querySelector('.rp');
+    clearTimeout(setProg._t);
+    if (p == null) {
+      lg.classList.remove('busy'); S.pct = 0;
+      setProg._t = setTimeout(() => { if (lg.classList.contains('busy')) return; rp.style.transition = 'none'; rp.style.strokeDashoffset = '100'; rp.getBoundingClientRect(); rp.style.transition = ''; }, 400);
+      return;
+    }
+    lg.classList.add('busy'); S.pct = p;
+    rp.style.strokeDashoffset = String(100 - Math.max(0, Math.min(100, p)));
   }
   function setSyncBtn() {
     if (S.syncing && !S.pct) setProg(6);
@@ -309,7 +313,7 @@
     return `.ncw{background:${c.page};padding:18px;width:540px;box-sizing:border-box}
       .nc{background:${c.bg};color:${c.text};border-radius:14px;padding:22px 22px 12px;font:400 15.5px/1.5 "NB Digits","Atkinson Hyperlegible",system-ui,sans-serif;border:1px solid ${c.line};box-sizing:border-box}
       .nc *{box-sizing:border-box}.nc-top{display:flex;align-items:center;gap:9px;margin-bottom:14px}.nc-top svg{display:block}
-      .nc-brand{display:flex;flex-direction:column;gap:3px}.nc-name{font:700 19px/1 "Zilla Slab",Georgia,serif;color:${c.text}}.nc-tag2{font-size:11.5px;line-height:1;color:${c.muted}}.nc-date{margin-left:auto;color:${c.muted};font-size:13px}
+      .nc-brand{display:flex;flex-direction:column;gap:3px}.nc-name{font:700 19px/1 "Zilla Slab",Georgia,serif;color:${c.text}}.nc-name em{font-style:italic;font-weight:600;color:${c.sa}}.nc-tag2{font-size:11.5px;line-height:1;color:${c.muted}}.nc-date{margin-left:auto;color:${c.muted};font-size:13px}
       .nc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.nc-tag{font-size:12.5px;font-weight:700;padding:2px 9px;border-radius:5px}
       ${Object.keys(g).map(k => `.nc-tag.${k}{background:${g[k][0]};color:${g[k][1]}}`).join('')}
       .nc-tag.y{background:${c.peach};color:${c.sa};font-weight:400;border:1px solid ${c.peachL}}
@@ -333,7 +337,7 @@
     const k = dk ? keyParts(dk) : null;
     const tier = t.tier === 'HIGH' ? 'High yield' : t.tier === 'MED' || t.tier === 'MEDIUM' ? 'Medium yield' : 'Low yield';
     const n = (t.corrob || (t.srcs || []).length) + (t.coach || []).length;
-    let h = `<div class="ncw"><div class="nc"><div class="nc-top">${LOGO}<span class="nc-brand"><span class="nc-name">News Crux</span><span class="nc-tag2">Current affairs for UPSC Prelims</span></span>${k ? `<span class="nc-date">${k.d} ${monthLong(k.mon)} ${k.y}</span>` : ''}</div>`;
+    let h = `<div class="ncw"><div class="nc"><div class="nc-top">${LOGO}<span class="nc-brand"><span class="nc-name">News <em>Crux</em></span><span class="nc-tag2">Current affairs for UPSC Prelims</span></span>${k ? `<span class="nc-date">${k.d} ${monthLong(k.mon)} ${k.y}</span>` : ''}</div>`;
     h += `<div class="nc-tags"><span class="nc-tag ${gsClass(t.gs)}">${esc(t.gs)}</span><span class="nc-tag y">${tier}</span></div><h1>${esc(t.head)}</h1>`;
     h += `<div class="nc-src">${esc((t.srcs || []).join(' / '))}${n >= 2 ? `, ${n} sources` : ''}</div>`;
     const bl = bulletsOf(t).filter(b => !hid(b)).slice(0, full ? 5 : 4);
@@ -724,13 +728,13 @@
     const e = s => esc(s);
     let h = `<!doctype html><html><head><meta charset="utf-8"><title>News Crux revision</title><style>
       @page{size:A4;margin:14mm 12mm}body{font:10.5pt/1.42 Georgia,serif;color:#16120c;margin:0}
-      h1{font:700 18pt Georgia,serif;margin:0 0 2px}.sub{color:#6b5d4a;font:9pt sans-serif;margin-bottom:10px}
+      h1{font:700 18pt Georgia,serif;margin:0 0 2px}h1 em{font-style:italic;color:#A55A1A}.sub{color:#6b5d4a;font:9pt sans-serif;margin-bottom:10px}
       h2{font:700 12.5pt Georgia,serif;border-bottom:2px solid #C9B6F2;padding-bottom:2px;margin:14px 0 6px;page-break-after:avoid}
       .t{margin:0 0 7px;page-break-inside:avoid}.t b{font:700 10.5pt sans-serif}.d{color:#8a7a62;font:8.5pt sans-serif}
       .b{margin:1px 0 0 12px}.s{margin:2px 0 0 12px;font:9.2pt sans-serif;color:#2b2419}.tr{margin:1px 0 0 22px;font:9pt sans-serif;color:#A65555}
       .m{margin:1px 0 0 12px;font:9pt sans-serif;color:#2E7A62}.p{margin:1px 0 0 12px;font:9pt sans-serif;color:#A0563F}
       .f{font:9.3pt sans-serif;margin:0 0 2px}</style></head><body>
-      <h1>News Crux: revision sheet</h1><div class="sub">${a.d} ${a.mon} – ${b.d} ${b.mon} ${b.y} · ${D.n} topics · ${D.facts.length} facts · UPSC CSE Prelims</div>`;
+      <h1>News <em>Crux</em>: revision sheet</h1><div class="sub">${a.d} ${a.mon} – ${b.d} ${b.mon} ${b.y} · ${D.n} topics · ${D.facts.length} facts · UPSC CSE Prelims</div>`;
     PAPERS.forEach(([g, l]) => {
       const ts = D.groups[g]; if (!ts || !ts.length) return;
       h += `<h2>${e(l)}</h2>`;
@@ -910,7 +914,7 @@
     const batOk = !!b.batteryUnrestricted;
     const order = (st.order || []).filter(p => ((st.providers || {})[p] || {}).hasKey);
     const step = (n, ok, title, body) => `<div class="stp ${ok ? 'ok' : ''}"><span class="sn">${ok ? ic('check', 'xs') : n}</span><div class="t"><b>${title}</b>${body}</div></div>`;
-    return `<header class="top"><button class="iconbtn" data-act="setupdone" aria-label="Close">${ic('x')}</button><div class="ttl">Set up News Crux</div></header><div class="body">
+    return `<header class="top"><button class="iconbtn" data-act="setupdone" aria-label="Close">${ic('x')}</button><div class="ttl">Set up News <em>Crux</em></div></header><div class="body">
       <div class="h-sub" style="margin:12px 2px 16px">Three quick steps so the morning edition and alerts arrive on time. You can change everything later in Settings.</div>
       ${step(1, notifOk, 'Allow notifications', `<small>${notifOk ? 'On — you\'ll get the morning edition, amendments and high-yield alerts.' : 'Needed for the morning edition and high-yield alerts.'}</small>${notifOk ? '' : `<div class="row"><button class="btn" data-act="notifperm" style="height:38px">Allow</button><button class="btn ghost" data-act="notifsettings" style="height:38px">Open settings</button></div>`}`)}
       ${step(2, batOk, 'Let it run in the background', `<small>${batOk ? 'Unrestricted — 3-hourly sync runs reliably.' : 'Phones pause background apps to save battery; allow News Crux so the 3-hourly sync and morning edition aren\'t delayed.'}</small><div class="tip">${esc(oemTip(b.maker))}</div>${batOk ? '' : `<div class="row"><button class="btn" data-act="battery" style="height:38px">Allow</button><button class="btn ghost" data-act="appsettings" style="height:38px">App info</button></div>`}`)}
