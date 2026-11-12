@@ -17,9 +17,10 @@ if command -v node >/dev/null; then node --check assets/www/app.js && echo "app.
 ORGJSON="${ORGJSON:-build/json.jar}"
 if [ ! -f "$ORGJSON" ]; then curl -sSfL -o "$ORGJSON" https://repo1.maven.org/maven2/org/json/json/20240303/json-20240303.jar; fi
 mkdir -p build/test
-javac -nowarn -cp "build/classes:$ORGJSON" -d build/test tests/ForeignTest.java tests/app/newsbreak/core/BulletTest.java tests/PyqTest.java tests/ExamMetaTest.java tests/ReaderTest.java tests/app/newsbreak/core/GNewsAccess.java
+javac -nowarn -cp "build/classes:$ORGJSON" -d build/test tests/ForeignTest.java tests/app/newsbreak/core/BulletTest.java tests/PyqTest.java tests/ExamMetaTest.java tests/ReaderTest.java tests/app/newsbreak/core/GNewsAccess.java tests/OpenSyncTest.java
 java -cp "build/test:build/classes:$ORGJSON" ForeignTest
 java -cp "build/test:build/classes:$ORGJSON" app.newsbreak.core.BulletTest
 java -cp "build/test:build/classes:$ORGJSON" PyqTest
 java -cp "build/test:build/classes:$ORGJSON" ExamMetaTest
 java -cp "build/test:build/classes:$ORGJSON" ReaderTest
+java -cp "build/test:build/classes:$ORGJSON" OpenSyncTest

@@ -634,3 +634,57 @@ button.pqopt{font-weight:400;color:var(--text-2)}
 button.pqall{margin-top:8px;border:0;background:transparent;color:var(--saffron);font:inherit;font-size:13px;font-weight:700;padding:8px 0;min-height:40px;cursor:pointer}
 .pqg.pqmore{display:none}
 .pyq.all .pqg.pqmore{display:block}
+
+/* ---------- 1.9.3: logo sync progress, one-line date bar, reading progress, calendar, GS-wise view ---------- */
+.progress{display:none}
+.brand svg.logo{display:block}
+.logo .lt,.logo .lp{fill:none;stroke:#F2F5F3;stroke-width:11;stroke-linecap:round}
+.logo .lt{transition:stroke .3s}
+.logo .lp{stroke-dasharray:100 100;stroke-dashoffset:0;transition:stroke-dashoffset .45s ease}
+.logo .ld{fill:#F6BE8A;transform-origin:56px 54px}
+.logo.busy .lt{stroke:rgba(242,245,243,.28)}
+.logo.busy .ld{animation:ldp 1.2s ease-in-out infinite}
+@keyframes ldp{50%{opacity:.4;transform:scale(.8)}}
+@media (prefers-reduced-motion:reduce){.logo.busy .ld{animation:none}.logo .lp{transition:none}}
+
+.dbar{position:sticky;top:0;z-index:4;margin:0 -16px;padding:4px 16px 6px;background:var(--bg);transition:box-shadow .2s}
+.dbar.stuck{box-shadow:0 10px 14px -12px rgba(0,0,0,.55)}
+.dbr{display:flex;align-items:center;gap:2px;height:52px;padding:0 2px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.dnav{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.dnav:active{background:var(--raise)}
+.dnav:disabled{color:var(--faint);opacity:.6}
+.dsel{flex:1;min-width:0;height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.dsel:active{background:var(--raise)}
+.dsel b{display:flex;align-items:center;gap:5px;max-width:100%;font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:-.2px}
+.dsel b span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsel b svg{flex:none;color:var(--saffron)}
+.dsel small{margin-top:2px;font-size:12px;font-weight:600;color:var(--muted)}
+.rprog{height:3px;margin:6px 6px 0;border-radius:2px;background:var(--line);overflow:hidden}
+.rprog i{display:block;width:0;height:100%;border-radius:2px;background:var(--saffron);transition:width .12s linear}
+.dmeta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.view > .card,.sect{scroll-margin-top:76px}
+
+.cal{padding:2px 2px 6px}
+.calh{display:flex;align-items:center;margin-bottom:10px}
+.calh b{flex:1;text-align:center;font-family:var(--serif);font-size:19px;font-weight:700}
+.cmn{width:42px;height:42px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;color:var(--text)}
+.cmn:disabled{color:var(--faint);opacity:.5}
+.calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px 0;text-align:center}
+.calw{margin-bottom:4px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.cd{width:42px;height:42px;margin:0 auto;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-family:var(--serif);font-size:16px;color:var(--faint)}
+.cd.has{color:var(--text);font-weight:700}
+.cd.has i{width:4px;height:4px;border-radius:50%;background:var(--teal)}
+.cd.td{box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.cd.on{background:var(--text);color:var(--bg)}
+.cd.on i{background:var(--bg)}
+.calf{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:12px;color:var(--muted)}
+.calf .btn{flex:none;height:40px}
+
+.gsrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;margin:0 0 8px}
+.gst{height:52px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.gst b{font-family:var(--serif);font-size:19px}
+.gst small{font-size:11px;font-weight:700}
+.gst.gs1{color:var(--gs1)}.gst.gs2{color:var(--gs2)}.gst.gs3{color:var(--gs3)}.gst.gs4{color:var(--gs4)}.gst.gsm{color:var(--gsm)}
+.gst.on{border-color:currentColor}
+.gst.gs1.on{background:var(--gs1-bg)}.gst.gs2.on{background:var(--gs2-bg)}.gst.gs3.on{background:var(--gs3-bg)}.gst.gs4.on{background:var(--gs4-bg)}.gst.gsm.on{background:var(--gsm-bg)}
+.gsnote{margin:0 0 12px;font-size:12.5px;color:var(--muted)}

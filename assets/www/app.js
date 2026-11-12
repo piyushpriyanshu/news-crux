@@ -163,7 +163,17 @@
     S.syncing = !!S.boot.syncing;
     setSyncBtn();
   }
+  /* Sync progress is drawn on the C of the logo: the curve fills as the sync moves on. null = idle. */
+  function setProg(p) {
+    const lg = $('#logo'); if (!lg) return;
+    const lp = lg.querySelector('.lp'), was = lg.classList.contains('busy');
+    if (p != null && !was) { lp.style.transition = 'none'; lp.style.strokeDashoffset = '100'; lp.getBoundingClientRect(); lp.style.transition = ''; }
+    lg.classList.toggle('busy', p != null);
+    S.pct = p == null ? 0 : p;
+    lp.style.strokeDashoffset = p == null ? '0' : String(100 - Math.max(0, Math.min(100, p)));
+  }
   function setSyncBtn() {
+    if (S.syncing && !S.pct) setProg(6);
     const b = $('#btnSync');
     b.innerHTML = ic('refresh');
     b.classList.toggle('spin', S.syncing);
@@ -195,6 +205,7 @@
       v.innerHTML = `<div class="empty"><div class="orb">${ic('alert')}</div><h3>Something went wrong</h3><p>${esc(e && e.message)}</p></div>`;
     }
     $('#main').scrollTop = keepScroll ? st : 0;
+    readBar();
     const f = v.firstElementChild; if (f && !keepScroll) { f.style.animation = 'none'; f.offsetHeight; f.style.animation = ''; }
   }
 
@@ -230,7 +241,7 @@
     const subj = subjBlock(t, seen, i);
     const conf = (t.conflicts || []).concat((t.ai && t.ai.cf) || []).map(c => `<div class="callout warnc">${ic('alert', 'sm')}<div><b>Sources disagree:</b> ${esc(c)}. Check before you memorise it.</div></div>`).join('');
     const bm = isBookmarked(t.id);
-    return `<article class="card" data-id="${esc(t.id)}" style="animation-delay:${Math.min(i, 8) * 35}ms">
+    return `<article class="card" data-id="${esc(t.id)}"${i >= 0 ? ` data-n="${i + 1}"` : ''} style="animation-delay:${Math.min(i, 8) * 35}ms">
       <div class="row1">${i >= 0 ? `<span class="num">${i + 1}</span>` : ''}<span class="tag ${gsClass(t.gs)}">${esc(t.gs)}</span><span class="tag tier ${esc(t.tier)}">${t.tier === 'HIGH' ? 'High yield' : t.tier === 'MED' || t.tier === 'MEDIUM' ? 'Medium yield' : 'Low yield'}</span>${t.rising ? '<span class="flag rise">Rising in recent papers</span>' : ''}${flags.join('')}</div>
       <h3>${esc(t.head)}</h3>
       <div class="src">${srcs}${coach ? ' ' + coach : ''}${single}${pay}</div>
@@ -414,29 +425,87 @@
     if (eds.length) return eds[0].date;
     return null;
   }
-  function strip() {
-    const eds = editions().slice(0, 21);
-    if (!eds.length) return '';
-    return `<div class="strip" id="strip">${eds.map(e => { const k = keyParts(e.date); return `<button class="dchip ${S.date === e.date ? 'on' : ''}" data-date="${e.date}"><small>${k.wd}</small><b>${k.d}</b><small>${k.mon}</small></button>`; }).join('')}</div>`;
+  const nStories = n => n + (n === 1 ? ' story' : ' stories');
+  /* One-line date bar: ‹ older day | date (opens the calendar) | newer day ›. It stays at the top while
+     you read and shows which story you are on, with a progress line under it. */
+  function dayBar(n) {
+    const eds = editions(), i = eds.findIndex(e => e.date === S.date);
+    const older = i >= 0 ? (eds[i + 1] || {}).date : (eds[0] || {}).date, newer = i > 0 ? eds[i - 1].date : null;
+    const k = keyParts(S.date), yr = k.y !== istParts(Date.now()).y ? ' ' + k.y : '';
+    const nav = (d, lab, icn) => `<button class="dnav" ${d ? `data-date="${d}"` : 'disabled'} aria-label="${lab}">${ic(icn, 'sm')}</button>`;
+    return `<div class="dbar" id="dbar"><div class="dbr">${nav(older, 'Previous day', 'back')}
+      <button class="dsel" data-act="cal" aria-label="Pick a date"><b><span>${dayLong(k.wd)}, ${k.d} ${monthLong(k.mon)}${yr}</span>${ic('down', 'xs')}</b><small id="rbn" data-n="${n}">${nStories(n)}</small></button>
+      ${nav(newer, 'Next day', 'chev')}</div><div class="rprog"><i id="rbp"></i></div></div>`;
+  }
+  /* Reading progress: the line fills as you scroll through the stories (back down when you scroll up). */
+  let rbRaf = 0;
+  function readBar() {
+    if (rbRaf) return;
+    rbRaf = requestAnimationFrame(() => {
+      rbRaf = 0;
+      const p = $('#rbp'), lab = $('#rbn'), bar = $('#dbar');
+      if (!p || S.tab !== 'edition') return;
+      const m = $('#main'), mt = m.getBoundingClientRect().top, cards = $$('#view > .card');
+      bar.classList.toggle('stuck', bar.getBoundingClientRect().top <= mt + 1 && m.scrollTop > 4);
+      if (!cards.length) { p.style.width = '0'; return; }
+      const last = cards[cards.length - 1], end = last.getBoundingClientRect().bottom - mt + m.scrollTop - m.clientHeight;
+      p.style.width = (end <= 0 ? 100 : Math.max(0, Math.min(100, m.scrollTop / end * 100))).toFixed(1) + '%';
+      const y = bar.getBoundingClientRect().bottom + 12;
+      let at = 0;
+      for (const c of cards) { if (c.getBoundingClientRect().top <= y) at = Number(c.dataset.n); else break; }
+      const total = Number(lab.dataset.n), cu = $('#catchup'), ck = $('#checked');
+      let txt = at && m.scrollTop > 4 ? `Story ${at} of ${total}` : nStories(total);
+      if (ck && ck.getBoundingClientRect().top <= y) txt = 'What was checked';
+      else if (cu && cu.getBoundingClientRect().top <= y) txt = 'Catch-up';
+      if (lab.textContent !== txt) lab.textContent = txt;
+    });
+  }
+  /* Calendar sheet: jump straight to any saved day. A dot marks a day with an edition on this phone. */
+  function calSheet() {
+    const eds = editions(), have = new Set(eds.map(e => e.date));
+    const ym = S.calYm || (S.date || '').slice(0, 7), [y, m] = ym.split('-').map(Number);
+    const months = Array.from(new Set(eds.map(e => e.date.slice(0, 7)))).sort();
+    const prev = months.filter(x => x < ym).pop(), next = months.find(x => x > ym);
+    const lead = (new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7, nd = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const tp = istParts(Date.now()), today = `${tp.y}-${pad(tp.m + 1)}-${pad(tp.d)}`;
+    let cells = '<span></span>'.repeat(lead);
+    for (let d = 1; d <= nd; d++) {
+      const key = `${y}-${pad(m)}-${pad(d)}`, cls = (key === S.date ? ' on' : '') + (key === today ? ' td' : '');
+      cells += have.has(key) ? `<button class="cd has${cls}" data-date="${key}" aria-label="${d} ${monthLong(MON[m - 1])}">${d}<i></i></button>` : `<span class="cd${cls}">${d}</span>`;
+    }
+    const mb = (to, lab, icn) => `<button class="cmn" ${to ? `data-calm="${to}"` : 'disabled'} aria-label="${lab}">${ic(icn, 'sm')}</button>`;
+    return `<div class="cal"><div class="calh">${mb(prev, 'Previous month', 'back')}<b>${monthLong(MON[m - 1])} ${y}</b>${mb(next, 'Next month', 'chev')}</div>
+      <div class="calg calw">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(w => `<span>${w.slice(0, 2)}</span>`).join('')}</div>
+      <div class="calg">${cells}</div>
+      <div class="calf">${eds.length && eds[0].date !== S.date ? `<button class="btn" data-date="${eds[0].date}">Latest edition</button>` : ''}<span>A dot marks a day with an edition on this phone.</span></div></div>`;
+  }
+  /* Optional (Settings → GS-wise view): counts per GS paper; tap one to show only that paper's stories. */
+  function gsRow(topics) {
+    const by = {}; topics.forEach(t => { const g = gsPaper(t.gs); by[g] = (by[g] || 0) + 1; });
+    const ps = PAPERS.map(p => p[0]).filter(g => by[g]);
+    if (S.gsF && !by[S.gsF]) S.gsF = null;
+    if (ps.length < 2 && !S.gsF) return '';
+    const cls = g => g === 'Misc' ? 'gsm' : gsClass(g + '/');
+    return `<div class="gsrow">${ps.map(g => `<button class="gst ${cls(g)}${S.gsF === g ? ' on' : ''}" data-gsf="${g}"><b>${by[g]}</b><small>${g}</small></button>`).join('')}</div>`
+      + (S.gsF ? `<div class="gsnote">Showing ${S.gsF}, ${by[S.gsF]} of ${topics.length}. Tap it again to show all.</div>` : '');
   }
   function viewEdition() {
     if (!S.date) S.date = defaultDate();
     if (!S.date || S.date === 'live') { S.date = defaultDate(); if (!S.date) return emptyFirstRun(); }
     const ed = S.ed && S.ed.date === S.date ? S.ed : (S.ed = J(N.edition(S.date), null));
-    if (!ed) return strip() + emptyFirstRun();
+    if (!ed) return dayBar(0) + emptyFirstRun();
     const topics = ed.topics || [];
-    const k = keyParts(ed.date);
     const st = ed.status === 'final' ? '<span class="pill ok">' + ic('check', 'xs') + 'Final</span>' : '<span class="pill warn">' + ic('clock', 'xs') + 'Compiling</span>';
-    let h = strip();
-    h += `<section class="mast"><h1>${k.d} ${monthLong(k.mon)} ${k.y} <span>(${dayLong(k.wd)})</span></h1>
-      <div class="win">${esc(ed.window || '')}</div>
-      <div class="meta">${st}<span class="pill">${topics.length} ${topics.length === 1 ? 'story' : 'stories'}</span><span class="pill">${(ed.sources || []).length} sources</span>${checkPill(ed)}</div></section>`;
+    let h = dayBar(topics.length);
+    h += `<div class="dmeta">${st}${checkPill(ed)}</div>`;
+    const gsOn = !!(S.boot.settings || {}).gsView;
+    if (gsOn) h += gsRow(topics); else S.gsF = null;
     if (!topics.length) h += `<div class="empty"><div class="orb">${ic('paper')}</div><h3>Quiet window</h3><p>No story in this window cleared the PYQ-alignment bar yet. Fewer topics is fine — no forcing.</p></div>`;
     const ctx = { seen: { e: {}, m: {}, th: {} } };
-    h += topics.map((t, i) => card(t, i, ctx)).join('');
+    h += topics.map((t, i) => S.gsF && gsPaper(t.gs) !== S.gsF ? '' : card(t, i, ctx)).join('');
     h += catchupSection(ed);
     h += checkedCard(ed);
-    h += `<div class="foot">Saved to archive on ${esc(ed.date)}, built at ${hhmm(ed.builtAt || Date.now())} IST</div>`;
+    h += `<div class="foot">${ed.window ? esc(ed.window) + '. ' : ''}${(ed.sources || []).length} sources. Saved to archive on ${esc(ed.date)}, built at ${hhmm(ed.builtAt || Date.now())} IST</div>`;
     return h;
   }
   const ML = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
@@ -792,6 +861,7 @@
       </div>
       <div class="gh">Appearance</div><div class="group">
         <div class="set"><div class="t"><b>Theme</b></div><div class="opts">${[['auto', 'Auto'], ['dark', 'Twilight'], ['light', 'Daylight']].map(([k, l]) => `<button data-theme-set="${k}" class="${st.theme === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+        <div class="set"><div class="t"><b>GS-wise view</b><small>Shows story counts for GS-I to GS-IV on the edition. Tap one to see only that paper.</small></div>${sw('gsView', st.gsView)}</div>
         <div class="set"><div class="t"><b>Text size</b></div><div class="opts">${[[90, 'S'], [100, 'M'], [112, 'L'], [125, 'XL']].map(([k, l]) => `<button data-ts="${k}" class="${st.textScale === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
       </div>
       <div class="gh">Sources (newspapers, PIB and coaching pages)</div><div class="group">${srcRows}</div>
@@ -980,11 +1050,13 @@
 
   /* ---------------- events ---------------- */
   function onClick(e) {
-    const el = e.target.closest('[data-up],[data-prov],[data-tab],[data-date],[data-mode],[data-act],[data-lf],[data-lmode],[data-fs],[data-ps],[data-py],[data-rev],[data-open],[data-url],[data-fdel],[data-int],[data-theme-set],[data-ts],[data-dlv],[data-span],[data-unrep],[data-goto],[data-shtheme],[data-shfull],[data-cu],[data-pyq],[data-pqa],[data-pqs],[data-pqn]');
+    const el = e.target.closest('[data-up],[data-prov],[data-tab],[data-date],[data-mode],[data-act],[data-lf],[data-lmode],[data-fs],[data-ps],[data-py],[data-rev],[data-open],[data-url],[data-fdel],[data-int],[data-theme-set],[data-ts],[data-dlv],[data-span],[data-unrep],[data-goto],[data-shtheme],[data-shfull],[data-cu],[data-pyq],[data-pqa],[data-pqs],[data-pqn],[data-calm],[data-gsf]');
     if (!el) return;
     const d = el.dataset;
     if (d.tab) return go(d.tab);
-    if (d.date) { S.date = d.date; S.ed = null; S.modeChosen = false; render(); const on = $('.dchip.on'); if (on) on.scrollIntoView({ inline: 'center', block: 'nearest' }); return; }
+    if (d.date) { if (S.sheetOpen) closeSheet(); S.date = d.date; S.ed = null; S.modeChosen = false; render(); return; }
+    if (d.calm) { S.calYm = d.calm; openSheet(calSheet()); return; }
+    if (d.gsf) { S.gsF = S.gsF === d.gsf ? null : d.gsf; render({ keepScroll: true }); readBar(); return; }
     if (d.lf) { S.liveFilter = d.lf; render({ keepScroll: true }); return; }
     if (d.lmode) { S.liveMode = d.lmode; render(); return; }
     if (d.fs !== undefined && el.classList.contains('chip')) { S.feedSrc = d.fs; render({ keepScroll: true }); return; }
@@ -1021,7 +1093,7 @@
       render({ keepScroll: true });
       return;
     }
-    if (d.goto) { const c = $$('#view .card')[Number(d.goto) - 1]; if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    if (d.goto) { const c = $(`#view > .card[data-n="${Number(d.goto)}"]`); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     if (d.dlv) { N.setInt('deliverAt', Number(d.dlv)); S.boot.settings.deliverAt = Number(d.dlv); openPage(S.setupOpen ? setupPage() : settingsPage()); toast('Morning edition at ' + dlvLabel(Number(d.dlv)) + ' IST'); return; }
     if (d.span) { S.revSpan = Number(d.span); render({ keepScroll: true }); return; }
     if (d.unrep) { S.reported = S.reported.filter(r => r.k !== d.unrep); N.saveReported(JSON.stringify(S.reported)); loadReported(); render({ keepScroll: true }); toast('Line visible again'); return; }
@@ -1100,6 +1172,7 @@
       case 'smore': { const box = el.parentElement.querySelector('.sfx'); if (box) { box.classList.add('on'); el.remove(); } break; }
       case 'copyerr': N.copy(el.dataset.err || ''); toast('Error copied'); break;
       case 'ai-gen': case 'ai-regen': { const r = N.generateAi(S.date); if (r === 'busy') toast('AI is already working on the cards…'); else { S.aiBusy = S.date; S.aiStage = 'draft'; render({ keepScroll: true }); } break; }
+      case 'cal': S.calYm = (S.date || '').slice(0, 7); openSheet(calSheet()); break;
       case 'tocheck': { const c = $('#checked'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; }
       case 'tocatch': { const c = $('#catchup'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; }
       case 'missed': { S.missedOpen = !S.missedOpen; const l = $('.missedl'); if (l) l.style.display = S.missedOpen ? 'block' : 'none'; break; }
@@ -1121,7 +1194,7 @@
         S.boot.settings.disabledSources = Array.from(set).join(',');
         N.setString('disabledSources', S.boot.settings.disabledSources);
         toast(el.checked ? code + ' enabled' : code + ' disabled');
-      } else { N.setBool(k, el.checked); S.boot.settings[k] = el.checked; }
+      } else { N.setBool(k, el.checked); S.boot.settings[k] = el.checked; if (k === 'gsView') { S.gsF = null; render({ keepScroll: true }); } }
       return;
     }
     if (el.id === 'model') {
@@ -1155,12 +1228,12 @@
     onNative(ev) {
       if (!ev) return;
       if (ev.type === 'sync') {
-        if (ev.state === 'start') { S.syncing = true; S.syncStage = ''; setSyncBtn(); $('#prog i').style.width = '6%'; }
-        else if (ev.state === 'progress') { $('#prog i').style.width = Math.max(6, Math.round(70 * ev.done / Math.max(ev.total, 1))) + '%'; }
-        else if (ev.state === 'stage') { S.syncStage = ev.stage; $('#prog i').style.width = ev.stage === 'coaching' ? '78%' : '88%'; setSyncBtn(); }
+        if (ev.state === 'start') { S.syncing = true; S.syncStage = ''; setProg(6); setSyncBtn(); }
+        else if (ev.state === 'progress') { setProg(Math.max(6, Math.round(70 * ev.done / Math.max(ev.total, 1)))); }
+        else if (ev.state === 'stage') { S.syncStage = ev.stage; setProg(ev.stage === 'coaching' ? 78 : 88); setSyncBtn(); }
         else {
-          S.syncing = false; $('#prog i').style.width = '100%';
-          setTimeout(() => { $('#prog i').style.width = '0'; }, 600);
+          S.syncing = false; setProg(100);
+          setTimeout(() => { if (!S.syncing) setProg(null); }, 700);
           loadBoot();
           if (ev.state === 'done') toast(`Synced. ${ev.added} new from ${ev.feedsOk} of ${ev.feedsTotal} sources`);
           else toast('Sync failed — will retry');
@@ -1235,6 +1308,7 @@
     $('#btnSettings').innerHTML = ic('gear');
     $('#btnSettings').onclick = () => { S.setupOpen = false; openPage(settingsPage()); };
     $('#btnSync').onclick = doSync;
+    $('#main').addEventListener('scroll', readBar, { passive: true });
     $('#scrim').onclick = closeSheet;
     document.addEventListener('click', onClick);
     document.addEventListener('change', onChange);

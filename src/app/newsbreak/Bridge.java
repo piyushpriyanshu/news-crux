@@ -94,6 +94,7 @@ public final class Bridge {
         jSONObject.put("webSearch", sharedPreferences.getBoolean("webSearch", true));
         jSONObject.put("verifyPass", sharedPreferences.getBoolean("verifyPass", true));
         jSONObject.put("autoAI", sharedPreferences.getBoolean("autoAI", true));
+        jSONObject.put("gsView", sharedPreferences.getBoolean("gsView", false));
         jSONObject.put("theme", sharedPreferences.getString("theme", "auto"));
         jSONObject.put("textScale", sharedPreferences.getInt("textScale", 100));
         jSONObject.put("lastSeen", sharedPreferences.getLong("lastSeen", 0L));

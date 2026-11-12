@@ -277,7 +277,8 @@ public class MainActivity extends Activity {
     @Override // android.app.Activity
     protected void onResume() {
         super.onResume();
-        if (System.currentTimeMillis() - Store.prefs(this).getLong("lastSync", 0L) > 600000) {
+        android.content.SharedPreferences sp = Store.prefs(this);
+        if (app.newsbreak.core.OpenSync.due(System.currentTimeMillis(), sp.getLong("lastSync", 0L), sp.getInt("feedsOk", 0), sp.getInt("deliverAt", 360))) {
             startSync("open");
         }
         if (this.pageReady) {
