@@ -136,6 +136,8 @@ public final class Bridge {
             JSONObject o = new JSONObject(s);
             boolean ch = Sentinel.dropMeta(o);
             if (app.newsbreak.core.EditionBuilder.consolidate(o.optJSONArray("topics"))) ch = true;
+            JSONArray lt = o.optJSONArray("topics"); // the same relevance checks as an edition: no off-topic About box or static card
+            for (int i = 0; lt != null && i < lt.length(); i++) if (Sentinel.clean(lt.optJSONObject(i), Engine.kb(this.c))) ch = true;
             if (Engine.addPyqKeys(this.c, o) || ch) return o.toString();
         } catch (Throwable ignored) {
         }

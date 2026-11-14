@@ -920,7 +920,7 @@ public final class EditionBuilder {
         int i13 = -1;
         for (JSONObject jSONObject12 : cluster.items) {
             JSONObject optJSONObject3 = jSONObject12.optJSONObject("cx");
-            if (optJSONObject3 != null && (background = Extract.background(optJSONObject3, Text.cap(jSONObject12.optString("t"), 90), 5)) != null && Sentinel.aboutFits(put, background)) {
+            if (optJSONObject3 != null && (background = coachAbout(put, optJSONObject3, Text.cap(jSONObject12.optString("t"), 90))) != null) {
                 int length = (("Drishti".equals(jSONObject12.optString("s")) || "Insights".equals(jSONObject12.optString("s"))) ? 1 : 0) + background.getJSONArray("pts").length();
                 if (length > i13) {
                     JSONObject put2 = background.put("via", jSONObject12.optString("s"));
@@ -941,20 +941,17 @@ public final class EditionBuilder {
                 JSONObject jSONObject13 = (JSONObject) it7.next();
                 JSONArray optJSONArray5 = jSONObject13.optJSONArray("xd");
                 if (optJSONArray5 != null && optJSONArray5.length() != 0 && !isCoaching(jSONObject13)) {
-                    JSONArray jSONArray = new JSONArray();
+                    // The box's subject comes from the first real definition; its points are definitions of that same subject only.
                     String str8 = null;
-                    for (int i14 = 0; i14 < optJSONArray5.length() && jSONArray.length() < 3; i14++) {
+                    for (int i14 = 0; i14 < optJSONArray5.length() && str8 == null; i14++) str8 = Extract.defSubject(optJSONArray5.optString(i14));
+                    JSONArray jSONArray = new JSONArray();
+                    for (int i14 = 0; str8 != null && i14 < optJSONArray5.length() && jSONArray.length() < 3; i14++) {
                         String optString6 = optJSONArray5.optString(i14);
-                        if (!dupLine(optString6, arrayList4)) {
-                            if (str8 == null) {
-                                str8 = Extract.defSubject(optString6);
-                            }
-                            jSONArray.put(Text.note(optString6, 230));
-                        }
+                        if (!dupLine(optString6, arrayList4)) jSONArray.put(Text.note(optString6, 230));
                     }
                     if (jSONArray.length() > 0 && str8 != null) {
-                        JSONObject put3 = new JSONObject().put("h", str8).put("pts", jSONArray).put("via", jSONObject13.optString("s"));
-                        if (Sentinel.aboutFits(put, put3)) {
+                        JSONObject put3 = Sentinel.fitAbout(put, new JSONObject().put("h", str8).put("pts", jSONArray).put("via", jSONObject13.optString("s")));
+                        if (put3 != null) {
                             jSONObject11 = put3;
                             break;
                         }
@@ -1479,6 +1476,15 @@ public final class EditionBuilder {
             }
         }
         return null;
+    }
+
+    /** The coaching note's background section as the About box; a generic heading ("Awards") falls back to the note's title. */
+    static JSONObject coachAbout(JSONObject card, JSONObject cx, String title) throws Exception {
+        JSONObject bg = Extract.background(cx, title, 5);
+        if (bg == null) return null;
+        JSONObject fit = Sentinel.fitAbout(card, bg);
+        if (fit == null && !title.equals(bg.optString("h"))) fit = Sentinel.fitAbout(card, new JSONObject(bg.toString()).put("h", title));
+        return fit;
     }
 
     static boolean dupLine(String str, List<String> list) {

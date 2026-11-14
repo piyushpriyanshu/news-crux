@@ -3,6 +3,7 @@ package app.newsbreak.core;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -209,17 +210,76 @@ public final class Sentinel {
         return false;
     }
 
-    /** Is the "About" box about a subject the card itself names? (Its acronym alone is enough: GLOF, NDBR, ISRO.) */
-    public static boolean aboutFits(JSONObject t, JSONObject bg) {
-        if (bg == null) return true;
-        String h = bg.optString("h");
+    /** Is the "About" box about this story? See {@link #fitAbout}. */
+    public static boolean aboutFits(JSONObject t, JSONObject bg) { return bg == null || fitAbout(t, bg) != null; }
+
+    /** Headline, merged headlines and the first two lines: what the story is about (not its side details). */
+    static String coreText(JSONObject t) {
+        StringBuilder b = new StringBuilder(t.optString("head")).append(". ");
+        for (String s : list(t.optJSONArray("heads"))) b.append(s).append(". ");
+        List<String> bl = list(t.optJSONArray("bullets"));
+        for (int i = 0; i < bl.size() && i < 2; i++) b.append(bl.get(i)).append(". ");
+        JSONObject ai = t.optJSONObject("ai");
+        if (ai != null) { List<String> ab = list(ai.optJSONArray("b")); for (int i = 0; i < ab.size() && i < 2; i++) b.append(ab.get(i)).append(". "); }
+        return b.toString();
+    }
+
+    /**
+     * The About box, kept only if it is about this story; null when it is not.
+     * 1. Its title must be a real subject ("Here", "These", "Five" are not).
+     * 2. The subject must be named in the headline or the lead lines (its acronym is enough: GLOF, ISRO).
+     * 3. A point that defines some other subject ("The Winter Session is…" under "Parliament") is dropped.
+     * With nothing to judge by, the box is not shown: no About is better than a random one.
+     */
+    public static JSONObject fitAbout(JSONObject t, JSONObject bg) {
+        if (bg == null) return null;
+        String h = bg.optString("h").trim();
+        if (h.length() < 3 || Extract.badSubject(h)) return null;
+        List<String> pts = list(bg.optJSONArray("pts"));
+        Set<String> core = Text.tokens(expand(coreText(t)));
+        Set<String> acr = acronyms(h), subj = subjectWords(h, pts);
+        boolean ok = false;
+        Set<String> vis = acr.isEmpty() ? core : Text.tokens(expand(visible(t)));
+        for (String a : acr) if (has(vis, a)) ok = true; // an acronym is specific: named anywhere on the card is enough (GRAP, LRS)
+        if (!ok) {
+            if (subj.isEmpty()) return null;
+            int hit = 0; boolean strongHit = false, anyStrong = false;
+            for (String w : subj) { boolean st = !WEAKN.contains(w); if (st) anyStrong = true; if (has(core, w)) { hit++; if (st) strongHit = true; } }
+            ok = hit >= (subj.size() <= 2 ? 1 : 2) && (strongHit || !anyStrong);
+        }
+        if (!ok) return null;
+        JSONArray kept = new JSONArray();
+        for (String p : pts) if (onSubject(p, subj, acr)) kept.put(p);
+        if (kept.length() == 0) return null;
+        try {
+            JSONObject o = new JSONObject(bg.toString());
+            o.put("pts", kept);
+            return o;
+        } catch (Exception e) { return null; }
+    }
+
+    /** The AI's About box: its subject must at least be named somewhere on the card. */
+    static boolean aiAboutFits(JSONObject t, JSONObject ab) {
+        String h = ab.optString("h").trim();
+        if (h.length() == 0) h = ab.optString("title").trim();
+        if (h.length() < 3 || Extract.badSubject(h)) return false;
         Set<String> vis = Text.tokens(expand(visible(t)));
         for (String a : acronyms(h)) if (has(vis, a)) return true;
-        Set<String> subj = subjectWords(h, list(bg.optJSONArray("pts")));
-        if (subj.isEmpty()) return acronyms(h).isEmpty(); // nothing to judge by — unless only an acronym the card never uses
-        int hit = 0; boolean strongHit = false, anyStrong = false;
-        for (String w : subj) { boolean st = !WEAKN.contains(w); if (st) anyStrong = true; if (has(vis, w)) { hit++; if (st) strongHit = true; } }
-        return hit >= (subj.size() <= 2 ? 1 : 2) && (strongHit || !anyStrong);
+        Set<String> subj = subjectWords(h, list(ab.optJSONArray("pts")));
+        if (subj.isEmpty()) return true; // a generic AI title ("Background") — the AI wrote it for this story
+        for (String w : subj) if (has(vis, w)) return true;
+        return false;
+    }
+
+    /** A point that is itself a definition must define this subject (or a part of it). */
+    static boolean onSubject(String p, Set<String> subj, Set<String> acr) {
+        String ds = Extract.defSubject(p);
+        if (ds == null) return true; // a plain fact under the heading (coaching notes rarely repeat the name)
+        Set<String> pt = Text.tokens(p);
+        for (String a : acr) if (has(pt, a)) return true;
+        for (String w : subjectWords(ds, Collections.<String>emptyList())) if (subj.contains(w) || has(subj, w)) return true;
+        for (String w : subj) if (has(Text.tokens(ds), w)) return true;
+        return false;
     }
 
     /**
@@ -230,10 +290,14 @@ public final class Sentinel {
         if (t == null || kb == null) return false;
         try {
             boolean changed = false;
-            if (t.has("bg") && (!aboutFits(t, t.optJSONObject("bg")) || foreignAbout(t, t.optJSONObject("bg")))) { t.remove("bg"); changed = true; }
+            if (t.has("bg")) {
+                JSONObject bg = t.optJSONObject("bg"), fit = foreignAbout(t, bg) ? null : fitAbout(t, bg);
+                if (fit == null) { t.remove("bg"); changed = true; }
+                else if (fit.optJSONArray("pts").length() != bg.optJSONArray("pts").length()) { t.put("bg", fit); changed = true; }
+            }
             Set<String> veto = new HashSet<String>();
             JSONObject ai = t.optJSONObject("ai");
-            if (ai != null && ai.optJSONObject("ab") != null && foreignAbout(t, ai.optJSONObject("ab"))) { ai.remove("ab"); changed = true; }
+            if (ai != null && ai.optJSONObject("ab") != null && (foreignAbout(t, ai.optJSONObject("ab")) || !aiAboutFits(t, ai.optJSONObject("ab")))) { ai.remove("ab"); changed = true; }
             boolean foreign = foreignOnly(t);
             if (ai != null) for (String n : list(ai.optJSONArray("un"))) veto.addAll(kb.cardsByName(n));
             Map<String, Set<String>> cache = new HashMap<String, Set<String>>();

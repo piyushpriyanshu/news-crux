@@ -21,6 +21,7 @@ import org.json.JSONObject;
 public final class Extract {
     private static final Pattern DEF = Pattern.compile("^(?:The |An? )?([A-Z][^,;:]{2,70}?)\\s*(?:\\([^)]{1,40}\\)\\s*)?,?\\s+(?:is|are|was|were)\\s+(?:an?|the|one of|India's|India’s|located|situated|built|founded|established|set up|known|a\\s)\\b.{15,}");
     private static final Pattern DEF2 = Pattern.compile("(?i)\\b(refers to|is located (in|at|on)|is situated|was built (by|in|during)|was constructed|was established (in|by|under)|was set up (in|by|under)|is headquartered|was founded|is named after|was inscribed|is a (tributary|species|disease|condition|technique|phenomenon|process|statutory|constitutional|non-statutory|treaty|grouping|bloc|programme|scheme|mission))\\b");
+    private static final Pattern BIO = Pattern.compile("(?i)\\b(is|was) an? (senior |chief |staff |special |principal |freelance |assistant |associate )?(writer|journalist|reporter|correspondent|editor|columnist|author|contributor|desk|team of)\\b|\\bdesk is\\b");
     private static final Pattern QUOTEY = Pattern.compile("[“”\"]|\\b(I|we|our|my)\\b");
     private static final Pattern PRE_L = Pattern.compile("(?i)(prelims|facts? for prelims|quick facts|\\bffp\\b|places in news|species in news|schemes? in news)");
     private static final Pattern MAINS_L = Pattern.compile("(?i)(editorial|mains practice|\\bmains\\b|gs paper\\s*-?\\s*4|ethics|essay)");
@@ -148,7 +149,7 @@ public final class Extract {
             Iterator<String> it = Text.sentences(str).iterator();
             while (it.hasNext()) {
                 String trim = it.next().trim();
-                if (trim.length() >= 40 && trim.length() <= 300 && !QUOTEY.matcher(trim).find() && !Html.boiler(trim) && (DEF.matcher(trim).matches() || DEF2.matcher(trim).find())) {
+                if (trim.length() >= 40 && trim.length() <= 300 && !trim.endsWith(":") && !QUOTEY.matcher(trim).find() && !BIO.matcher(trim).find() && !Html.boiler(trim) && (DEF.matcher(trim).matches() || DEF2.matcher(trim).find())) {
                     Iterator it2 = arrayList.iterator();
                     boolean z = false;
                     while (it2.hasNext()) {
@@ -168,14 +169,31 @@ public final class Extract {
     }
 
     public static String defSubject(String str) {
-        Matcher matcher = DEF.matcher(str.trim());
+        String t = str.trim();
+        if (t.endsWith(":")) return null; // "Here are the five items that…:" introduces a list, it defines nothing
+        Matcher matcher = DEF.matcher(t);
         if (matcher.matches()) {
             String replaceAll = matcher.group(1).trim().replaceAll("^(The|An?)\\s+", "");
-            if (replaceAll.split("\\s+").length <= 8 && !replaceAll.matches("(?i)^(it|this|he|she|they|these|there|that)\\b.*")) {
+            if (replaceAll.split("\\s+").length <= 8 && !badSubject(replaceAll) && !NEWSY.matcher(t).find()
+                    && Character.isUpperCase(replaceAll.charAt(0)) && !SAID.matcher(replaceAll).find()) {
                 return replaceAll;
             }
         }
         return null;
+    }
+
+    /** A news statement, not a definition: "was the highest since…", "was a private joke", "is the second-largest…", "is expected to". */
+    private static final Pattern NEWSY = Pattern.compile("^[^,;:]{2,90}?\\s(?:(?:was|were)\\s(?!(?:established|founded|built|set up|constructed|launched|introduced|created|formed|signed|adopted|enacted|instituted|inaugurated|commissioned|discovered|declared|inscribed|named|notified|constituted|conferred|awarded|first)\\b)|(?:is|are)\\s(?:the\\s)?(?:(?:highest|lowest|largest|biggest|smallest|first|second|third|last|latest|most|least|only|best|worst|top|fastest|slowest|longest|shortest|oldest|newest|next|now|still|also|not|being|expected|likely|set|due|going|reportedly|yet|already|currently)\\b|(?:second|third)-))");
+    private static final Pattern SAID = Pattern.compile("(?i)\\b(said|says|told|added|stated|noted|claimed|announced|alleged|argued|wrote)\\b");
+
+    /** Not a subject an About box can be on: pronouns, "Here/There", counts, quantifiers. */
+    private static final Pattern BAD_SUBJ = Pattern.compile("(?i)^(it|its|this|that|these|those|he|she|they|we|you|i|here|there|such|some|many|most|much|all|both|each|every|either|neither|other|others|another|several|few|what|which|who|whom|whose|where|when|why|how|today|yesterday|now|then|also|however|meanwhile|according)\\b|^[\\d₹$%]");
+    private static final Pattern COUNT_SUBJ = Pattern.compile("^(?i:one|two|three|four|five|six|seven|eight|nine|ten|top)\\s+[a-z]"); // "Five items…" is a count; "Five Eyes" is a name
+    public static boolean badSubject(String s) {
+        String t = s.trim().replaceAll("^(The|An?)\\s+", "");
+        if (t.length() < 3) return true;
+        if (t.split("\\s+")[0].matches("[A-Z][A-Z0-9&-]+")) return false; // an acronym: WHO, IT Act, US
+        return BAD_SUBJ.matcher(t).find() || COUNT_SUBJ.matcher(t).find();
     }
 
     static String label(List<Html.Block> list) {
