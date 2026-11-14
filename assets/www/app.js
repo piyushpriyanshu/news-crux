@@ -804,8 +804,18 @@
   };
   const KEYHELP = { gemini: 'aistudio.google.com → Get API key (starts with AIza). Free tier works; live web search needs a paid tier.', groq: 'console.groq.com → API Keys (starts with gsk_). Note: Groq ≠ Grok (xAI).', openrouter: 'openrouter.ai → Keys (starts with sk-or-). The free router needs no credits (about 50 requests/day — enough as a backup); live web search needs credits.', openai: 'platform.openai.com → API keys. Needs prepaid API credit (a ChatGPT subscription does not include it).', xai: 'console.x.ai → API keys (starts with xai-). Needs API credit.', claude: 'console.anthropic.com → API keys.' };
   const MODELNOTE = { gemini: 'Grounded with Google Search.', groq: 'Free-tier token limits are small — News Crux sends the cards to Groq in small batches.', openrouter: 'Free router = cross-checked against fetched sources (no live web). Any OpenRouter model ID works via “Other model ID”.', openai: 'Uses the Responses API with web search.', xai: 'Uses xAI web search.', claude: 'Uses Claude web search.' };
-  function openPage(html) { const p = $('#page'); p.innerHTML = html; p.classList.add('on'); S.pageOpen = true; }
-  function closePage() { $('#page').classList.remove('on'); S.pageOpen = false; S.subPage = false; }
+  /* Opening Settings fresh starts at the top. Redrawing it after a change (a toggle, Update, a key), or coming back
+     from one of its sub-pages, keeps the place you were at. */
+  function openPage(html) {
+    const p = $('#page'), cur = p.querySelector('.body'), was = S.pageOpen && cur ? cur.dataset.pg || '' : '';
+    if (was === 'settings') S.setY = cur.scrollTop;
+    p.innerHTML = html; p.classList.add('on');
+    const nb = p.querySelector('.body');
+    if (S.pageOpen && nb && nb.dataset.pg === 'settings' && (was === 'settings' || S.backTo)) nb.scrollTop = S.setY || 0;
+    S.backTo = false;
+    S.pageOpen = true;
+  }
+  function closePage() { $('#page').classList.remove('on'); S.pageOpen = false; S.subPage = false; S.setY = 0; }
   /* A failing feed: how long it has been silent; removed after 7 days without a response */
   function feedDown(x) {
     const days = x.since ? Math.floor((Date.now() - x.since) / 864e5) : 0;
@@ -835,7 +845,7 @@
     const order = (st.order || []).filter(p => (st.providers[p] || {}).hasKey);
     const models = MODELS[st.provider] || [];
     const custom = pv.model && !models.some(m => m[0] === pv.model);
-    return `<header class="top"><button class="iconbtn" data-act="close">${ic('back')}</button><div class="ttl">Settings</div></header><div class="body">
+    return `<header class="top"><button class="iconbtn" data-act="close">${ic('back')}</button><div class="ttl">Settings</div></header><div class="body" data-pg="settings">
       <div class="gh">Sync</div><div class="group">
         <div class="set"><div class="t"><b>Background sync</b><small>Fetches every source and rebuilds editions. Also runs whenever you open the app.</small></div><div class="opts">${[1, 3, 6].map(n => `<button data-int="${n}" class="${st.intervalHours === n ? 'on' : ''}">${n}h</button>`).join('')}</div></div>
         <div class="set" style="display:block"><div class="t"><b>Morning edition time</b><small>Yesterday's edition is finalised and notified at this time (IST) — even if the phone is asleep, it uses what was already fetched.</small></div><div class="opts" style="margin-top:10px;display:inline-flex">${[[300, '5:00'], [360, '6:00'], [420, '7:00'], [480, '8:00'], [540, '9:00']].map(([m, l]) => `<button data-dlv="${m}" class="${(st.deliverAt == null ? 360 : st.deliverAt) === m ? 'on' : ''}">${l}</button>`).join('')}</div></div>
@@ -1113,7 +1123,7 @@
       case 'sync': doSync(); break;
       case 'settings': S.setupOpen = false; openPage(settingsPage()); break;
       case 'close': S.setupOpen = false; closePage(); loadBoot(); applyTheme(); render({ keepScroll: true }); break;
-      case 'back-settings': S.subPage = false; openPage(settingsPage()); break;
+      case 'back-settings': S.subPage = false; S.backTo = true; openPage(settingsPage()); break;
       case 'rules': S.subPage = true; openPage(rulesPage()); break;
       case 'checklog': S.subPage = true; openPage(checklogPage()); break;
       case 'feeds': { const f = el.previousElementSibling; f.style.display = f.style.display === 'none' ? 'block' : 'none'; break; }
@@ -1294,7 +1304,7 @@
     },
     back() {
       if (S.sheetOpen) { closeSheet(); return true; }
-      if (S.pageOpen && S.subPage) { S.subPage = false; openPage(settingsPage()); return true; }
+      if (S.pageOpen && S.subPage) { S.subPage = false; S.backTo = true; openPage(settingsPage()); return true; }
       if (S.pageOpen) { if (S.setupOpen) { N.setBool('setupDone', true); S.setupOpen = false; } closePage(); loadBoot(); applyTheme(); render({ keepScroll: true }); return true; }
       if (S.tab !== 'edition') { go('edition'); return true; }
       const def = defaultDate();
