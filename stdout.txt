@@ -1,0 +1,101 @@
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+# Source check
+
+| Source | Feed | HTTP | Items | Newest (h) | Articles read (old → new) |
+|---|---|---|---|---|---|
+| PIB | https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3 | 200 | 0 | -1.0 |  |
+| PIB | https://news.google.com/rss/search?q=site:pib.gov.in+when:2d&hl=en-IN&… | 200 | 100 | 10.7 | 0→15263 body; 0→8319 body; 0→2120 body;  |
+| PMI | https://news.google.com/rss/search?q=site:pmindia.gov.in+when:3d&hl=en… | 200 | 19 | 8.3 | 0→1845 body; 0→3039 body; 0→2152 body;  |
+| TH | https://www.thehindu.com/news/national/feeder/default.rss | 200 | 60 | 0.1 | 2816→2816 ld; 2392→2392 blocks; 759→759 ld;  |
+| TH | https://www.thehindu.com/news/international/feeder/default.rss | 200 | 60 | 0.5 | 1103→1103 ld; 1817→1817 ld; 2845→2639 body;  |
+| TH | https://www.thehindu.com/business/Economy/feeder/default.rss | 200 | 60 | 0.1 | 1170→1060 ld; 3275→3275 ld; 1939→1939 ld;  |
+| TH | https://www.thehindu.com/sci-tech/science/feeder/default.rss | 200 | 60 | 0.3 | 1583→1587 body; 1472→1472 ld; 1588→1588 ld;  |
+| TH | https://www.thehindu.com/sci-tech/energy-and-environment/feeder/defaul… | 200 | 60 | 15.4 | 2753→2753 ld; 1472→1472 ld; 4407→4407 ld;  |
+| TH | https://www.thehindu.com/opinion/editorial/feeder/default.rss | 200 | 60 | 1.2 | 2845→2639 body; 2763→2763 ld; 3302→3302 ld;  |
+| TH | https://news.google.com/rss/search?q=site:thehindu.com+when:2d&hl=en-I… | 200 | 100 | 0.9 | 6393→6393 ld; 3448→3448 ld; 4996→4996 ld;  |
+| TH | https://www.thehindu.com/sitemap/googlenews/all/all.xml | 200 | sitemap 586 | 0.1 | 2816→2816 ld; 1170→1060 ld; 10412→10223 ld;  |
+| IE | https://indianexpress.com/section/india/feed/ | 403 | 0 | -1.0 |  |
+| IE | https://indianexpress.com/section/explained/feed/ | 403 | 0 | -1.0 |  |
+| IE | https://indianexpress.com/section/business/economy/feed/ | 403 | 0 | -1.0 |  |
+| IE | https://indianexpress.com/section/world/feed/ | 403 | 0 | -1.0 |  |
+| IE | https://news.google.com/rss/search?q=site:indianexpress.com+when:2d&hl… | 200 | 100 | 0.7 | x→x; x→x; x→x;  |
+| HT | https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml | 200 | 100 | 0.3 | 3080→3085 next; 2854→2857 next; 5547→5547 ld;  |
+| HT | https://www.hindustantimes.com/feeds/rss/world-news/rssfeed.xml | 200 | 100 | 0.4 | 3332→3046 next; 2751→2529 blocks; 3506→3506 blocks;  |
+| HT | https://news.google.com/rss/search?q=site:hindustantimes.com+when:2d&h… | 200 | 100 | 0.5 | 1139→1139 ld; 5058→5771 blocks; 1345→1345 ld;  |
+| HT | https://www.hindustantimes.com/sitemap/news.xml | 200 | sitemap 1265 | 0.0 | 3236→2924 next; 3392→3392 blocks; 3080→3085 next;  |
+| TOI | https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms | 200 | 19 | 1.2 | 6711→6711 blocks; 7557→7557 blocks; 5715→5715 blocks;  |
+| TOI | https://timesofindia.indiatimes.com/rssfeeds/296589292.cms | 200 | 20 | 0.3 | 8107→7577 blocks; 7086→7745 blocks; 8941→8411 blocks;  |
+| TOI | https://timesofindia.indiatimes.com/rssfeeds/2647163.cms | 200 | 20 | 83.7 | 6319→6193 blocks; 6704→6704 blocks; 7511→7511 ld;  |
+| TOI | https://timesofindia.indiatimes.com/rssfeeds/-2128672765.cms | 200 | 20 | 1.0 | 4686→4686 ld; 6143→6143 ld; 6502→6502 ld;  |
+| TOI | https://news.google.com/rss/search?q=site:timesofindia.indiatimes.com+… | 200 | 98 | 0.9 | 6091→5561 blocks; 5985→5436 blocks; 5558→5558 blocks;  |
+| ET | https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.… | 200 | 15 | 11.6 | 2066→2600 blocks; 4438→5059 blocks; 1554→1554 blocks;  |
+| ET | https://news.google.com/rss/search?q=site:economictimes.indiatimes.com… | 200 | 100 | 0.3 | 1867→2558 body; 2201→2519 body; 9537→9996 blocks;  |
+| ET | https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-today.… | 200 | sitemap 145 | 0.1 | 1984→2554 blocks; 2312→2979 blocks; 1210→1600 blocks;  |
+| BS | https://www.business-standard.com/rss/economy-102.rss | 200 | 35 | 9.7 | 2805→2805 ld; 1711→1711 ld; 3536→3536 ld;  |
+| BS | https://www.business-standard.com/rss/home_page_top_stories.rss | 200 | 8 | 1.3 | 4806→4806 ld; 5335→5335 ld; 4401→4401 ld;  |
+| BS | https://news.google.com/rss/search?q=site:business-standard.com+when:2… | 200 | 100 | 1.3 | 6250→6590 next; 4777→4777 ld; 3666→3986 next;  |
+| BS | https://www.business-standard.com/sitemap/news-sitemap.xml | 200 | sitemap 448 | 0.5 | 3585→3585 ld; 4541→4549 next; 3374→3374 ld;  |
+| MC | https://news.google.com/rss/search?q=site:moneycontrol.com+economy+whe… | 200 | 100 | 0.7 | 4390→4390 blocks; 4531→4531 blocks; 3947→3947 blocks;  |
+| Mint | https://www.livemint.com/rss/economy | 200 | 35 | 11.2 | 6227→6226 blocks; 3990→3983 blocks; 3640→3582 blocks;  |
+| Mint | https://www.livemint.com/sitemap/today.xml | 200 | sitemap 37 | 0.2 | 3751→3556 blocks; 4497→4497 ld; 5765→5765 ld;  |
+| Reuters | https://news.google.com/rss/search?q=site:reuters.com+India+when:2d&hl… | 200 | 100 | 3.3 | x→x; x→x; x→x;  |
+| ANI | https://news.google.com/rss/search?q=site:aninews.in+when:2d&hl=en-IN&… | 200 | 100 | 1.6 | 5463→5512 body; 3113→3250 body; 4642→4727 body;  |
+| PTI | https://news.google.com/rss/search?q=site:ptinews.com+when:2d&hl=en-IN… | 200 | 99 | 11.3 | 0→0 ld; 0→0 ld; 0→0 ld;  |
+| AIR | https://news.google.com/rss/search?q=site:newsonair.gov.in+when:2d&hl=… | 200 | 95 | 1.3 | x→x; 1091→1091 body; 795→795 body;  |
+| RBI | https://www.rbi.org.in/pressreleases_rss.xml | 200 | 10 | 13.7 | 252→6858 body; 252→453 body; 252→1828 body;  |
+| RBI | https://news.google.com/rss/search?q=site:rbi.org.in+when:3d&hl=en-IN&… | 200 | 42 | 2.0 | 252→1234 body; 252→1828 body; 252→252 blocks;  |
+| MEA | https://news.google.com/rss/search?q=site:mea.gov.in+when:3d&hl=en-IN&… | 200 | 16 | 4.1 | x→x; x→x; x→x;  |
+| PRS | https://news.google.com/rss/search?q=site:prsindia.org+when:7d&hl=en-I… | 200 | 4 | 33.1 | 735811→0 not-html; 153→0 ld; 1351→1351 body;  |
+| DTE | https://www.downtoearth.org.in/feed | 200 | 1 | 10.1 | 3080→3012 blocks;  |
+| DTE | https://news.google.com/rss/search?q=site:downtoearth.org.in+when:2d&h… | 200 | 31 | 10.1 | 9098→8792 blocks; 0→0 ld; 0→0 ld;  |
+| DTE | https://www.downtoearth.org.in/news_sitemap.xml | 200 | sitemap 21 | 10.1 | 3080→3012 blocks; 12875→12875 ld; 2915→2915 blocks;  |
+| ISRO | https://news.google.com/rss/search?q=site:isro.gov.in+when:7d&hl=en-IN… | 200 | 18 | 12.9 | 0→712 body; 0→1548 body; 168471→0 not-html;  |
+| Insights | https://www.insightsonindia.com/feed/ | 200 | 5 | 0.9 | 2345→2301 body; 139→0 ld; 137→0 ld;  |
+| Insights | https://news.google.com/rss/search?q=site:insightsonindia.com+when:4d&… | 200 | 91 | 0.9 | 2674428→0 not-html; 740→740 body; 684→684 body;  |
+| Drishti | https://news.google.com/rss/search?q=site:drishtiias.com+when:4d&hl=en… | 200 | 99 | 3.9 | 7769→7769 blocks; 6410→6410 blocks; 7432→7432 blocks;  |
+| Vision | https://news.google.com/rss/search?q=site:visionias.in+when:4d&hl=en-I… | 200 | 27 | 6.0 | 738→698 blocks; 0→0 ld; 0→0 ld;  |
+| Vajiram | https://vajiramandravi.com/current-affairs/feed/ | 200 | 5 | 15.9 | 2608→2608 body; 6870→6870 ld; 12659→12659 ld;  |
+| Vajiram | https://news.google.com/rss/search?q=site:vajiramandravi.com+when:4d&h… | 200 | 99 | 15.9 | 16777→16733 blocks; 24405→6990 body; 19373→19195 blocks;  |
+| DTE (candidate) | https://www.downtoearth.org.in/rss/latest-news | 404 | 0 | -1.0 |  |
+| DTE (candidate) | https://www.downtoearth.org.in/feed | 200 | 1 | 10.1 | 3080→3012 blocks;  |
+| Vajiram (candidate) | https://vajiramandravi.com/current-affairs/feed/ | 200 | 5 | 15.9 | 2608→2608 body; 6870→6870 ld;  |
+| TH (candidate) | https://www.thehindu.com/sci-tech/agriculture/feeder/default.rss | 200 | 60 | 82.7 | 4127→3688 body; 8493→8493 ld;  |
+| HT (candidate) | https://www.hindustantimes.com/feeds/rss/environment/rssfeed.xml | 200 | 0 | -1.0 |  |
+| Mint (candidate) | https://www.livemint.com/rss/economy | 200 | 35 | 11.3 | 6227→6226 blocks; 3990→3983 blocks;  |
+| PIB (candidate) | https://www.pib.gov.in/RssMain.aspx?ModId=8&Lang=1&Regid=3 | 200 | 0 | -1.0 |  |
+| PIB (candidate) | https://pib.gov.in/RssMain.aspx?ModId=6&Lang=2&Regid=3 | 200 | 0 | -1.0 |  |
+| PIB (candidate) | https://www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3&reg=3&lang=… | 200 | 0 | -1.0 |  |
+| PIB (candidate) | https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1 | 200 | 0 | -1.0 |  |
+| Mint (candidate) | https://www.livemint.com/sitemap/today.xml | 200 | sitemap 37 | 0.0 | 5646→5646 blocks; 3751→3556 blocks;  |
+
+## Coaching pages
+
+- https://www.drishtiias.com/current-affairs-news-analysis-editorials/news-analysis/21-11-2026: HTTP 200, 0 topics, 0 sections
+- https://www.drishtiias.com/current-affairs-news-analysis-editorials/news-analysis/20-11-2026: HTTP 200, 8 topics, 32 sections
+- https://www.insightsonindia.com/2026/11/21/upsc-current-affairs-21-november-2026/: HTTP 404, 0 topics, 0 sections
+- https://www.insightsonindia.com/2026/11/20/upsc-current-affairs-20-november-2026/: HTTP 200, 11 topics, 52 sections
+- https://vajiramandravi.com/current-affairs/: HTTP 200, 0 topics, 0 sections
+- https://visionias.in/current-affairs/news-today: HTTP 200, 10 topics, 12 sections
+
+## Sitemaps
+
+- {"listed":["https://www.thehindu.com/sitemap/googlenews/all/all.xml","https://www.thehindu.com/sitemap/update/all.xml","https://www.thehindu.com/sitemap/update/section.xml","https://www.thehindu.com/feeder/default.rss","https://www.thehindu.com/?service=videositemap","https://www.thehindu.com/entertainment/feeder/default.rss","https://www.thehindu.com/shorts/feeder/default.rss","https://www.thehindu.com/sport/feeder/default.rss","https://www.thehindu.com/business/feeder/default.rss"],"host":"www.thehindu.com","http":200,"checked":[{"http":200,"url":"https://www.thehindu.com/sitemap/googlenews/all/all.xml","info":{"urls":586,"newsTitles":586,"dated":586,"subSitemaps":0,"first":["https://www.thehindu.com/news/national/maharashtra/why-did-tukaram-mundhe-withdraw-his-petition-after-dragging-the-centre-to-court-explained/article71727214.ece","https://www.thehindu.com/business/Economy/what-does-epfos-systematic-withdrawal-plan-for-entail-for-retirees-explained/article71727225.ece"]}}]}
+- {"listed":[],"host":"indianexpress.com","http":403,"checked":[]}
+- {"listed":["https://www.hindustantimes.com/sitemap/news.xml","https://www.hindustantimes.com/sitemap/index.xml","https://www.hindustantimes.com/sitemap/liveblog.xml","https://www.hindustantimes.com/sitemap/section.xml","https://www.hindustantimes.com/sitemap/education-static.xml","https://www.hindustantimes.com/telugu/sitemap/news.xml","https://www.hindustantimes.com/bangla/sitemap/news.xml"],"host":"www.hindustantimes.com","http":200,"checked":[{"http":200,"url":"https://www.hindustantimes.com/sitemap/news.xml","info":{"urls":1265,"newsTitles":1265,"dated":1265,"subSitemaps":0,"first":["https://www.hindustantimes.com/cricket/india-vs-new-zealand-live-score-1st-test-day-3-ind-vs-nz-latest-updates-scorecard-wellington-november-21-101795194753027.html","https://www.hindustantimes.com/world-news/us-news/who-is-bradley-kasal-us-marine-veteran-honoured-for-fallujah-heroism-under-criminal-investigation-over-jrotc-role-101795231370007.html"]}},{"http":200,"url":"https://www.hindustantimes.com/telugu/sitemap/news.xml","info":{"urls":700,"newsTitles":700,"dated":700,"subSitemaps":0,"first":["https://www.hindustantimes.com/telugu/telangana/2027-monsoon-forecast-la-nina-likely-to-replace-el-nino-incois-predicts-good-rains-261795230155142.html","https://www.hindustantimes.com/telugu/lifestyle/supreme-court-unwed-mother-better-child-custody-claim-ruling-261795230825619.html"]}},{"http":200,"url":"https://www.hindustantimes.com/bangla/sitemap/news.xml","info":{"urls":700,"newsTitles":700,"dated":700,"subSitemaps":0,"first":["https://www.hindustantimes.com/bangla/news/kl-rahul-century-against-new-zealand-becomes-first-indian-opener-to-score-centuries-in-all-4-sena-countries-271795232189921.html","https://www.hindustantimes.com/bangla/news/fbi-datebase-cyber-attack-second-time-in-months-breach-targets-us-crime-records-know-details-and-latest-update-271795231486802.html"]}}]}
+- {"listed":["https://timesofindia.indiatimes.com/sitemap/today","https://timesofindia.indiatimes.com/sitemap/yesterday","https://timesofindia.indiatimes.com/staticsitemap/toi/news/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/city/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/entertainment/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/india/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/sports/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/business/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/world/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/slideshow/sitemap-index.xml","https://timesofindia.indiatimes.com/staticsitemap/toi/category/life-style/sitemap-index.xml"],"host":"timesofindia.indiatimes.com","http":200,"checked":[{"http":200,"url":"https://timesofindia.indiatimes.com/staticsitemap/toi/news/sitemap-index.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":833,"first":[]}}]}
+- {"listed":["https://m.economictimes.com/companylisting_stocks.cms","https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-today.xml","https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-yesterday.xml","https://economictimes.indiatimes.com/etstatic/sitemaps/et/news/sitemap-index.xml","https://economictimes.indiatimes.com/sitemapxml.cms","https://economictimes.indiatimes.com/etstatic/sitemaps/et/video/sitemap-index.xml","https://m.economictimes.com/companylisting_stocks.cms","https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-today.xml","https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-yesterday.xml","https://economictimes.indiatimes.com/etstatic/sitemaps/et/news/sitemap-index.xml","https://economictimes.indiatimes.com/sitemapxml.cms","https://economictimes.indiatimes.com/etstatic/sitemaps/et/video/sitemap-index.xml"],"host":"economictimes.indiatimes.com","http":200,"checked":[{"http":200,"url":"https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-today.xml","info":{"urls":145,"newsTitles":145,"dated":145,"subSitemaps":0,"first":["https://m.economictimes.com/markets/us-stocks/news/wall-street-week-ahead-black-friday-brings-consumer-spending-into-focus-for-ai-rocked-market/articleshow/136044202.cms","https://m.economictimes.com/news/short-videos/trump-calls-himself-genetically-blessed-marco-rubios-reaction-steals-the-show/videoshow/136044305.cms"]}},{"http":200,"url":"https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-yesterday.xml","info":{"urls":638,"newsTitles":638,"dated":638,"subSitemaps":0,"first":["https://m.economictimes.com/news/india/cauvery-dispute-supreme-court-rejects-tamil-nadus-pleas-for-more-water-from-karnataka/articleshow/136037411.cms","https://m.economictimes.com/opinion/bliss-of-everyday-life/ai-for-honesty/articleshow/136037100.cms"]}},{"http":200,"url":"https://economictimes.indiatimes.com/etstatic/sitemaps/et/news/sitemap-index.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":385,"first":[]}},{"http":200,"url":"https://m.economictimes.com/etstatic/sitemaps/m-et/news/sitemap-today.xml","info":{"urls":145,"newsTitles":145,"dated":145,"subSitemaps":0,"first":["https://m.economictimes.com/markets/us-stocks/news/wall-street-week-ahead-black-friday-brings-consumer-spending-into-focus-for-ai-rocked-market/articleshow/136044202.cms","https://m.economictimes.com/news/short-videos/trump-calls-himself-genetically-blessed-marco-rubios-reaction-steals-the-show/videoshow/136044305.cms"]}}]}
+- {"listed":["https://www.business-standard.com/sitemap/sitemap-index.xml","https://www.business-standard.com/sitemap/news-sitemap.xml","https://www.business-standard.com/sitemap/category-sitemap-1.xml"],"host":"www.business-standard.com","http":200,"checked":[{"http":200,"url":"https://www.business-standard.com/sitemap/sitemap-index.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":23,"first":[]}},{"http":200,"url":"https://www.business-standard.com/sitemap/news-sitemap.xml","info":{"urls":448,"newsTitles":448,"dated":448,"subSitemaps":0,"first":["https://www.business-standard.com/technology/tech-news/gta-vi-generates-3-79-bn-becomes-biggest-entertainment-launch-ever-126112100066_1.html","https://www.business-standard.com/world-news/trump-defends-ties-with-putin-as-russia-intensifies-attacks-on-ukraine-126112100144_1.html"]}},{"http":200,"url":"https://www.business-standard.com/sitemap/category-sitemap-1.xml","info":{"urls":153,"newsTitles":0,"dated":0,"subSitemaps":0,"first":["https://www.business-standard.com","https://www.business-standard.com/latest-news"]}}]}
+- {"listed":["https://m.moneycontrol.com/sitemap.xml"],"host":"www.moneycontrol.com","http":200,"checked":[{"http":200,"url":"https://m.moneycontrol.com/sitemap.xml","info":{"urls":1171,"newsTitles":0,"dated":1171,"subSitemaps":0,"first":["https://m.moneycontrol.com/news/local-markets/nifty-ends-above-8500-sun-pharma-hul-coal-india2-3_1276322.html?type=tn&category=","https://m.moneycontrol.com/news/results-boardroom/retail-biz-should-fare-wellq4-eye-strong-fy16-tcs_1275934.html?type=tn&category="]}}]}
+- {"listed":["https://www.downtoearth.org.in/sitemap.xml","https://www.downtoearth.org.in/news_sitemap.xml"],"host":"www.downtoearth.org.in","http":200,"checked":[{"http":200,"url":"https://www.downtoearth.org.in/sitemap.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":5733,"first":[]}},{"http":200,"url":"https://www.downtoearth.org.in/news_sitemap.xml","info":{"urls":21,"newsTitles":21,"dated":21,"subSitemaps":0,"first":["https://www.downtoearth.org.in/climate-change/cyclone-akvan-springs-a-surprise-on-odisha","https://www.downtoearth.org.in/climate-change/global-stock-take-2-at-cop31-battle-over-fairness-science-and-funds-in-climate-reality-check"]}}]}
+- {"listed":["https://newsonair.gov.in/sitemap/"],"host":"www.newsonair.gov.in","http":200,"checked":[{"http":404,"url":"https://newsonair.gov.in/sitemap/"}]}
+- {"listed":[],"host":"www.pib.gov.in","http":200,"checked":[]}
+- {"listed":[],"host":"www.insightsonindia.com","http":200,"checked":[]}
+- {"listed":[],"host":"www.drishtiias.com","http":200,"checked":[]}
+- {"listed":[],"host":"visionias.in","http":503,"checked":[]}
+- {"listed":["https://vajiramandravi.com/sitemap.xml","https://vajiramandravi.com/upsc-exam/sitemap_index.xml","https://vajiramandravi.com/current-affairs/sitemap_index.xml"],"host":"vajiramandravi.com","http":200,"checked":[{"http":200,"url":"https://vajiramandravi.com/sitemap.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":3,"first":[]}},{"http":200,"url":"https://vajiramandravi.com/upsc-exam/sitemap_index.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":8,"first":[]}},{"http":200,"url":"https://vajiramandravi.com/current-affairs/sitemap_index.xml","info":{"urls":0,"newsTitles":0,"dated":0,"subSitemaps":24,"first":[]}}]}
+- {"listed":[],"host":"www.mea.gov.in","http":403,"checked":[]}
+- {"listed":[],"host":"prsindia.org","http":200,"checked":[]}
+- {"listed":[],"host":"www.isro.gov.in","http":404,"checked":[]}
+- {"listed":["https://www.livemint.com/sitemap/yesterday.xml","https://www.livemint.com/sitemap/today.xml","https://www.livemint.com/lm-section/sitemap.xml","https://www.livemint.com/lm/sitemap/liveblog/en","https://www.livemint.com/lm/sitemap/liveblog/hi","https://www.livemint.com/monthlysitemap/prod/silver-price.xml","https://www.livemint.com/monthlysitemap/prod/gold-price.xml","https://www.livemint.com/hindi/sitemap/today.xml","https://www.livemint.com/hindi/sitemap/yesterday.xml","https://www.livemint.com/hindi/sitemap.xml"],"host":"www.livemint.com","http":200,"checked":[]}
+
